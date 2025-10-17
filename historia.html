@@ -1,0 +1,578 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0b2a4a" />
+  <title>Redes de Computadores</title>
+
+  <!-- Fontes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    /* -----------------------------------------------
+       Paleta: tons de azul / branco — estética surreal
+       ----------------------------------------------- */
+    :root{
+      --bg-1: #051025;              /* deep midnight */
+      --bg-2: #06264a;              /* deep blue */
+      --ice: #f6fbff;              /* off-white */
+      --glass: rgba(255,255,255,0.06);
+      --card: rgba(255,255,255,0.9);
+      --accent: #61b8ff;          /* neon cyan */
+      --accent-2: #1e90ff;        /* bright blue */
+      --accent-3: #8bd3ff;        /* light cyan */
+      --muted: rgba(255,255,255,0.85);
+      --text-dark: #052037;
+      --radius-lg: 22px;
+      --radius-md: 14px;
+      --glass-border: rgba(255,255,255,0.08);
+      --glow: 0 10px 40px rgba(30,144,255,0.12);
+      --trans: 300ms cubic-bezier(.2,.9,.2,1);
+    }
+
+    /* Respect user preference */
+    @media (prefers-reduced-motion: reduce){
+      *{animation: none !important; transition: none !important}
+    }
+
+    html,body{height:100%;margin:0;font-family:'Inter', 'Space Grotesk', system-ui, -apple-system, 'Segoe UI', Roboto, Arial;color:var(--muted);background:linear-gradient(180deg,var(--bg-1) 0%, #04203a 40%, #063055 100%);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
+
+    /* Animated surreal background: soft radial blobs + noise layer */
+    body::before{
+      content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:
+        radial-gradient(600px 400px at 10% 15%, rgba(45,110,255,0.12), transparent 12%),
+        radial-gradient(500px 360px at 85% 70%, rgba(97,184,255,0.09), transparent 18%),
+        radial-gradient(360px 260px at 50% 40%, rgba(20,144,255,0.07), transparent 22%);
+      mix-blend-mode: overlay;filter:blur(28px);animation: floatB 18s ease-in-out infinite;transition:opacity var(--trans);
+    }
+    @keyframes floatB{0%{transform:translateY(0)}50%{transform:translateY(-18px)}100%{transform:translateY(0)}}
+
+    /* subtle star / particle layer */
+    body::after{content:"";position:fixed;inset:0;z-index:0;background-image:radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px);background-size: 140px 120px;opacity:0.08;filter:blur(1px)}
+
+    .container{position:relative;z-index:10;max-width:1200px;margin:28px auto;padding:28px;min-height:calc(100vh - 56px);display:flex;flex-direction:column;gap:20px}
+
+    header{display:flex;align-items:center;gap:20px;padding:20px;border-radius:calc(var(--radius-lg));backdrop-filter: blur(8px) saturate(140%);background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));border:1px solid var(--glass-border);box-shadow:var(--glow)}
+
+    .logo{width:86px;height:86px;border-radius:20px;display:grid;place-items:center;font-weight:800;font-size:22px;color:var(--ice);background:linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));border:1px solid rgba(255,255,255,0.06);box-shadow: 0 8px 30px rgba(30,144,255,0.12);transform:translateZ(0);transition:transform 360ms cubic-bezier(.2,.9,.2,1)}
+    .logo .mark{width:64px;height:64px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent-2),var(--accent));box-shadow:0 6px 30px rgba(30,144,255,0.26);font-weight:900;color:white}
+
+    .header-content{flex:1;min-width:0}
+    h1{font-size:22px;margin:0;color:var(--muted);font-weight:800;letter-spacing:-0.4px}
+    .tag{margin-top:6px;color:rgba(255,255,255,0.75);font-weight:600}
+
+    .controls{display:flex;gap:12px;align-items:center}
+    .btn{appearance:none;border:0;padding:10px 16px;border-radius:12px;background:linear-gradient(90deg,var(--accent-3),var(--accent));color:var(--bg-1);font-weight:800;cursor:pointer;box-shadow:0 8px 28px rgba(30,144,255,0.18);transition:transform var(--trans),box-shadow var(--trans);display:inline-flex;align-items:center;gap:10px}
+    .btn:hover{transform:translateY(-6px);box-shadow:0 20px 60px rgba(30,144,255,0.22)}
+
+    .ghost{width:56px;height:56px;border-radius:14px;background:transparent;border:1px solid rgba(255,255,255,0.06);display:grid;place-items:center;color:var(--muted);cursor:pointer;transition:transform var(--trans),background var(--trans)}
+    .ghost:hover{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));transform:translateY(-4px)}
+
+    /* layout */
+    .main-content{display:grid;grid-template-columns:1fr 360px;gap:24px;margin-top:12px}
+    @media(max-width:980px){.main-content{grid-template-columns:1fr}}
+
+    .card{position:relative;background:linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,255,255,0.86));border-radius:18px;padding:22px;border:1px solid rgba(255,255,255,0.06);box-shadow:0 18px 60px rgba(5,32,60,0.12);overflow:hidden}
+    .section-title{font-size:18px;color:var(--text-dark);font-weight:800}
+    .lead{color:var(--text-dark);font-weight:600;line-height:1.5;margin-top:12px}
+
+    /* network visual: glass pane with neon traces */
+    .network-card{margin-top:16px;padding:18px;border-radius:16px;background:linear-gradient(180deg, rgba(240,249,255,0.92), rgba(245,252,ff,0.96));box-shadow:inset 0 6px 20px rgba(30,144,255,0.03)}
+
+    /* improve svg paths look */
+    svg#netSvg{width:100%;height:auto;display:block;border-radius:12px}
+    svg path{filter:drop-shadow(0 6px 18px rgba(30,144,255,0.08))}
+
+    /* packet pulse element — make it softer */
+    #packetPulse{width:64px;height:64px;border-radius:999px;position:fixed;pointer-events:none;opacity:0;z-index:1200;mix-blend-mode:screen;transform:scale(.6);transition:opacity 260ms ease, transform 260ms ease}
+
+    .controls-bottom{display:flex;align-items:center;gap:16px;margin-top:14px;padding-top:12px;border-top:1px dashed rgba(5,32,60,0.04)}
+    .bar{height:12px;background:linear-gradient(90deg, rgba(1,42,88,0.03), rgba(1,56,105,0.03));border-radius:999px;overflow:hidden;flex:1;max-width:300px}
+    .bar>i{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--accent-3),var(--accent-2));border-radius:999px;box-shadow:0 6px 20px rgba(30,144,255,0.16);transition:width 420ms cubic-bezier(0.23,1,0.32,1)}
+    .latency{margin-left:auto;color:var(--text-dark);font-weight:800}
+
+    /* QUIZ: modern cards */
+    .quiz h3{font-size:18px;margin:0;color:var(--text-dark);font-weight:900;display:flex;align-items:center;gap:12px}
+    .quiz .option{background:linear-gradient(180deg, rgba(255,255,255,0.96), rgba(250,252,255,0.98));border:1px solid rgba(30,144,255,0.06);padding:14px;border-radius:12px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:transform var(--trans),box-shadow var(--trans)}
+    .quiz .option:hover{transform:translateX(6px);box-shadow:0 12px 36px rgba(30,144,255,0.06)}
+    .option-letter{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(180deg, rgba(241,250,255,0.9), rgba(228,246,255,0.98));border:1px solid rgba(30,144,255,0.06);font-weight:900;color:var(--text-dark)}
+    .option.selected{background:linear-gradient(90deg, rgba(97,184,255,0.09), rgba(30,144,255,0.06));border:1px solid rgba(30,144,255,0.12)}
+    .option.correct{background:linear-gradient(180deg, #f0fffb, #eafff7);border:1px solid rgba(16,185,129,0.12);color:#065f46}
+    .option.wrong{background:linear-gradient(180deg, #fff6f6, #fff1f1);border:1px solid rgba(239,68,68,0.08);color:#7b1d1d}
+
+    .quiz-controls{display:flex;justify-content:space-between;align-items:center;margin-top:18px;gap:12px}
+    .nav-buttons{display:flex;gap:10px}
+
+    /* aside */
+    .aside-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;color:var(--accent-2);font-weight:800}
+    .meta-list{padding-left:18px;color:rgba(5,32,60,0.7)}
+
+    footer{margin-top:20px;text-align:center;padding:18px;border-radius:16px;background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));border:1px solid rgba(255,255,255,0.03);color:rgba(255,255,255,0.75)}
+
+    /* micro interactions: spotlight following cursor in header */
+    header{--mx:50%;--my:50%;background:radial-gradient(600px 200px at var(--mx) var(--my), rgba(97,184,255,0.06), transparent 12%), linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));}
+
+    /* smaller screens tweaks */
+    @media(max-width:600px){
+      header{flex-direction:column;align-items:flex-start;gap:12px}
+      .logo{width:72px;height:72px}
+      .main-content{grid-template-columns:1fr}
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header role="banner">
+      <div class="logo" id="logo" aria-hidden="true">
+        <div class="mark">RD</div>
+      </div>
+
+      <div class="header-content">
+        <h1>Redes de Computadores</h1>
+        <p class="tag"></p>
+      </div>
+
+      <div class="controls" aria-hidden="false">
+        <button id="downloadBtn" class="ghost" title="Baixar versão estática"><i class="fas fa-download" aria-hidden="true"></i></button>
+        <button id="helpBtn" class="btn">Iniciar Tour</button>
+      </div>
+    </header>
+
+    <main class="main-content" role="main">
+      <section class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap">
+          <div>
+            <h2 class="section-title">Resumo: O que são redes?</h2>
+            <p class="lead">Redes de computadores conectam dispositivos para compartilhar dados e recursos. Elas fragmentam informação em pacotes, endereçam esses pacotes e roteiam por caminhos eficientes — pense em rodovias digitais com sinais e regras. Este guia visual explora esses conceitos com animações e quizzes interativos.</p>
+          </div>
+          <div style="min-width:220px;display:flex;flex-direction:column;gap:10px;align-items:flex-end">
+            <div style="font-weight:800;color:var(--accent-2)">Interativo • Nível Pro</div>
+            <div style="font-size:12px;color:rgba(5,32,60,0.45)">Surreal theme — azul & branco</div>
+          </div>
+        </div>
+
+        <div class="network-card card" style="margin-top:18px;padding:18px;">
+          <!-- SVG rede aprimorada -->
+          <svg id="netSvg" viewBox="0 0 940 360" preserveAspectRatio="xMidYMid meet" aria-hidden="false">
+            <defs>
+              <filter id="softGlow"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+              <linearGradient id="neon" x1="0%" x2="100%"><stop offset="0%" stop-color="#8bd3ff"/><stop offset="50%" stop-color="#61b8ff"/><stop offset="100%" stop-color="#1e90ff"/></linearGradient>
+            </defs>
+
+            <!-- smooth abstract background lines -->
+            <g opacity="0.18">
+              <path d="M40 280 C 160 140 320 110 420 120 C 520 130 680 170 900 60" stroke="url(#neon)" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+              <path d="M40 120 C 160 60 320 40 420 60 C 520 80 680 120 900 80" stroke="#0b3a66" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+            </g>
+
+            <path id="p1" d="M160 180 C 240 110 300 110 360 100" stroke="#cfeeff" stroke-width="8" fill="none" stroke-linecap="round" filter="url(#softGlow)"/>
+            <path id="p2" d="M160 180 C 240 250 320 260 360 270" stroke="#d7f2ff" stroke-width="8" fill="none" stroke-linecap="round" filter="url(#softGlow)"/>
+            <path id="p3" d="M360 100 C 520 140 640 150 760 150" stroke="#bfe8ff" stroke-width="8" fill="none" stroke-linecap="round" filter="url(#softGlow)"/>
+            <path id="p4" d="M360 270 C 520 210 700 190 760 150" stroke="#bfe8ff" stroke-width="8" fill="none" stroke-linecap="round" filter="url(#softGlow)"/>
+
+            <g id="client" class="node-svg">
+              <rect x="120" y="140" width="80" height="80" rx="18" fill="#fff" opacity="0.98" stroke="#e9f6ff"/>
+              <text x="160" y="180" text-anchor="middle" style="font-weight:800;fill:#07243a;font-size:14px">Cliente</text>
+            </g>
+
+            <g id="router1" class="node-svg">
+              <g transform="translate(360,100)">
+                <circle r="36" fill="#fff" stroke="#e6f7ff"/>
+                <text y="6" text-anchor="middle" style="font-weight:800;fill:#07243a;font-size:13px">R1</text>
+              </g>
+            </g>
+
+            <g id="router2" class="node-svg">
+              <g transform="translate(360,270)">
+                <circle r="36" fill="#fff" stroke="#e6f7ff"/>
+                <text y="6" text-anchor="middle" style="font-weight:800;fill:#07243a;font-size:13px">R2</text>
+              </g>
+            </g>
+
+            <g id="isp" class="node-svg">
+              <rect x="580" y="120" width="120" height="100" rx="14" fill="#fff" stroke="#e6f7ff"/>
+              <text x="640" y="170" text-anchor="middle" style="font-weight:800;fill:#07243a;font-size:14px">ISP</text>
+            </g>
+
+            <g id="server" class="node-svg">
+              <rect x="780" y="130" width="120" height="92" rx="16" fill="#fff" stroke="#cfeeff"/>
+              <text x="840" y="180" text-anchor="middle" style="font-weight:800;fill:#07243a;font-size:14px">Servidor</text>
+            </g>
+
+            <g id="packets"></g>
+          </svg>
+
+          <div class="controls-bottom">
+            <button id="animBtn" class="btn">▶ Animar Rede</button>
+            <div class="bar" aria-hidden="true"><i id="latencyBar"></i></div>
+            <div class="latency">Latência: <span id="latencyVal">—</span> ms</div>
+          </div>
+        </div>
+
+        <hr style="border:none;margin:22px 0;border-top:1px dashed rgba(5,32,60,0.04)" />
+
+        <!-- QUIZ -->
+        <section class="quiz" aria-labelledby="quiz-title">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <h3 id="quiz-title">Quiz Interativo</h3>
+            <div class="score-display" id="score-display" style="font-weight:800;color:var(--accent-2)"><i class="fas fa-graduation-cap" aria-hidden="true"></i> <span id="score">0/5</span></div>
+          </div>
+
+          <div class="progress-container" aria-hidden="false" style="margin-top:12px;">
+            <div class="progress-bar" id="progress-bar" style="height:10px;background:linear-gradient(90deg,var(--accent-3),var(--accent-2));border-radius:8px;width:0%;box-shadow:0 8px 28px rgba(30,144,255,0.12)"></div>
+          </div>
+
+          <div class="question-container" id="question-container"></div>
+
+          <div class="quiz-controls">
+            <div class="nav-buttons">
+              <button id="prev" class="ghost" aria-label="Pergunta anterior"><i class="fas fa-arrow-left" aria-hidden="true"></i></button>
+              <button id="next" class="ghost" aria-label="Próxima pergunta"><i class="fas fa-arrow-right" aria-hidden="true"></i></button>
+            </div>
+            <button id="submit" class="btn" aria-label="Enviar respostas"><i class="fas fa-paper-plane" aria-hidden="true"></i> Enviar</button>
+          </div>
+
+          <div id="toast-root" aria-live="polite"></div>
+        </section>
+      </section>
+
+      <aside class="card" aria-label="Resumo rápido">
+        <h4 class="aside-header">Resumo rápido</h4>
+        <ul class="meta-list">
+          <li><strong>IP:</strong> Endereço que identifica um dispositivo numa rede.</li>
+          <li><strong>Roteador:</strong> Direciona pacotes entre redes.</li>
+          <li><strong>Switch:</strong> Conecta dispositivos numa mesma rede local.</li>
+          <li><strong>Protocolo:</strong> Regras para comunicação (ex.: TCP/IP).</li>
+        </ul>
+
+        <hr style="border:none;margin:18px 0;border-top:1px dashed rgba(5,32,60,0.04)" />
+
+        <h4 class="aside-header">Atalhos</h4>
+        <ol class="meta-list">
+          <li><kbd>R</kbd> — Iniciar/parar animação</li>
+          <li><kbd>← / →</kbd> — Navegar perguntas</li>
+        </ol>
+
+        <hr style="border:none;margin:18px 0;border-top:1px dashed rgba(5,32,60,0.04)" />
+
+        <h4 class="aside-header">Dicas rápidas</h4>
+        <ol class="meta-list">
+          <li>Separe redes de convidados da principal.</li>
+          <li>Mantenha firmware do roteador atualizado.</li>
+          <li>Use senhas fortes e WPA3 quando possível.</li>
+        </ol>
+      </aside>
+    </main>
+
+  
+
+  <div id="packetPulse" aria-hidden="true"></div>
+  <canvas id="confetti" style="position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:1200"></canvas>
+
+  <script>
+    /* --------------------------------------------------
+       Interactions extras: parallax spotlight + logo tilt
+       + then kept/ported the original network & quiz logic
+       -------------------------------------------------- */
+
+    // parallax spotlight inside header (follows cursor)
+    const headerEl = document.querySelector('header');
+    headerEl.addEventListener('pointermove', (e)=>{
+      const r = headerEl.getBoundingClientRect();
+      const mx = ((e.clientX - r.left) / r.width) * 100;
+      const my = ((e.clientY - r.top) / r.height) * 100;
+      headerEl.style.setProperty('--mx', mx + '%');
+      headerEl.style.setProperty('--my', my + '%');
+    });
+
+    // logo tilt subtle effect
+    const logo = document.getElementById('logo');
+    logo.addEventListener('pointermove', (e)=>{
+      const r = logo.getBoundingClientRect();
+      const dx = (e.clientX - (r.left + r.width/2));
+      const dy = (e.clientY - (r.top + r.height/2));
+      logo.style.transform = `perspective(600px) rotateX(${(-dy/20)}deg) rotateY(${dx/20}deg)`;
+    });
+    logo.addEventListener('pointerleave', ()=>{ logo.style.transform = 'none' });
+
+    // ---------- Utilities & network animation (kept + light improvements) ----------
+    const $ = sel => document.querySelector(sel);
+
+    // network animation code (unchanged behaviour, slightly tweaked timings/colors)
+    const packetsGroup = $('#packets');
+    const animBtn = $('#animBtn');
+    const packetPulse = document.getElementById('packetPulse');
+    let animRunning = false;
+    let animTimer = null;
+
+    function pointOnPath(pathEl, t) {
+      const len = pathEl.getTotalLength();
+      return pathEl.getPointAtLength(len * t);
+    }
+
+    function easeInOut(t) { return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t; }
+
+    function spawnPacket(pathEl, duration = 1200, color = '#61b8ff', size = 6, delay = 0) {
+      setTimeout(() => {
+        const p = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        p.setAttribute('r', size);
+        p.setAttribute('fill', color);
+        p.setAttribute('opacity', '0.98');
+        packetsGroup.appendChild(p);
+        const start = performance.now();
+        function frame(now) {
+          const tRaw = (now - start) / duration;
+          const t = Math.min(1, tRaw);
+          const e = easeInOut(t);
+          const pt = pointOnPath(pathEl, e);
+          p.setAttribute('cx', pt.x);
+          p.setAttribute('cy', pt.y);
+          p.setAttribute('r', size + Math.sin(t * Math.PI) * 1.2);
+          p.setAttribute('opacity', 1 - (t * 0.6));
+          if (t >= 1) { packetsGroup.removeChild(p); pulseAt(pt.x, pt.y, color); return; }
+          requestAnimationFrame(frame);
+        }
+        requestAnimationFrame(frame);
+      }, delay);
+    }
+
+    function pulseAt(svgX, svgY, color) {
+      const svg = $('#netSvg');
+      const rect = svg.getBoundingClientRect();
+      const viewBox = svg.viewBox.baseVal;
+      const scaleX = rect.width / viewBox.width;
+      const scaleY = rect.height / viewBox.height;
+      const clientX = rect.left + svgX * scaleX;
+      const clientY = rect.top + svgY * scaleY;
+      packetPulse.style.left = (clientX - 32) + 'px';
+      packetPulse.style.top = (clientY - 32) + 'px';
+      packetPulse.style.background = color;
+      packetPulse.style.opacity = '0.16';
+      packetPulse.style.transform = 'scale(1)';
+      setTimeout(() => { packetPulse.style.opacity = '0'; packetPulse.style.transform = 'scale(.6)'; }, 260);
+    }
+
+    function startNet() {
+      if (animRunning) return;
+      animRunning = true;
+      animBtn.textContent = '⏸ Parar Rede';
+      animTimer = setInterval(() => {
+        const p1 = $('#p1'); const p2 = $('#p2'); const p3 = $('#p3'); const p4 = $('#p4');
+        spawnPacket(p1, 1200, '#61b8ff', 6, 0);
+        spawnPacket(p3, 900, '#8bd3ff', 6, 160);
+        spawnPacket(p2, 1300, '#4da3ff', 5, 90);
+        spawnPacket(p4, 1000, '#8bd3ff', 5, 260);
+        const lat = Math.round(10 + Math.random() * 120);
+        $('#latencyVal').textContent = lat;
+        $('#latencyBar').style.width = Math.min(100, lat / 2) + '%';
+      }, 620);
+    }
+
+    function stopNet() {
+      animRunning = false;
+      animBtn.textContent = '▶ Animar Rede';
+      clearInterval(animTimer);
+      animTimer = null;
+      while (packetsGroup.firstChild) packetsGroup.removeChild(packetsGroup.firstChild);
+      $('#latencyVal').textContent = '—';
+      $('#latencyBar').style.width = '0%';
+    }
+
+    animBtn.addEventListener('click', () => (animRunning ? stopNet() : startNet()));
+    window.addEventListener('keydown', e => {
+      if (e.key.toLowerCase() === 'r') animBtn.click();
+      if (e.key === 'ArrowLeft') $('#prev').click();
+      if (e.key === 'ArrowRight') $('#next').click();
+    });
+
+    // ---------- Quiz logic (kept with small UX improvements) ----------
+    const quiz = [
+      {q:'Qual protocolo garante entrega confiável de dados?', opts:['UDP','TCP','ICMP'], a:1, explain:'TCP (Transmission Control Protocol) garante entrega com confirmação e retransmissão.'},
+      {q:'O que significa LAN?', opts:['Large Area Network','Local Area Network','Local Access Node'], a:1, explain:'LAN = Local Area Network (Rede Local).'},
+      {q:'Qual dispositivo conecta segmentos de rede no mesmo broadcast?', opts:['Roteador','Switch','Modem'], a:1, explain:'Switch opera na camada 2 e conecta dispositivos dentro da mesma LAN.'},
+      {q:'Qual é a função do DNS?', opts:['Roteamento','Resolução de nomes','Criptografia'], a:1, explain:'DNS converte nomes (ex: exemplo.com) em endereços IP.'},
+      {q:'O que é uma máscara de sub-rede?', opts:['Regra de firewall','Divisão de rede em sub-redes','Tipo de cabo'], a:1, explain:'Máscara define como o endereço IP é dividido entre rede e host.'}
+    ];
+
+    // state
+    let currentQuestion = 0;
+    const answers = new Array(quiz.length).fill(null);
+
+    // elements
+    const questionContainer = document.getElementById('question-container');
+    const prevBtn = document.getElementById('prev');
+    const nextBtn = document.getElementById('next');
+    const submitBtn = document.getElementById('submit');
+    const scoreSpan = document.getElementById('score');
+    const progressBar = document.getElementById('progress-bar');
+
+    // audio utilities (singleton AudioContext)
+    let audioCtx = null;
+    function ensureAudioCtx() {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return null;
+        if (!audioCtx) audioCtx = new AudioCtx();
+        if (audioCtx.state === 'suspended') audioCtx.resume().catch(()=>{});
+        return audioCtx;
+      } catch (e) { return null; }
+    }
+
+    function playSound(type) {
+      const ctx = ensureAudioCtx();
+      if (!ctx) return;
+      const oscillator = ctx.createOscillator();
+      const gainNode = ctx.createGain();
+      oscillator.connect(gainNode); gainNode.connect(ctx.destination);
+      const now = ctx.currentTime;
+      switch(type) {
+        case 'click': oscillator.type = 'sine'; oscillator.frequency.setValueAtTime(880, now); gainNode.gain.setValueAtTime(0.06, now); gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.08); oscillator.start(now); oscillator.stop(now + 0.12); break;
+        case 'success': oscillator.type = 'sine'; oscillator.frequency.setValueAtTime(660, now); oscillator.frequency.exponentialRampToValueAtTime(990, now + 0.32); gainNode.gain.setValueAtTime(0.15, now); gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.45); oscillator.start(now); oscillator.stop(now + 0.5); break;
+        case 'error': oscillator.type = 'triangle'; oscillator.frequency.setValueAtTime(260, now); gainNode.gain.setValueAtTime(0.12, now); gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.28); oscillator.start(now); oscillator.stop(now + 0.32); break;
+      }
+    }
+
+    // TTS
+    let utterance = null;
+    function speak(text) {
+      if (!('speechSynthesis' in window)) return;
+      try {
+        if (utterance) { window.speechSynthesis.cancel(); utterance = null; }
+        utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'pt-BR'; utterance.rate = 0.95;
+        utterance.onend = () => { utterance = null; };
+        utterance.onerror = () => { utterance = null; };
+        window.speechSynthesis.speak(utterance);
+      } catch (e) { console.warn('TTS error', e); }
+    }
+
+    function renderQuestion() {
+      const q = quiz[currentQuestion];
+      questionContainer.innerHTML = `
+        <div class="question-number">Pergunta ${currentQuestion + 1} de ${quiz.length}</div>
+        <div class="question-text" style="margin-top:8px;color:var(--text-dark);font-weight:700">${q.q}</div>
+        <div class="options-container" id="options-container" style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:12px"></div>
+      `;
+      const optionsContainer = document.getElementById('options-container');
+      q.opts.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'option'; btn.type = 'button';
+        btn.setAttribute('aria-pressed', String(answers[currentQuestion] === idx));
+        if (answers[currentQuestion] === idx) btn.classList.add('selected');
+        btn.innerHTML = `<div class="option-letter">${String.fromCharCode(65 + idx)}</div><div style="font-weight:700;color:var(--text-dark)">${opt}</div>`;
+        btn.dataset.index = idx;
+        btn.addEventListener('click', () => {
+          answers[currentQuestion] = idx;
+          updateProgress();
+          renderQuestion();
+          playSound('click');
+        });
+        btn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); btn.click(); } });
+        optionsContainer.appendChild(btn);
+      });
+
+      // responsive fallback for small screens
+      if (window.innerWidth <= 600) optionsContainer.style.gridTemplateColumns = '1fr';
+
+      prevBtn.disabled = currentQuestion === 0;
+      nextBtn.disabled = currentQuestion === quiz.length - 1;
+
+      // update score display (answered count)
+      const answered = answers.filter(a => a !== null).length;
+      scoreSpan.textContent = `${answered}/${quiz.length}`;
+    }
+
+    function updateProgress() {
+      const answered = answers.filter(a => a !== null).length;
+      const percentage = (answered / quiz.length) * 100;
+      progressBar.style.width = `${percentage}%`;
+    }
+
+    prevBtn.addEventListener('click', () => { if (currentQuestion > 0) { currentQuestion--; renderQuestion(); playSound('click'); } });
+    nextBtn.addEventListener('click', () => { if (currentQuestion < quiz.length - 1) { currentQuestion++; renderQuestion(); playSound('click'); } });
+
+    submitBtn.addEventListener('click', () => {
+      if (answers.some(a => a === null)) { alert('Por favor, responda todas as perguntas antes de enviar.'); return; }
+      let correct = 0;
+      for (let i = 0; i < quiz.length; i++) if (answers[i] === quiz[i].a) correct++;
+
+      document.getElementById('score-display').innerHTML = `<i class="fas fa-trophy" aria-hidden="true"></i> ${correct}/${quiz.length}`;
+
+      // generate review view for all questions so we can mark correct/wrong globally
+      const reviewRoot = document.createElement('div');
+      reviewRoot.style.marginTop = '12px';
+      quiz.forEach((item, qIndex) => {
+        const block = document.createElement('div');
+        block.style.marginBottom = '12px';
+        const h = document.createElement('div'); h.style.fontWeight = '800'; h.textContent = `${qIndex+1}. ${item.q}`;
+        block.appendChild(h);
+        const opts = document.createElement('div'); opts.style.display = 'grid'; opts.style.gap = '8px'; opts.style.marginTop = '8px';
+        item.opts.forEach((op, optIndex) => {
+          const o = document.createElement('div'); o.className = 'option'; o.textContent = op;
+          if (optIndex === item.a) o.classList.add('correct');
+          else if (answers[qIndex] === optIndex) o.classList.add('wrong');
+          opts.appendChild(o);
+        });
+        // add short explanation
+        const explain = document.createElement('div'); explain.style.marginTop = '6px'; explain.style.fontSize = '13px'; explain.style.color = 'rgba(5,32,60,0.6)'; explain.textContent = item.explain;
+        block.appendChild(opts);
+        block.appendChild(explain);
+        reviewRoot.appendChild(block);
+      });
+
+      // replace question container with review
+      questionContainer.innerHTML = '';
+      questionContainer.appendChild(reviewRoot);
+
+      if (correct === quiz.length) { showSuccessToast(); playSound('success'); launchConfetti(); } else { playSound('error'); }
+    });
+
+    // toast
+    function showSuccessToast() {
+      const toast = document.createElement('div'); toast.className = 'toast'; toast.style.position = 'fixed'; toast.style.top = '16px'; toast.style.left = '50%'; toast.style.transform = 'translateX(-50%)'; toast.style.padding = '12px 18px'; toast.style.borderRadius = '12px'; toast.style.background = 'linear-gradient(90deg, rgba(16,185,129,0.95), rgba(34,197,94,0.95))'; toast.style.color = 'white'; toast.style.fontWeight = '800'; toast.style.zIndex = 1000; toast.style.boxShadow = '0 6px 24px rgba(16,185,129,0.14)'; toast.innerHTML = '<i class="fas fa-star" aria-hidden="true"></i> Parabéns! Você acertou todas as questões!'; document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+    // confetti (keep from previous)
+    const confettiCanvas = $('#confetti');
+    const confettiCtx = confettiCanvas.getContext('2d');
+    function resizeCanvas() { confettiCanvas.width = window.innerWidth; confettiCanvas.height = window.innerHeight; }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+    let confettiPieces = [];
+    function launchConfetti() {
+      confettiPieces = [];
+      for (let i = 0; i < 120; i++) {
+        confettiPieces.push({ x: Math.random() * confettiCanvas.width, y: -20, r: 3 + Math.random() * 8, vx: -3 + Math.random() * 6, vy: 2 + Math.random() * 6, rot: Math.random() * 360, vr: -0.1 + Math.random() * 0.2, color: `hsl(${Math.random() * 360}, 80%, 60%)` });
+      }
+      requestAnimationFrame(drawConfetti);
+      setTimeout(() => { confettiPieces = []; confettiCtx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height); }, 3200);
+    }
+    function drawConfetti() {
+      confettiCtx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
+      confettiPieces.forEach(p => { p.x += p.vx; p.y += p.vy; p.vy += 0.12; p.rot += p.vr; confettiCtx.save(); confettiCtx.translate(p.x,p.y); confettiCtx.rotate((p.rot*Math.PI)/180); confettiCtx.fillStyle = p.color; confettiCtx.fillRect(-p.r/2,-p.r/2,p.r,p.r*0.6); confettiCtx.restore(); });
+      if (confettiPieces.length) requestAnimationFrame(drawConfetti);
+    }
+
+    // Download & Tour (unchanged behaviour)
+    $('#downloadBtn').addEventListener('click', () => { const html = '<!doctype html>\n' + document.documentElement.outerHTML; const blob = new Blob([html], { type: 'text/html' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'redes_interativo_pro_v3_surreal.html'; a.click(); URL.revokeObjectURL(url); });
+    $('#helpBtn').addEventListener('click', () => { showTour(); });
+
+    function showTour() {
+      const steps = ['Clique em "Animar Rede" (ou pressione R) para ver pacotes em movimento.','Responda o quiz — navegue com ← / →.','Ao enviar, você verá a revisão com correções e explicações.'];
+      let i = 0; const next = () => { alert(steps[i]); i++; if (i < steps.length) setTimeout(next, 220); }; next();
+    }
+
+    // init
+    renderQuestion(); updateProgress();
+
+  </script>
+</body>
+</html>
