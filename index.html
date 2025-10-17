@@ -1,49 +1,389 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>redesdecomputadores</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Entrar — Sistema</title>
+
+  <!-- Fonte Jersey 15 -->
+  <link href="https://fonts.googleapis.com/css2?family=Jersey+15&display=swap" rel="stylesheet">
+
+  <!-- Google Identity & Supabase -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
-    body {
-      margin: 0;
-      height: 100vh;
-      background: linear-gradient(135deg, #e6f0ff, #ffffff);
-      font-family: "Jersey 15", sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: #0b305b;
+    :root{
+      --bg-1: #06070a;
+      --bg-2: #001d58;
+      /* Cores alteradas para branco e azul mais claro */
+      --accent: #0847a5; /* azul claro */
+      --accent-2: #135696; /* azul ainda mais claro */
+      --glass: rgba(255,255,255,0.06);
+      --glass-2: rgba(248, 239, 239, 0.04);
+      --card-radius: 18px;
+      --text: #ffffff; /* texto em branco */
+      --muted: #cfe8f8; /* tom claro para dicas */
     }
 
-    h1 {
-      font-size: 3rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      margin-bottom: 0.5rem;
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:"Jersey 15", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background:
+        radial-gradient(1200px 500px at 10% 10%, rgba(19, 142, 190, 0.04), transparent 8%),
+        radial-gradient(900px 400px at 90% 90%, rgba(207,232,255,0.02), transparent 8%),
+        linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 100%);
+      color:var(--text);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:32px;
+      overflow:hidden;
     }
 
-    p {
-      font-size: 1.3rem;
-      color: #1e4b8b;
-      margin-top: 0;
+    .orchid, .ember {
+      position:absolute;
+      border-radius:50%;
+      pointer-events:none;
+      filter: blur(48px);
+      opacity:0.9;
     }
 
-    footer {
-      position: absolute;
-      bottom: 15px;
-      font-size: 0.9rem;
-      color: #3b5b99;
-      opacity: 0.8;
+    .orchid {
+      width:560px;
+      height:560px;
+      right:-160px;
+      top:-140px;
+      background: conic-gradient(from 120deg, rgba(142,223,255,0.06), rgba(207,232,255,0.04));
+      transform: rotate(12deg);
+    }
+
+    .ember {
+      left:-220px;
+      bottom:-120px;
+      width:420px;
+      height:420px;
+      background: radial-gradient(circle at 30% 20%, rgba(142,223,255,0.05), transparent 25%);
+      filter: blur(40px);
+    }
+
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius: var(--card-radius);
+      padding:36px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      min-height:420px;
+      width:100%;
+      max-width:520px;
+      border: 1px solid rgba(255,255,255,0.05);
+      box-shadow: 0 20px 60px rgba(2,6,23,0.6);
+      position:relative;
+      z-index:2;
+      backdrop-filter: blur(8px) saturate(120%);
+    }
+
+    /* substitui avatar por elemento gráfico de rede */
+    .network-graphic {
+      width:110px;
+      height:110px;
+      border-radius:18px;
+      display:grid;
+      place-items:center;
+      margin-bottom:18px;
+      background: linear-gradient(180deg, rgba(142,223,255,0.04), rgba(207,232,255,0.03));
+      border:1px solid rgba(255,255,255,0.04);
+      box-shadow: 0 8px 30px rgba(2,6,23,0.45);
+      position:relative;
+      overflow:visible;
+    }
+
+    /* animação de pulso para nós */
+    .node { transform-origin:center; }
+    .pulse { animation: pulse 2000ms infinite ease-in-out; }
+    .pulse.delay { animation-delay: 400ms }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity:1 }
+      50% { transform: scale(1.25); opacity:0.45 }
+      100% { transform: scale(1); opacity:1 }
+    }
+
+    h2.title {
+      margin:0 0 8px 0;
+      font-size:34px;
+      letter-spacing:2px;
+      color:var(--text);
+      text-shadow: 0 2px 18px rgba(142,223,255,0.06);
+    }
+
+    .g_id_container {
+      width:100%;
+      display:flex;
+      justify-content:center;
+      margin-top:18px;
+    }
+
+    .g_id_signin {
+      transform-origin:center;
+      border-radius:999px !important;
+      transition: transform .28s ease, box-shadow .28s ease;
+      box-shadow: 0 8px 30px rgba(2,6,23,0.45);
+    }
+    .g_id_signin:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 14px 40px rgba(2,6,23,0.6);
+    }
+
+    .hint {
+      margin-top:18px;
+      font-size:12px;
+      color:var(--muted);
+      text-align:center;
+      padding:0 12px;
+    }
+
+    .wave {
+      position:absolute;
+      left:12px;
+      right:12px;
+      bottom:12px;
+      height:64px;
+      border-radius:12px;
+      background: linear-gradient(90deg, rgba(142,223,255,0.03), rgba(207,232,255,0.02));
+      filter: blur(12px);
+      opacity:0.9;
+    }
+
+    /* Formulário de email e senha (mantendo estrutura) */
+    .email-form {
+      width:100%;
+      margin-top:14px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      align-items:center;
+      padding:0 12px;
+    }
+
+    .email-form input {
+      width:100%;
+      max-width:400px;
+      padding:12px 14px;
+      border-radius:12px;
+      border:1px solid rgb(142, 223, 255);
+      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));
+      color:var(--text);
+      font-size:14px;
+      outline:none;
+      box-shadow: 0 6px 18px rgba(2,6,23,0.35);
+    }
+
+    .email-form input::placeholder{ color: rgba(255,255,255,0.55) }
+
+    .btn-email {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      padding:10px 18px;
+      border-radius:999px;
+      font-weight:600;
+      cursor:pointer;
+      width:100%;
+      max-width:400px;
+      border: none;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      color: #002232;
+      box-shadow: 0 10px 30px rgba(14,60,80,0.25);
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+    .btn-email:hover{ transform: translateY(-3px) }
+
+    /* Responsividade */
+    @media (max-width:480px){
+      .card{ padding:28px; max-width:360px }
+      h2.title{ font-size:28px }
+      .network-graphic{ width:90px; height:90px }
+      .email-form input, .btn-email{ max-width:320px }
     }
   </style>
-  <link href="https://fonts.googleapis.com/css2?family=Jersey+15&display=swap" rel="stylesheet">
 </head>
 <body>
-  <h1>redesdecomputadores</h1>
-  <p>Bem-vindo ao meu primeiro site publicado na Vercel 🚀</p>
+  <div class="orchid" aria-hidden="true"></div>
+  <div class="ember" aria-hidden="true"></div>
 
-  <footer>© 2025 redesdecomputadores</footer>
+  <section class="card" aria-label="Área de login">
+
+    <!-- ilustração de redes de computadores (SVG) -->
+    <div class="network-graphic" role="img" aria-label="Ilustração de redes de computadores: nós e conexões">
+      <svg width="86" height="86" viewBox="0 0 86 86" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+        <!-- linhas -->
+        <g stroke="rgba(255,255,255,0.12)" stroke-width="1.6" fill="none">
+          <line x1="15" y1="18" x2="43" y2="28" />
+          <line x1="71" y1="20" x2="43" y2="28" />
+          <line x1="43" y1="28" x2="43" y2="58" />
+          <line x1="20" y1="62" x2="43" y2="58" />
+          <line x1="66" y1="62" x2="43" y2="58" />
+        </g>
+
+        <!-- nós -->
+        <g fill="white" opacity="0.95">
+          <circle class="node pulse" cx="43" cy="28" r="5.2" fill="white" opacity="1" />
+          <circle class="node pulse delay" cx="15" cy="18" r="3.6" fill="white" opacity="1" />
+          <circle class="node pulse delay" cx="71" cy="20" r="3.6" fill="white" opacity="1" />
+          <circle class="node pulse" cx="20" cy="62" r="3.6" fill="white" opacity="1" />
+          <circle class="node pulse" cx="66" cy="62" r="3.6" fill="white" opacity="1" />
+        </g>
+
+        <!-- pequenos glows -->
+        <g>
+          <circle cx="43" cy="28" r="10" fill="rgba(142,223,255,0.06)" />
+          <circle cx="20" cy="62" r="8" fill="rgba(207,232,255,0.04)" />
+        </g>
+      </svg>
+    </div>
+
+    <h2 class="title">ENTRAR</h2>
+
+    <div id="g_id_onload"
+         data-client_id="240571935743-6vdr0p8b7l3esqk940i514uoqmepa8e1.apps.googleusercontent.com"
+         data-callback="handleCredentialResponse"
+         data-auto_prompt="false">
+    </div>
+
+    <div class="g_id_container">
+      <div class="g_id_signin"
+           data-type="standard"
+           data-shape="pill"
+           data-theme="filled_blue"
+           data-text="continue_with"
+           data-size="large"
+           data-logo_alignment="left">
+      </div>
+    </div>
+
+    <!-- Formulário de email e senha adicionado sem alterar a estrutura principal -->
+    <form id="emailForm" class="email-form" aria-label="Login com email e senha">
+      <input type="email" id="email" name="email" placeholder="Email" required autocomplete="email">
+      <input type="password" id="password" name="password" placeholder="Senha" required autocomplete="current-password">
+      <button type="submit" class="btn-email">Entrar com email</button>
+    </form>
+
+    <p class="hint">Ao entrar, você será redirecionado conforme o seu cadastro. Tema: Redes de Computadores — nós, links e conexões.</p>
+
+    <div class="wave" aria-hidden="true"></div>
+  </section>
+
+  <script>
+    const supabaseUrl = 'https://zszcwubydhgoyhxbxfro.supabase.co';
+    const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpzemN3dWJ5ZGhnb3loeGJ4ZnJvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4MDk5MDMsImV4cCI6MjA3NTM4NTkwM30.ryioOoPAZnZzGdcTxIjfUcSlYUUqa7arA4qlUukyV7M';
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
+
+    async function handleCredentialResponse(response) {
+      try {
+        if (!response?.credential) throw new Error('Token inválido');
+        const token = response.credential;
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const { name, email, picture, sub: googleId } = payload;
+
+        localStorage.setItem("googleToken", token);
+        localStorage.setItem("userEmail", email);
+        localStorage.setItem("userName", name);
+
+        const { data: existing, error: selectError } = await supabase
+          .from('dadoscetep')
+          .select('id')
+          .eq('email', email)
+          .limit(1);
+
+        if (selectError) throw selectError;
+        const exists = Array.isArray(existing) && existing.length > 0;
+
+        if (exists) {
+          await supabase.from('dadoscetep')
+            .update({
+              ultimo_login: new Date().toISOString(),
+              picture: picture,
+              nome: name
+            })
+            .eq('email', email);
+          window.location.href = "dashboard.html";
+          return;
+        }
+
+        const { error: upsertError } = await supabase
+          .from('dadoscetep')
+          .upsert({
+            id: googleId,
+            nome: name,
+            email: email,
+            picture: picture,
+            ultimo_login: new Date().toISOString()
+          }, { onConflict: 'id' });
+
+        if (upsertError) throw upsertError;
+        window.location.href = "home.html";
+      } catch (err) {
+        console.error('Erro no login:', err);
+        alert('Falha ao processar login. Veja o console (F12) para detalhes.');
+      }
+    }
+
+    window.handleCredentialResponse = handleCredentialResponse;
+
+    // Handler do formulário de email/senha (usa Supabase Auth)
+    document.getElementById('emailForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      if (!email || !password) {
+        alert('Preencha email e senha.');
+        return;
+      }
+
+      try {
+        // tenta autenticar com Supabase
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) {
+          // Se usuário não existir, poderíamos oferecer criar conta
+          const wantsSignup = confirm('Falha ao entrar: ' + (error.message || error) + '\nDeseja criar uma conta com esse email?');
+          if (wantsSignup) {
+            const { data: sdata, error: signError } = await supabase.auth.signUp({ email, password });
+            if (signError) throw signError;
+            alert('Conta criada. Verifique seu email para confirmar (se aplicável).');
+          }
+          return;
+        }
+
+        // sucesso: salva dados e redireciona
+        if (data?.user) {
+          localStorage.setItem('userEmail', data.user.email || email);
+          // atualiza tabela minimalmente (pode falhar se sem permissões)
+          try {
+            await supabase.from('dadoscetep').upsert({
+              id: data.user.id || data.user.user_metadata?.sub || email,
+              nome: data.user.user_metadata?.full_name || '',
+              email: email,
+              ultimo_login: new Date().toISOString()
+            }, { onConflict: 'id' });
+          } catch (err) { /* não crítico */ }
+
+          // redireciona para dashboard
+          window.location.href = 'dashboard.html';
+        } else {
+          alert('Login realizado, mas sem dados de usuário retornados.');
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Erro ao autenticar: ' + (err.message || err));
+      }
+    });
+  </script>
 </body>
 </html>
