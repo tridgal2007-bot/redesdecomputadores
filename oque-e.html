@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0d1525" />
-  <title>História das Redes de Computadores</title>
+  <title>Redes de Computadores</title>
 
   <!-- Fontes premium -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -64,9 +64,6 @@
     .ghost { background: transparent; border: 1px solid var(--card-border); color: var(--text-primary); padding: 8px 12px; border-radius: 10px; cursor: pointer; font-weight: 600; transition: var(--transition); white-space: nowrap; }
     .ghost:hover { background: rgba(143, 233, 255, 0.06); transform: translateY(-1px); }
 
-    /* Budget badge */
-    .budget { background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.04); color: var(--accent-light); padding: 8px 12px; border-radius: 999px; font-weight: 700; display: inline-flex; gap: 8px; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.4); }
-
     /* Main layout */
     .main-content { display: flex; flex-direction: column; gap: 20px; margin-top: 18px; }
     @media (min-width: 992px) { .main-content { flex-direction: row; } }
@@ -76,39 +73,18 @@
     .timeline-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
     .timeline-title { color: var(--text-primary); font-size: 18px; font-weight: 700; }
 
-    .timeline-track { position: relative; height: 120px; margin: 12px 0; display: flex; align-items: center; overflow: hidden; }
-    .timeline-line { position: absolute; left: 20px; right: 20px; top: 50%; height: 2px; background: linear-gradient(90deg, rgba(143, 233, 255, 0.08), rgba(0, 168, 255, 0.14)); border-radius: 1px; transform: translateY(-50%); }
-
-    .timeline-events { display: flex; justify-content: flex-start; gap: 20px; width: 100%; padding: 0 20px; position: relative; z-index: 2; overflow-x: auto; padding-bottom: 10px; -ms-overflow-style: none; scrollbar-width: none; }
-    .timeline-events::-webkit-scrollbar { display: none; }
-
-    .event { display: flex; flex-direction: column; align-items: center; cursor: pointer; position: relative; transition: var(--transition); flex-shrink: 0; min-width: 70px; padding: 0 8px; }
-    .event:focus { outline: 3px solid rgba(143,233,255,0.14); border-radius: 10px; }
-    .event:hover { transform: translateY(-6px); }
-
-    .event-dot { width: 24px; height: 24px; border-radius: 50%; background: linear-gradient(135deg, var(--text-primary), var(--accent-light)); display: flex; align-items: center; justify-content: center; margin-bottom: 10px; box-shadow: var(--glow); position: relative; z-index: 2; }
-    .event-dot-inner { width: 8px; height: 8px; border-radius: 50%; background: var(--bg-900); }
-    .event-year { font-weight: 700; color: var(--text-primary); font-size: 14px; margin-bottom: 4px; text-align: center; }
-    .event-name { font-size: 12px; text-align: center; line-height: 1.3; }
-    .event.active .event-dot { transform: scale(1.28); box-shadow: 0 0 24px rgba(0, 168, 255, 0.6); }
-
     .event-details { background: rgba(10, 18, 30, 0.6); border: 1px solid var(--card-border); border-radius: 14px; padding: 16px; margin-top: 14px; }
     .event-title { color: var(--text-primary); font-size: 18px; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
     .event-description { line-height: 1.6; margin-bottom: 14px; font-size: 14px; color: var(--text-secondary); }
 
-    .event-year-display { font-weight: 700; color: var(--accent); font-size: 14px; }
-
     .network-map { background: rgba(0, 20, 40, 0.28); border: 1px solid var(--card-border); border-radius: 12px; padding: 12px; margin: 14px 0; position: relative; overflow: hidden; }
     .network-title { color: var(--text-primary); font-size: 15px; font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
-    .network-diagram { height: 150px; position: relative; width: 100%; }
 
-    .node { position: absolute; width: 46px; height: 46px; border-radius: 50%; background: linear-gradient(135deg, var(--text-primary), var(--accent-light)); display: flex; align-items: center; justify-content: center; color: var(--bg-900); font-weight: 700; font-size: 10px; text-align: center; box-shadow: var(--glow); transition: var(--transition); padding: 6px; }
-    .node.active { transform: scale(1.2); box-shadow: 0 0 22px rgba(0, 168, 255, 0.48); }
-
-    .connection { position: absolute; height: 2px; background: linear-gradient(90deg, var(--accent), var(--accent-light)); transform-origin: left center; box-shadow: 0 0 6px rgba(0, 168, 255, 0.25); }
-
-    /* Audio controls */
-    .audio-controls { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+    /* Audio controls adapted for controls-bottom */
+    .audio-controls { display: flex; align-items: center; gap: 16px; margin-top: 10px; flex-wrap: wrap; }
+    .bar { height: 8px; background: rgba(255,255,255,0.06); border-radius: 6px; overflow: hidden; flex: 1; max-width: 300px; }
+    .bar > i { display: block; height: 100%; width: 0%; background: var(--timeline-progress); border-radius: 6px; transition: width 0.45s ease; }
+    .latency { color: var(--accent); font-weight: 700; white-space: nowrap; }
 
     /* Quiz */
     .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
@@ -140,27 +116,19 @@
       .logo { width: 60px; height: 60px; font-size: 18px; }
       h1 { font-size: 20px; }
       .subtitle { font-size: 13px; }
-      .timeline-track { height: 110px; }
-      .event { min-width: 68px; padding: 0 6px; }
-      .event-year { font-size: 13px; }
-      .event-name { font-size: 11px; }
       .network-diagram { height: 140px; }
-      .node { width: 42px; height: 42px; font-size: 9px; }
       .quiz-controls { width: 100%; flex-direction: column; align-items: center; }
       .nav-buttons, .score-display { width: 100%; justify-content: center; }
       .btn, .ghost { width: auto; padding: 8px 12px; font-size: 12px; }
+      .audio-controls { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .bar { max-width: 100%; }
+      .latency { margin-left: 0; }
     }
     @media (max-width: 480px) {
       .container { padding: 12px; }
       .logo { width: 50px; height: 50px; font-size: 16px; }
       h1 { font-size: 18px; }
       .subtitle { font-size: 12px; }
-      .timeline-track { height: 92px; }
-      .event { min-width: 60px; padding: 0 6px; }
-      .event-year { font-size: 12px; }
-      .event-name { font-size: 10px; }
-      .network-diagram { height: 120px; }
-      .node { width: 36px; height: 36px; font-size: 8px; }
       .btn, .ghost { padding: 6px 10px; font-size: 11px; }
     }
 
@@ -169,74 +137,85 @@
 <body>
   <div class="container">
     <header role="banner">
-      <div class="logo" aria-hidden="true">H→Net</div>
+      <div class="logo" aria-hidden="true">RD</div>
 
       <div class="header-content">
-        <h1>História das Redes de Computadores</h1>
-        <p class="subtitle">Explore a evolução que ligou instituições, pessoas e informações da comutação de pacotes à internet global.</p>
+        <h1>Redes de Computadores</h1>
+        <p class="subtitle">Redes de computadores conectam dispositivos para compartilhar dados e recursos.</p>
       </div>
 
       <div class="controls" aria-hidden="false">
-        <div class="budget" title="Orçamento disponível"></div>
-        <button id="readAll" class="btn" aria-label="Ouvir todo o conteúdo"><i class="fas fa-volume-up" aria-hidden="true"></i> Ouvir</button>
-        <button id="download" class="ghost" aria-label="Baixar página como HTML"><i class="fas fa-download" aria-hidden="true"></i></button>
+        <button id="downloadBtn" class="ghost" title="Baixar versão estática"><i class="fas fa-download" aria-hidden="true"></i></button>
+        <button id="helpBtn" class="btn"><i class="fas fa-info-circle" aria-hidden="true"></i> Iniciar Tour</button>
       </div>
     </header>
 
     <main class="main-content" role="main">
       <section class="timeline-section" aria-labelledby="timeline-title">
         <div class="timeline-header">
-          <h2 class="timeline-title" id="timeline-title">Linha do Tempo Histórica</h2>
-          <div class="event-year-display">Ano: <span id="current-year">1969</span></div>
-        </div>
-
-        <div class="timeline-track" aria-hidden="false">
-          <div class="timeline-line" aria-hidden="true"></div>
-          <div class="timeline-events" id="timeline-events" role="list">
-            <div class="event active" data-id="arpanet" role="button" tabindex="0" aria-pressed="true">
-              <div class="event-dot"><div class="event-dot-inner"></div></div>
-              <div class="event-year">1969</div>
-              <div class="event-name">ARPANET</div>
-            </div>
-
-            <div class="event" data-id="email" role="button" tabindex="0" aria-pressed="false">
-              <div class="event-dot"><div class="event-dot-inner"></div></div>
-              <div class="event-year">1971</div>
-              <div class="event-name">E-mail</div>
-            </div>
-
-            <div class="event" data-id="ethernet" role="button" tabindex="0" aria-pressed="false">
-              <div class="event-dot"><div class="event-dot-inner"></div></div>
-              <div class="event-year">1973</div>
-              <div class="event-name">Ethernet</div>
-            </div>
-
-            <div class="event" data-id="tcpip" role="button" tabindex="0" aria-pressed="false">
-              <div class="event-dot"><div class="event-dot-inner"></div></div>
-              <div class="event-year">1983</div>
-              <div class="event-name">TCP/IP</div>
-            </div>
-
-            <div class="event" data-id="www" role="button" tabindex="0" aria-pressed="false">
-              <div class="event-dot"><div class="event-dot-inner"></div></div>
-              <div class="event-year">1990</div>
-              <div class="event-name">World Wide Web</div>
-            </div>
-          </div>
+          <h2 class="timeline-title" id="timeline-title">Resumo e Simulação</h2>
         </div>
 
         <div class="event-details" aria-live="polite">
-          <h3 class="event-title" id="event-title"><i class="fas fa-network-wired" aria-hidden="true"></i> ARPANET (1969)</h3>
-          <p class="event-description" id="event-description">ARPANET introduziu a comutação de pacotes e conectou instituições de pesquisa — a gênese das redes modernas, essencial para a internet que conhecemos.</p>
+          <h3 class="event-title" id="event-title"><i class="fas fa-network-wired" aria-hidden="true"></i> O que são redes?</h3>
+          <p class="event-description" id="event-description">Redes de computadores conectam dispositivos para compartilhar dados e recursos. Elas fragmentam informação em pacotes, endereçam esses pacotes e roteiam por caminhos eficientes, pense em rodovias digitais com sinais e regras. Este guia visual explora esses conceitos com animações e quizzes interativos.</p>
 
           <div class="network-map">
             <h4 class="network-title"><i class="fas fa-project-diagram" aria-hidden="true"></i> Representação da Rede</h4>
-            <div class="network-diagram" id="network-diagram" aria-hidden="false"></div>
+            <svg id="netSvg" viewBox="0 0 940 360" preserveAspectRatio="xMidYMid meet" aria-hidden="false">
+              <defs>
+                <filter id="softGlow"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                <linearGradient id="neon" x1="0%" x2="100%"><stop offset="0%" stop-color="#8fe9ff"/><stop offset="50%" stop-color="#00a8ff"/><stop offset="100%" stop-color="#00a8ff"/></linearGradient>
+              </defs>
+
+              <!-- smooth abstract background lines -->
+              <g opacity="0.18">
+                <path d="M40 280 C 160 140 320 110 420 120 C 520 130 680 170 900 60" stroke="url(#neon)" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+                <path d="M40 120 C 160 60 320 40 420 60 C 520 80 680 120 900 80" stroke="#0b3a66" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+              </g>
+
+              <path id="p1" d="M160 180 C 240 110 300 110 360 100" stroke="#cfeeff" stroke-width="8" fill="none" stroke-linecap="round" filter="url(#softGlow)"/>
+              <path id="p2" d="M160 180 C 240 250 320 260 360 270" stroke="#d7f2ff" stroke-width="8" fill="none" stroke-linecap="round" filter="url(#softGlow)"/>
+              <path id="p3" d="M360 100 C 520 140 640 150 760 150" stroke="#bfe8ff" stroke-width="8" fill="none" stroke-linecap="round" filter="url(#softGlow)"/>
+              <path id="p4" d="M360 270 C 520 210 700 190 760 150" stroke="#bfe8ff" stroke-width="8" fill="none" stroke-linecap="round" filter="url(#softGlow)"/>
+
+              <g id="client" class="node-svg">
+                <rect x="120" y="140" width="80" height="80" rx="18" fill="#fff" opacity="0.98" stroke="#e9f6ff"/>
+                <text x="160" y="180" text-anchor="middle" style="font-weight:800;fill:#07243a;font-size:14px">Cliente</text>
+              </g>
+
+              <g id="router1" class="node-svg">
+                <g transform="translate(360,100)">
+                  <circle r="36" fill="#fff" stroke="#e6f7ff"/>
+                  <text y="6" text-anchor="middle" style="font-weight:800;fill:#07243a;font-size:13px">R1</text>
+                </g>
+              </g>
+
+              <g id="router2" class="node-svg">
+                <g transform="translate(360,270)">
+                  <circle r="36" fill="#fff" stroke="#e6f7ff"/>
+                  <text y="6" text-anchor="middle" style="font-weight:800;fill:#07243a;font-size:13px">R2</text>
+                </g>
+              </g>
+
+              <g id="isp" class="node-svg">
+                <rect x="580" y="120" width="120" height="100" rx="14" fill="#fff" stroke="#e6f7ff"/>
+                <text x="640" y="170" text-anchor="middle" style="font-weight:800;fill:#07243a;font-size:14px">ISP</text>
+              </g>
+
+              <g id="server" class="node-svg">
+                <rect x="780" y="130" width="120" height="92" rx="16" fill="#fff" stroke="#cfeeff"/>
+                <text x="840" y="180" text-anchor="middle" style="font-weight:800;fill:#07243a;font-size:14px">Servidor</text>
+              </g>
+
+              <g id="packets"></g>
+            </svg>
           </div>
 
           <div class="audio-controls">
-            <button id="playEvent" class="btn" aria-label="Ouvir descrição do evento"><i class="fas fa-play" aria-hidden="true"></i> Ouvir</button>
-            <button id="stopEvent" class="ghost" aria-label="Parar áudio"><i class="fas fa-stop" aria-hidden="true"></i></button>
+            <button id="animBtn" class="btn">▶ Animar Rede</button>
+            <div class="bar" aria-hidden="true"><i id="latencyBar"></i></div>
+            <div class="latency">Latência: <span id="latencyVal">—</span> ms</div>
           </div>
         </div>
       </section>
@@ -263,127 +242,163 @@
       </aside>
     </main>
 
-    <footer role="contentinfo"><p>assddddmddndnd</p></footer>
+    <footer role="contentinfo">
+      <p>Resumo rápido: IP: Endereço que identifica um dispositivo numa rede. Roteador: Direciona pacotes entre redes. Switch: Conecta dispositivos numa mesma rede local. Protocolo: Regras para comunicação (ex.: TCP/IP).</p>
+      <p>Atalhos: R — Iniciar/parar animação; ← / → — Navegar perguntas.</p>
+      <p>Dicas rápidas: Separe redes de convidados da principal. Mantenha firmware do roteador atualizado. Use senhas fortes e WPA3 quando possível.</p>
+    </footer>
   </div>
 
-  <script>
-    // --- Dados ---
-    const events = {
-      arpanet: { title: 'ARPANET (1969)', year: '1969', text: 'ARPANET introduziu a comutação de pacotes e conectou instituições de pesquisa — a gênese das redes modernas, essencial para a internet que conhecemos.', tts: 'ARPANET, iniciada em mil novecentos e sessenta e nove, introduziu a comutação de pacotes e conectou universidades, criando a base da internet.' },
-      email:   { title: 'E‑mail (1971)', year: '1971', text: 'O e‑mail transformou a comunicação em rede, permitindo mensagens assíncronas entre usuários conectados, acelerando colaboração e pesquisa.', tts: 'O email, surgido em mil novecentos e setenta e um, tornou a comunicação em rede simples e amplamente usada.' },
-      ethernet:{ title: 'Ethernet (1973)', year: '1973', text: 'Desenvolvida para redes locais, Ethernet padronizou como dispositivos compartilham o meio físico, permitindo LANs mais rápidas e confiáveis.', tts: 'Ethernet, desenvolvida por Robert Metcalfe, tornou possível criar redes locais confiáveis com cabeamento compartilhado.' },
-      tcpip:   { title: 'TCP/IP (1983)', year: '1983', text: 'A padronização do TCP/IP permitiu interoperabilidade entre redes distintas — um marco para a expansão da internet global.', tts: 'Em mil novecentos e oitenta e três, o TCP sobre IP tornou-se padrão e permitiu que redes heterogêneas se comunicassem.' },
-      www:     { title: 'World Wide Web (1989/1990)', year: '1990', text: 'A WWW trouxe URLs, HTTP e HTML — facilitando o acesso e a navegação por documentos ligados entre si, ampliando o uso público da rede.', tts: 'A World Wide Web, proposta no final dos anos oitenta, criou as bases para a navegação simples que usamos hoje.' }
-    };
+  <div id="packetPulse" aria-hidden="true" style="width:64px;height:64px;border-radius:999px;position:fixed;pointer-events:none;opacity:0;z-index:1200;mix-blend-mode:screen;transform:scale(.6);transition:opacity 260ms ease, transform 260ms ease"></div>
+  <canvas id="confetti" style="position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:1200"></canvas>
 
+  <script>
+    // ---------- Utilities & network animation ----------
+    const $ = sel => document.querySelector(sel);
+
+    const packetsGroup = $('#packets');
+    const animBtn = $('#animBtn');
+    const packetPulse = document.getElementById('packetPulse');
+    let animRunning = false;
+    let animTimer = null;
+
+    function pointOnPath(pathEl, t) {
+      const len = pathEl.getTotalLength();
+      return pathEl.getPointAtLength(len * t);
+    }
+
+    function easeInOut(t) { return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t; }
+
+    function spawnPacket(pathEl, duration = 1200, color = '#00a8ff', size = 6, delay = 0) {
+      setTimeout(() => {
+        const p = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        p.setAttribute('r', size);
+        p.setAttribute('fill', color);
+        p.setAttribute('opacity', '0.98');
+        packetsGroup.appendChild(p);
+        const start = performance.now();
+        function frame(now) {
+          const tRaw = (now - start) / duration;
+          const t = Math.min(1, tRaw);
+          const e = easeInOut(t);
+          const pt = pointOnPath(pathEl, e);
+          p.setAttribute('cx', pt.x);
+          p.setAttribute('cy', pt.y);
+          p.setAttribute('r', size + Math.sin(t * Math.PI) * 1.2);
+          p.setAttribute('opacity', 1 - (t * 0.6));
+          if (t >= 1) { packetsGroup.removeChild(p); pulseAt(pt.x, pt.y, color); return; }
+          requestAnimationFrame(frame);
+        }
+        requestAnimationFrame(frame);
+      }, delay);
+    }
+
+    function pulseAt(svgX, svgY, color) {
+      const svg = $('#netSvg');
+      const rect = svg.getBoundingClientRect();
+      const viewBox = svg.viewBox.baseVal;
+      const scaleX = rect.width / viewBox.width;
+      const scaleY = rect.height / viewBox.height;
+      const clientX = rect.left + svgX * scaleX;
+      const clientY = rect.top + svgY * scaleY;
+      packetPulse.style.left = (clientX - 32) + 'px';
+      packetPulse.style.top = (clientY - 32) + 'px';
+      packetPulse.style.background = color;
+      packetPulse.style.opacity = '0.16';
+      packetPulse.style.transform = 'scale(1)';
+      setTimeout(() => { packetPulse.style.opacity = '0'; packetPulse.style.transform = 'scale(.6)'; }, 260);
+    }
+
+    function startNet() {
+      if (animRunning) return;
+      animRunning = true;
+      animBtn.innerHTML = '<i class="fas fa-pause" aria-hidden="true"></i> Parar Rede';
+      animTimer = setInterval(() => {
+        const p1 = $('#p1'); const p2 = $('#p2'); const p3 = $('#p3'); const p4 = $('#p4');
+        spawnPacket(p1, 1200, '#00a8ff', 6, 0);
+        spawnPacket(p3, 900, '#8fe9ff', 6, 160);
+        spawnPacket(p2, 1300, '#00a8ff', 5, 90);
+        spawnPacket(p4, 1000, '#8fe9ff', 5, 260);
+        const lat = Math.round(10 + Math.random() * 120);
+        $('#latencyVal').textContent = lat;
+        $('#latencyBar').style.width = Math.min(100, lat / 2) + '%';
+      }, 620);
+    }
+
+    function stopNet() {
+      animRunning = false;
+      animBtn.innerHTML = '<i class="fas fa-play" aria-hidden="true"></i> Animar Rede';
+      clearInterval(animTimer);
+      animTimer = null;
+      while (packetsGroup.firstChild) packetsGroup.removeChild(packetsGroup.firstChild);
+      $('#latencyVal').textContent = '—';
+      $('#latencyBar').style.width = '0%';
+    }
+
+    animBtn.addEventListener('click', () => (animRunning ? stopNet() : startNet()));
+    window.addEventListener('keydown', e => {
+      if (e.key.toLowerCase() === 'r') animBtn.click();
+      if (e.key === 'ArrowLeft') $('#prev').click();
+      if (e.key === 'ArrowRight') $('#next').click();
+    });
+
+    // ---------- Quiz logic ----------
     const quiz = [
-      { q: 'Em que ano a ARPANET foi iniciada?', opts: ['1959', '1969', '1979'], a: 1 },
-      { q: 'Quem é associado à criação da Ethernet?', opts: ['Tim Berners‑Lee', 'Vint Cerf', 'Robert Metcalfe'], a: 2 },
-      { q: 'Em que ano o TCP/IP foi adotado como padrão na ARPANET?', opts: ['1983', '1991', '1975'], a: 0 },
-      { q: 'Qual tecnologia permitiu a navegação por documentos ligados (WWW)?', opts: ['DNS', 'HTTP/HTML', 'SMTP'], a: 1 },
-      { q: 'O que o e‑mail permitiu nas redes?', opts: ['Transferir arquivos fisicamente', 'Enviar mensagens entre usuários', 'Conectar redes diferentes'], a: 1 }
+      {q:'Qual protocolo garante entrega confiável de dados?', opts:['UDP','TCP','ICMP'], a:1, explain:'TCP (Transmission Control Protocol) garante entrega com confirmação e retransmissão.'},
+      {q:'O que significa LAN?', opts:['Large Area Network','Local Area Network','Local Access Node'], a:1, explain:'LAN = Local Area Network (Rede Local).'},
+      {q:'Qual dispositivo conecta segmentos de rede no mesmo broadcast?', opts:['Roteador','Switch','Modem'], a:1, explain:'Switch opera na camada 2 e conecta dispositivos dentro da mesma LAN.'},
+      {q:'Qual é a função do DNS?', opts:['Roteamento','Resolução de nomes','Criptografia'], a:1, explain:'DNS converte nomes (ex: exemplo.com) em endereços IP.'},
+      {q:'O que é uma máscara de sub-rede?', opts:['Regra de firewall','Divisão de rede em sub-redes','Tipo de cabo'], a:1, explain:'Máscara define como o endereço IP é dividido entre rede e host.'}
     ];
 
-    // --- DOM ---
-    const eventTitle = document.getElementById('event-title');
-    const eventDescription = document.getElementById('event-description');
-    const currentYear = document.getElementById('current-year');
-    const playEvent = document.getElementById('playEvent');
-    const stopEvent = document.getElementById('stopEvent');
-    const readAll = document.getElementById('readAll');
-    const download = document.getElementById('download');
-    const networkDiagram = document.getElementById('network-diagram');
+    let currentQuestion = 0;
+    const answers = new Array(quiz.length).fill(null);
+
     const questionContainer = document.getElementById('question-container');
     const prevBtn = document.getElementById('prev');
     const nextBtn = document.getElementById('next');
     const submitBtn = document.getElementById('submit');
-    const scoreDisplay = document.getElementById('score');
+    const scoreSpan = document.getElementById('score');
     const progressBar = document.getElementById('progress-bar');
-    const timelineEvents = document.getElementById('timeline-events');
 
-    // --- Estado ---
-    let currentEvent = 'arpanet';
-    let currentQuestion = 0;
-    const answers = new Array(quiz.length).fill(null);
+    let audioCtx = null;
+    function ensureAudioCtx() {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return null;
+        if (!audioCtx) audioCtx = new AudioCtx();
+        if (audioCtx.state === 'suspended') audioCtx.resume().catch(()=>{});
+        return audioCtx;
+      } catch (e) { return null; }
+    }
+
+    function playSound(type) {
+      const ctx = ensureAudioCtx();
+      if (!ctx) return;
+      const oscillator = ctx.createOscillator();
+      const gainNode = ctx.createGain();
+      oscillator.connect(gainNode); gainNode.connect(ctx.destination);
+      const now = ctx.currentTime;
+      switch(type) {
+        case 'click': oscillator.type = 'sine'; oscillator.frequency.setValueAtTime(880, now); gainNode.gain.setValueAtTime(0.06, now); gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.08); oscillator.start(now); oscillator.stop(now + 0.12); break;
+        case 'success': oscillator.type = 'sine'; oscillator.frequency.setValueAtTime(660, now); oscillator.frequency.exponentialRampToValueAtTime(990, now + 0.32); gainNode.gain.setValueAtTime(0.15, now); gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.45); oscillator.start(now); oscillator.stop(now + 0.5); break;
+        case 'error': oscillator.type = 'triangle'; oscillator.frequency.setValueAtTime(260, now); gainNode.gain.setValueAtTime(0.12, now); gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.28); oscillator.start(now); oscillator.stop(now + 0.32); break;
+      }
+    }
+
     let utterance = null;
-
-    // --- Inicialização ---
-    document.addEventListener('DOMContentLoaded', () => {
-      updateEventDisplay();
-      renderNetworkDiagram();
-      renderQuestion();
-      setupEventListeners();
-      updateProgress();
-    });
-
-    // Atualiza exibição de evento
-    function updateEventDisplay() {
-      const ev = events[currentEvent];
-      eventTitle.innerHTML = `<i class="fas fa-network-wired" aria-hidden="true"></i> ${ev.title}`;
-      eventDescription.textContent = ev.text;
-      currentYear.textContent = ev.year;
-
-      document.querySelectorAll('.event').forEach(el => {
-        const isActive = el.dataset.id === currentEvent;
-        el.classList.toggle('active', isActive);
-        el.setAttribute('aria-pressed', isActive ? 'true' : 'false');
-      });
+    function speak(text) {
+      if (!('speechSynthesis' in window)) return;
+      try {
+        if (utterance) { window.speechSynthesis.cancel(); utterance = null; }
+        utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'pt-BR'; utterance.rate = 0.95;
+        utterance.onend = () => { utterance = null; };
+        utterance.onerror = () => { utterance = null; };
+        window.speechSynthesis.speak(utterance);
+      } catch (e) { console.warn('TTS error', e); }
     }
 
-    // Renderiza diagrama (simples e responsivo)
-    function renderNetworkDiagram() {
-      networkDiagram.innerHTML = '';
-      const width = networkDiagram.clientWidth || 300;
-      const height = networkDiagram.clientHeight || 150;
-
-      const positions = [
-        { x: 0.18, y: 0.72, label: 'Cliente\n(1969)' },
-        { x: 0.52, y: 0.32, label: 'Roteador\n(1973)' },
-        { x: 0.85, y: 0.72, label: 'Servidor\n(1990)' }
-      ];
-
-      const pixelPositions = positions.map(p => ({ x: Math.round(p.x * width), y: Math.round(p.y * height), label: p.label }));
-
-      const connections = [ { from: 0, to: 1 }, { from: 1, to: 2 } ];
-
-      connections.forEach(conn => {
-        const from = pixelPositions[conn.from];
-        const to = pixelPositions[conn.to];
-        const dx = to.x - from.x; const dy = to.y - from.y;
-        const length = Math.sqrt(dx*dx + dy*dy);
-        const angle = Math.atan2(dy, dx) * 180 / Math.PI;
-
-        const connection = document.createElement('div');
-        connection.className = 'connection';
-        connection.style.width = `${length}px`;
-        connection.style.left = `${from.x}px`;
-        connection.style.top = `${from.y - 1}px`; // centra a linha verticalmente
-        connection.style.transform = `rotate(${angle}deg)`;
-        networkDiagram.appendChild(connection);
-      });
-
-      pixelPositions.forEach((pos, i) => {
-        const node = document.createElement('div');
-        node.className = 'node';
-        node.style.left = `${pos.x - 22}px`;
-        node.style.top = `${pos.y - 22}px`;
-        node.textContent = pos.label;
-        node.setAttribute('role','img');
-        node.setAttribute('aria-label', pos.label.replace('\n',' '));
-        node.dataset.index = i;
-        networkDiagram.appendChild(node);
-      });
-
-      highlightActiveNode();
-    }
-
-    function highlightActiveNode() {
-      const nodeMap = { arpanet: 0, email: 0, ethernet: 1, tcpip: 1, www: 2 };
-      const activeIndex = nodeMap[currentEvent] ?? 0;
-      document.querySelectorAll('.node').forEach((n, i) => n.classList.toggle('active', i === activeIndex));
-    }
-
-    // Questões
     function renderQuestion() {
       const q = quiz[currentQuestion];
       questionContainer.innerHTML = `
@@ -408,9 +423,8 @@
       prevBtn.disabled = currentQuestion === 0;
       nextBtn.disabled = currentQuestion === quiz.length - 1;
 
-      // Atualiza pontuação (respostas dadas)
       const answered = answers.filter(a => a !== null).length;
-      scoreDisplay.textContent = `${answered}/${quiz.length}`;
+      scoreSpan.textContent = `${answered}/${quiz.length}`;
     }
 
     function updateProgress() {
@@ -419,111 +433,92 @@
       progressBar.style.width = `${percentage}%`;
     }
 
-    // Ouvintes
-    function setupEventListeners() {
-      // Linha do tempo: clique + teclado
-      document.querySelectorAll('.event').forEach(eventEl => {
-        eventEl.addEventListener('click', () => selectEvent(eventEl));
-        eventEl.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectEvent(eventEl); } });
-      });
-
-      playEvent.addEventListener('click', () => { speak(events[currentEvent].tts); playSound('click'); });
-      stopEvent.addEventListener('click', () => { if (window.speechSynthesis) window.speechSynthesis.cancel(); playSound('click'); });
-
-      readAll.addEventListener('click', () => { const allText = Object.values(events).map(e => e.tts).join(' '); speak(allText); playSound('click'); });
-
-      download.addEventListener('click', () => {
-        const html = '<!doctype html>\n' + document.documentElement.outerHTML;
-        const blob = new Blob([html], {type: 'text/html'});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a'); a.href = url; a.download = 'historia_redes_premium.html'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
-        playSound('click');
-      });
-
-      // Opções do quiz (delegation dentro do container)
-      document.addEventListener('click', (e) => {
-        const option = e.target.closest('.option');
-        if (!option) return;
-        const idx = parseInt(option.dataset.index, 10);
-        answers[currentQuestion] = idx;
-        renderQuestion();
-        updateProgress();
-        playSound('click');
-      });
-
-      document.addEventListener('keydown', (e) => {
-        const option = e.target.closest('.option');
-        if (!option) return;
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); option.click(); }
-      });
-
-      prevBtn.addEventListener('click', () => { if (currentQuestion > 0) { currentQuestion--; renderQuestion(); playSound('click'); } });
-      nextBtn.addEventListener('click', () => { if (currentQuestion < quiz.length - 1) { currentQuestion++; renderQuestion(); playSound('click'); } });
-
-      submitBtn.addEventListener('click', () => {
-        if (answers.some(a => a === null)) { alert('Por favor, responda todas as perguntas antes de enviar.'); return; }
-
-        let correct = 0;
-        for (let i = 0; i < quiz.length; i++) if (answers[i] === quiz[i].a) correct++;
-
-        scoreDisplay.innerHTML = `<i class="fas fa-trophy" aria-hidden="true"></i> ${correct}/${quiz.length}`;
-
-        // Destaca respostas por pergunta, iterando containers
-        const allOptionContainers = document.querySelectorAll('.options-container');
-        allOptionContainers.forEach((container, qIndex) => {
-          Array.from(container.children).forEach((optionEl, optIndex) => {
-            optionEl.classList.remove('selected','correct','wrong');
-            if (optIndex === quiz[qIndex].a) optionEl.classList.add('correct');
-            else if (answers[qIndex] === optIndex) optionEl.classList.add('wrong');
-          });
-        });
-
-        if (correct === quiz.length) { showSuccessToast(); playSound('success'); } else { playSound('error'); }
-      });
-
-      // Resize
-      window.addEventListener('resize', () => { renderNetworkDiagram(); });
-    }
-
-    function selectEvent(el) {
-      currentEvent = el.dataset.id;
-      updateEventDisplay();
-      highlightActiveNode();
+    document.addEventListener('click', (e) => {
+      const option = e.target.closest('.option');
+      if (!option) return;
+      const idx = parseInt(option.dataset.index, 10);
+      answers[currentQuestion] = idx;
+      renderQuestion();
+      updateProgress();
       playSound('click');
-    }
+    });
 
-    // Síntese de fala
-    function speak(text) {
-      if (!('speechSynthesis' in window)) { alert('Seu navegador não suporta síntese de fala.'); return; }
-      if (utterance) window.speechSynthesis.cancel();
-      utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'pt-BR';
-      utterance.rate = 0.95;
-      window.speechSynthesis.speak(utterance);
-    }
+    prevBtn.addEventListener('click', () => { if (currentQuestion > 0) { currentQuestion--; renderQuestion(); playSound('click'); } });
+    nextBtn.addEventListener('click', () => { if (currentQuestion < quiz.length - 1) { currentQuestion++; renderQuestion(); playSound('click'); } });
 
-    // Efeitos sonoros (compatibilidade)
-    function playSound(type) {
-      const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      if (!AudioCtx) return; // se não suportado, silenciosamente ignora
-      const audioCtx = new AudioCtx();
-      const oscillator = audioCtx.createOscillator();
-      const gainNode = audioCtx.createGain();
-      oscillator.connect(gainNode); gainNode.connect(audioCtx.destination);
+    submitBtn.addEventListener('click', () => {
+      if (answers.some(a => a === null)) { alert('Por favor, responda todas as perguntas antes de enviar.'); return; }
+      let correct = 0;
+      for (let i = 0; i < quiz.length; i++) if (answers[i] === quiz[i].a) correct++;
 
-      switch(type) {
-        case 'click': oscillator.type = 'sine'; oscillator.frequency.value = 880; gainNode.gain.value = 0.06; gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08); break;
-        case 'success': oscillator.type = 'sine'; oscillator.frequency.setValueAtTime(660, audioCtx.currentTime); oscillator.frequency.exponentialRampToValueAtTime(990, audioCtx.currentTime + 0.32); gainNode.gain.value = 0.15; gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.45); break;
-        case 'error': oscillator.type = 'triangle'; oscillator.frequency.value = 260; gainNode.gain.value = 0.12; gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.28); break;
-      }
-      oscillator.start(); oscillator.stop(audioCtx.currentTime + (type === 'success' ? 0.45 : 0.22));
-    }
+      document.getElementById('score-display').innerHTML = `<i class="fas fa-trophy" aria-hidden="true"></i> ${correct}/${quiz.length}`;
 
-    // Toast
+      const reviewRoot = document.createElement('div');
+      quiz.forEach((item, qIndex) => {
+        const block = document.createElement('div');
+        const h = document.createElement('div'); h.textContent = `${qIndex+1}. ${item.q}`;
+        block.appendChild(h);
+        const opts = document.createElement('div');
+        item.opts.forEach((op, optIndex) => {
+          const o = document.createElement('div'); o.className = 'option'; o.textContent = op;
+          if (optIndex === item.a) o.classList.add('correct');
+          else if (answers[qIndex] === optIndex) o.classList.add('wrong');
+          opts.appendChild(o);
+        });
+        const explain = document.createElement('div'); explain.textContent = item.explain;
+        block.appendChild(opts);
+        block.appendChild(explain);
+        reviewRoot.appendChild(block);
+      });
+
+      questionContainer.innerHTML = '';
+      questionContainer.appendChild(reviewRoot);
+
+      if (correct === quiz.length) { showSuccessToast(); playSound('success'); launchConfetti(); } else { playSound('error'); }
+    });
+
     function showSuccessToast() {
-      const toast = document.createElement('div'); toast.className = 'toast'; toast.style.position = 'fixed'; toast.style.top = '16px'; toast.style.left = '50%'; toast.style.transform = 'translateX(-50%)'; toast.style.padding = '12px 18px'; toast.style.borderRadius = '12px'; toast.style.background = 'linear-gradient(90deg, var(--success), #34d399)'; toast.style.color = 'var(--bg-900)'; toast.style.fontWeight = '800'; toast.style.zIndex = 1000; toast.innerHTML = '<i class="fas fa-star" aria-hidden="true"></i> Parabéns! Você acertou todas as questões!'; document.body.appendChild(toast);
+      const toast = document.createElement('div'); toast.style.position = 'fixed'; toast.style.top = '16px'; toast.style.left = '50%'; toast.style.transform = 'translateX(-50%)'; toast.style.padding = '12px 18px'; toast.style.borderRadius = '12px'; toast.style.background = 'linear-gradient(90deg, var(--success), #34d399)'; toast.style.color = 'var(--bg-900)'; toast.style.fontWeight = '800'; toast.style.zIndex = 1000; toast.innerHTML = '<i class="fas fa-star" aria-hidden="true"></i> Parabéns! Você acertou todas as questões!'; document.body.appendChild(toast);
       setTimeout(() => toast.remove(), 3000);
     }
+
+    const confettiCanvas = $('#confetti');
+    const confettiCtx = confettiCanvas.getContext('2d');
+    function resizeCanvas() { confettiCanvas.width = window.innerWidth; confettiCanvas.height = window.innerHeight; }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+    let confettiPieces = [];
+    function launchConfetti() {
+      confettiPieces = [];
+      for (let i = 0; i < 120; i++) {
+        confettiPieces.push({ x: Math.random() * confettiCanvas.width, y: -20, r: 3 + Math.random() * 8, vx: -3 + Math.random() * 6, vy: 2 + Math.random() * 6, rot: Math.random() * 360, vr: -0.1 + Math.random() * 0.2, color: `hsl(${Math.random() * 360}, 80%, 60%)` });
+      }
+      requestAnimationFrame(drawConfetti);
+      setTimeout(() => { confettiPieces = []; confettiCtx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height); }, 3200);
+    }
+    function drawConfetti() {
+      confettiCtx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
+      confettiPieces.forEach(p => { p.x += p.vx; p.y += p.vy; p.vy += 0.12; p.rot += p.vr; confettiCtx.save(); confettiCtx.translate(p.x,p.y); confettiCtx.rotate((p.rot*Math.PI)/180); confettiCtx.fillStyle = p.color; confettiCtx.fillRect(-p.r/2,-p.r/2,p.r,p.r*0.6); confettiCtx.restore(); });
+      if (confettiPieces.length) requestAnimationFrame(drawConfetti);
+    }
+
+    // Download & Tour
+    $('#downloadBtn').addEventListener('click', () => { const html = '<!doctype html>\n' + document.documentElement.outerHTML; const blob = new Blob([html], { type: 'text/html' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'oque-e.html'; a.click(); URL.revokeObjectURL(url); });
+    $('#helpBtn').addEventListener('click', () => { showTour(); });
+
+    function showTour() {
+      const steps = ['Clique em "Animar Rede" (ou pressione R) para ver pacotes em movimento.','Responda o quiz — navegue com ← / →.','Ao enviar, você verá a revisão com correções e explicações.'];
+      let i = 0; const next = () => { alert(steps[i]); i++; if (i < steps.length) setTimeout(next, 220); }; next();
+    }
+
+    // init
+    renderQuestion(); updateProgress();
+
+    window.addEventListener('resize', () => {
+      if (document.getElementById('options-container')) {
+        renderQuestion();
+      }
+    });
 
   </script>
 </body>

@@ -3,149 +3,376 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Perfil do Usuário</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <title>Perfil do Usuário — Surreal</title>
 
-  <!-- Ícones e Fonte -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <!-- Fonte e ícones -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
   <link href="https://unpkg.com/lucide-static/font/lucide.css" rel="stylesheet">
 
+  <!-- Supabase (CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <meta name="color-scheme" content="light dark">
   <style>
-    :root {
-      --primary: #3b82f6;
-      --primary-dark: #2563eb;
-      --bg: #f4f7ff;
-      --text: #1e293b;
-      --card-bg: #fff;
-      --shadow: rgba(0, 0, 0, 0.1);
+    :root{
+      --bg-1: #0f172a;
+      --bg-2: #011627;
+      --glass: rgba(255,255,255,0.06);
+      --accent: linear-gradient(135deg,#6ee7b7 0%,#60a5fa 45%, #a78bfa 100%);
+      --accent-2: #60a5fa;
+      --card: rgba(255,255,255,0.04);
+      --text: #e6eef8;
+      --muted: #9fb0cc;
+      --glass-border: rgba(255,255,255,0.06);
+      --shadow: 0 12px 40px rgba(2,6,23,0.6);
+      --glass-blur: 14px;
+      --rounded: 20px;
     }
 
-    * {
-      box-sizing: border-box;
+    /* Light theme overrides */
+    :root.light {
+      --bg-1: #f6fbff;
+      --bg-2: #eef6ff;
+      --glass: rgba(255,255,255,0.8);
+      --card: rgba(255,255,255,0.9);
+      --text: #0b1220;
+      --muted: #475569;
+      --glass-border: rgba(8,27,52,0.06);
+      --shadow: 0 12px 40px rgba(8,16,30,0.08);
     }
 
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      margin: 0;
-      padding: 20px;
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter, Poppins, system-ui, -apple-system; background: radial-gradient(1200px 600px at 10% 10%, rgba(96,165,250,0.08), transparent), linear-gradient(180deg,var(--bg-1),var(--bg-2)); color:var(--text); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+
+    /* Particle / blob background */
+    .canvas-wrap{
+      position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;
+      mask-image: radial-gradient(circle at center, rgba(0,0,0,1) 0 70%, rgba(0,0,0,0.0) 100%);
+    }
+    .blob{
+      position:absolute;border-radius:50%;filter:blur(60px);opacity:0.9;mix-blend-mode:screen;
+      animation: drift 14s ease-in-out infinite;
+      transform: translate3d(0,0,0);
+    }
+    .blob.b1{width:540px;height:540px;background:linear-gradient(135deg, #60a5fa, #7c3aed);left:-120px;top:-80px;animation-duration:18s}
+    .blob.b2{width:420px;height:420px;background:linear-gradient(135deg,#34d399,#60a5fa);right:-100px;top:40%;animation-duration:22s}
+    .blob.b3{width:300px;height:300px;background:linear-gradient(135deg,#f472b6,#fb7185);left:20%;bottom:-120px;animation-duration:20s}
+    @keyframes drift{0%{transform:translateY(0) translateX(0)}50%{transform:translateY(-40px) translateX(40px)}100%{transform:translateY(0) translateX(0)}}
+
+    /* Container */
+    .wrap{
+      position:relative;z-index:2;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:48px;
     }
 
+    /* Card */
     .profile {
-      background: var(--card-bg);
-      border-radius: 18px;
-      box-shadow: 0 8px 32px var(--shadow);
-      width: 400px;
-      max-width: 95%;
-      padding: 32px 24px;
-      text-align: center;
-      animation: fadeIn 0.6s ease;
+      width:980px; max-width:95%; display:grid; grid-template-columns: 380px 1fr; gap:28px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+      border-radius:var(--rounded); padding:28px; box-shadow:var(--shadow);
+      border: 1px solid var(--glass-border); backdrop-filter: blur(var(--glass-blur));
+      position:relative; overflow:visible;
     }
 
-    .profile img {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 4px solid var(--primary);
-      margin-bottom: 16px;
-      transition: transform 0.3s ease;
+    /* Left: portrait */
+    .left {
+      display:flex;flex-direction:column;align-items:center;gap:18px;padding:18px;border-radius:16px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    }
+    .avatar-wrap{position:relative; width:170px;height:170px; border-radius:999px; padding:8px; background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));}
+    .avatar{
+      width:100%;height:100%;border-radius:999px;object-fit:cover;display:block;border:4px solid rgba(255,255,255,0.06); box-shadow: 0 6px 20px rgba(2,6,23,0.6); transition: transform .35s cubic-bezier(.2,.9,.2,1), box-shadow .25s;
+      transform-origin:center center;
+    }
+    .avatar:hover{transform:scale(1.03) rotate(-1deg)}
+
+    .name{
+      text-align:center;
+    }
+    .name h1{margin:0;font-size:1.45rem;font-weight:800;letter-spacing:-0.4px}
+    .name p{margin:4px 0 0;color:var(--muted);font-size:0.95rem}
+
+    .badges{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:6px}
+    .badge{padding:6px 10px;border-radius:999px;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));font-weight:600;font-size:0.85rem;color:var(--muted);border:1px solid rgba(255,255,255,0.03)}
+
+    /* Right: content */
+    .right{padding:6px 4px 4px 12px;display:flex;flex-direction:column;gap:18px}
+    .topbar{display:flex;justify-content:space-between;align-items:center;gap:12px}
+    .email{font-size:0.95rem;color:var(--muted);display:flex;align-items:center;gap:10px}
+    .controls{display:flex;gap:10px;align-items:center}
+
+    .btn{
+      border: none; padding:10px 14px; border-radius:12px; cursor:pointer; font-weight:600; display:inline-flex;gap:8px;align-items:center;
+      background: linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02)); color:var(--text); border:1px solid rgba(255,255,255,0.03);
+      transition: transform .18s, box-shadow .18s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn:active{transform:translateY(1px)}
+    .btn.primary{
+      background:var(--accent); color:#071135; border:none; box-shadow: 0 8px 30px rgba(96,165,250,0.12), 0 2px 0 rgba(255,255,255,0.04);
     }
 
-    .profile img:hover {
-      transform: scale(1.05);
+    /* Topics grid */
+    .topics-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+    .topic{
+      display:flex;align-items:center;gap:12px;padding:12px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.03); cursor:pointer;transition:transform .15s, box-shadow .15s;
+    }
+    .topic:hover{transform:translateY(-6px); box-shadow:0 20px 40px rgba(2,6,23,0.35)}
+    .topic i{font-size:20px;opacity:0.95}
+
+    /* Stats */
+    .stats{display:flex;gap:12px}
+    .stat{flex:1;padding:12px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));text-align:center}
+    .stat h3{margin:0;font-size:1.15rem}
+    .stat p{margin:6px 0 0;color:var(--muted);font-size:0.85rem}
+
+    /* Loader/skeleton */
+    .skeleton{height:14px;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.06), rgba(255,255,255,0.02));border-radius:8px;animation: shimmer 1.6s infinite}
+    .skeleton.avatar{height:140px;width:140px;border-radius:999px}
+    @keyframes shimmer{0%{background-position:-200px 0}100%{background-position:200px 0}}
+
+    /* Editable modal */
+    .modal{position:fixed;inset:0;background:linear-gradient(0deg, rgba(2,6,23,0.6), rgba(2,6,23,0.6));display:flex;align-items:center;justify-content:center;z-index:40;backdrop-filter: blur(6px);padding:20px}
+    .modal-card{width:720px;max-width:96%;background:var(--card);border-radius:14px;padding:20px;border:1px solid rgba(255,255,255,0.04)}
+    .row{display:flex;gap:12px;align-items:center}
+    input[type="text"], input[type="email"]{flex:1;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--text)}
+
+    /* tiny utilities */
+    .muted{color:var(--muted)} .small{font-size:0.85rem}
+    .center{display:flex;align-items:center;justify-content:center}
+
+    /* tilt effect (prefers-reduced-motion safe) */
+    .tilt{transform-style:preserve-3d;transition:transform .12s cubic-bezier(.2,.9,.2,1)}
+    @media (prefers-reduced-motion: reduce){ .blob{animation:none} .tilt{transition:none} }
+
+    /* Responsive */
+    @media (max-width:900px){
+      .profile{grid-template-columns:1fr; padding:18px}
+      .left{order:2}
+      .right{order:1}
+      .avatar-wrap{margin:auto}
+      .wrap{padding:24px}
+      .topics-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
+      .stats{flex-direction:column;gap:8px}
+      .stat{padding:10px}
+      .topbar{flex-direction:column;align-items:flex-start}
+      .controls{justify-content:flex-start;width:100%}
     }
 
-    .profile h2 {
-      font-size: 1.4rem;
-      margin: 0;
-      font-weight: 600;
+    /* ------------------ WELCOME / FIRST VISIT STYLES ------------------ */
+    .welcome-modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:60;background:radial-gradient(1200px 600px at 30% 20%, rgba(96,165,250,0.08), transparent), rgba(2,6,23,0.65);backdrop-filter:blur(8px);padding:28px}
+    .welcome-modal.visible{display:flex}
+    .welcome-card{
+      width:min(880px,95%);max-width:980px;padding:28px;border-radius:20px;background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));border:1px solid rgba(255,255,255,0.06);box-shadow:0 24px 80px rgba(2,6,23,0.6);position:relative;overflow:hidden;display:flex;gap:20px;align-items:center
+    }
+    .welcome-left{flex:0 0 340px;display:flex;flex-direction:column;gap:12px;align-items:flex-start}
+    .welcome-badge{padding:8px 12px;border-radius:12px;background:linear-gradient(90deg,#6ee7b7,#60a5fa);color:#061029;font-weight:800}
+    .welcome-title{font-size:1.9rem;margin:6px 0 0;line-height:1.02;font-weight:800}
+    .welcome-sub{margin-top:6px;color:var(--muted)}
+
+    .welcome-cta{margin-top:12px;display:flex;gap:10px}
+    .welcome-cta .btn{padding:12px 16px;border-radius:14px}
+
+    .welcome-right{flex:1;position:relative;min-height:160px;display:flex;align-items:center;justify-content:center}
+
+    /* soft floating hero element */
+    .hero-plate{width:280px;height:160px;border-radius:16px;background:linear-gradient(135deg, rgba(96,165,250,0.12), rgba(167,139,250,0.12));border:1px solid rgba(255,255,255,0.03);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;transform:translateY(0);animation: heroFloat 4s ease-in-out infinite}
+    @keyframes heroFloat{0%{transform:translateY(0)}50%{transform:translateY(-10px)}100%{transform:translateY(0)}}
+
+    .hero-plate h3{margin:0;font-size:1.1rem}
+    .hero-plate p{margin:0;font-size:0.9rem;color:var(--muted)}
+
+    .confetti-layer{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+    .confetti{position:absolute;width:10px;height:14px;border-radius:2px;opacity:0.95;transform-origin:center;will-change:transform,top,left;animation: confettiFall linear infinite}
+    @keyframes confettiFall{0%{transform:translateY(-20vh) rotate(0deg)}100%{transform:translateY(110vh) rotate(720deg)}}
+
+    /* entrance */
+    .welcome-card{transform:translateY(18px) scale(.985);opacity:0;animation: cardIn .48s cubic-bezier(.2,.9,.2,1) forwards}
+    .welcome-modal.visible .welcome-card{animation-delay:0s}
+    @keyframes cardIn{to{transform:none;opacity:1}}
+
+    /* small close */
+    .welcome-close{position:absolute;top:12px;right:12px;border-radius:10px;padding:6px}
+
+    @media (max-width:760px){
+      .welcome-card{flex-direction:column;align-items:stretch;padding:18px}
+      .welcome-left{flex:unset}
+      .welcome-right{min-height:120px}
+      .hero-plate{width:100%;height:120px}
+      .welcome-modal{padding:16px}
+      .welcome-title{font-size:1.6rem}
+      .welcome-sub{font-size:0.9rem}
     }
 
-    .profile p {
-      color: #64748b;
-      font-size: 0.95rem;
-      margin: 4px 0 20px;
+    @media (max-width:480px){
+      .blob.b1{width:260px;height:260px;left:-80px;top:-60px}
+      .blob.b2{width:200px;height:200px;right:-60px;top:35%}
+      .blob.b3{width:160px;height:160px;left:10%;bottom:-80px}
+      .avatar-wrap{width:128px;height:128px}
+      .name h1{font-size:1.1rem}
+      .profile{padding:14px}
+      .topics-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
+      .btn{padding:12px}
+      .welcome-close{top:8px;right:8px}
+      .welcome-badge{padding:6px 10px}
+      .wrap{padding:16px}
+      .left{padding:12px;gap:12px}
+      .right{padding:4px 2px 2px 6px;gap:12px}
+      .topbar{gap:8px}
+      .email{font-size:0.85rem;gap:6px}
+      .controls{gap:6px}
+      .btn{padding:8px 12px;font-size:0.85rem}
+      .stat h3{font-size:1rem}
+      .stat p{font-size:0.75rem}
+      .topics-grid{gap:8px}
+      .topic{padding:10px;gap:8px}
+      .topic i{font-size:18px}
+      .modal{padding:10px}
+      .modal-card{padding:16px}
+      input[type="text"], input[type="email"]{padding:8px;font-size:0.9rem}
     }
 
-    .btn {
-      margin-top: 10px;
-      padding: 10px 18px;
-      border: none;
-      background: var(--primary);
-      color: white;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      font-weight: 500;
-    }
-
-    .btn:hover {
-      background: var(--primary-dark);
-      transform: translateY(-2px);
-    }
-
-    .topics {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-top: 24px;
-    }
-
-    .topic-btn {
-      background: var(--primary);
-      color: #fff;
-      border: none;
-      border-radius: 10px;
-      padding: 12px;
-      font-size: 0.95rem;
-      text-align: left;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      cursor: pointer;
-      transition: all 0.25s ease;
-      font-weight: 500;
-    }
-
-    .topic-btn i {
-      font-size: 18px;
-      opacity: 0.8;
-    }
-
-    .topic-btn:hover {
-      background: var(--primary-dark);
-      transform: translateY(-2px);
-    }
-
-    .loading {
-      font-size: 1rem;
-      color: #444;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
   </style>
 </head>
-
 <body>
-  <div class="profile" id="profile">
-    <div class="loading">Carregando perfil...</div>
+
+  <!-- decorative blobs -->
+  <div class="canvas-wrap" aria-hidden="true">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div class="blob b3"></div>
+  </div>
+
+  <div class="wrap">
+    <main class="profile tilt" id="profileCard" role="region" aria-label="Perfil do usuário">
+      <!-- LEFT -->
+      <section class="left" aria-hidden="false">
+        <div class="avatar-wrap center" id="avatarWrap">
+          <div id="avatarSkeleton" class="skeleton avatar" aria-hidden="true"></div>
+          <img id="avatar" class="avatar" src="" alt="Foto do usuário" style="display:none" />
+        </div>
+
+        <div class="name" id="nameBlock">
+          <h1 id="userName">Carregando...</h1>
+          <p id="userTag" class="muted">— Perfil público</p>
+        </div>
+
+        <div class="badges" id="badges">
+          <span class="badge">Aluno</span>
+          <span class="badge">Redes</span>
+          <span class="badge">Pro</span>
+        </div>
+
+        <div style="width:100%;display:flex;gap:8px;justify-content:center;margin-top:12px">
+          <button class="btn" id="editBtn" title="Editar perfil"><i class="lucide-edit-2"></i>Editar</button>
+          <button class="btn" id="logoutBtn" title="Sair"><i class="lucide-log-out"></i>Sair</button>
+        </div>
+      </section>
+
+      <!-- RIGHT -->
+      <section class="right" aria-hidden="false">
+        <div class="topbar">
+          <div class="email">
+            <i class="lucide-mail"></i>
+            <span id="userEmail" class="small muted">—@—</span>
+          </div>
+
+          <div class="controls">
+            <button class="btn" id="themeToggle" aria-pressed="false" title="Alternar tema"><i class="lucide-sun"></i></button>
+            <button class="btn primary" id="visitBtn"><i class="lucide-external-link"></i>Ver conteúdo</button>
+          </div>
+        </div>
+
+        <div class="stats" aria-hidden="false">
+          <div class="stat">
+            <h3 id="coursesCount">—</h3>
+            <p class="muted small">Tópicos lidos</p>
+          </div>
+          <div class="stat">
+            <h3 id="xp">—</h3>
+            <p class="muted small">XP acumulado</p>
+          </div>
+          <div class="stat">
+            <h3 id="memberSince">—</h3>
+            <p class="muted small">Membro desde</p>
+          </div>
+        </div>
+
+        <div>
+          <h4 style="margin:10px 0 8px">Navegue — Estude rápido</h4>
+          <div class="topics-grid" id="topicsGrid" aria-label="Tópicos de redes">
+            <!-- botões preenchidos por JS -->
+          </div>
+        </div>
+
+        <div style="margin-top:8px;display:flex;justify-content:flex-end">
+          <button class="btn" id="refreshBtn"><i class="lucide-refresh-cw"></i>Recarregar</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Modal de edição -->
+  <div id="modal" class="modal" style="display:none" role="dialog" aria-modal="true" aria-label="Editar perfil">
+    <div class="modal-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <h3 style="margin:0">Editar perfil</h3>
+        <button class="btn" id="closeModal"><i class="lucide-x"></i></button>
+      </div>
+
+      <div style="display:flex;gap:12px;flex-direction:column">
+        <label class="small">Nome</label>
+        <input id="editName" type="text" placeholder="Seu nome" />
+        <label class="small">Email</label>
+        <input id="editEmail" type="email" placeholder="seu@exemplo.com" />
+        <label class="small">URL da imagem (opcional)</label>
+        <input id="editPic" type="text" placeholder="https://..." />
+        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+          <button class="btn" id="saveProfile">Salvar</button>
+          <button class="btn" id="cancelEdit">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WELCOME (first visit) - Removi os botões "Começar agora" e "Mais tarde" conforme pedido -->
+  <div id="welcomeModal" class="welcome-modal" role="dialog" aria-modal="true" aria-label="Bem-vindo ao Perfil">
+    <div class="welcome-card" role="document">
+      <button class="btn welcome-close" id="welcomeClose" title="Fechar"><i class="lucide-x"></i></button>
+
+      <div class="welcome-left">
+        <div class="welcome-badge">Seja bem-vindo(a)</div>
+        <h2 class="welcome-title">Olá! É ótimo ter você aqui.</h2>
+        <p class="welcome-sub">Bem vindo ao Mundo das Redes de Computadores!
+
+Seja bem-vindo ao nosso site dedicado ao universo das redes de computadores!
+
+Aqui você vai aprender de forma simples e prática como os computadores se conectam, trocam informações e formam a base da comunicação digital que usamos todos os dias.
+
+O objetivo é mostrar a importância das redes na sociedade atual e como elas tornam a comunicação digital possível.</p>
+
+        <!-- Mantive apenas o checkbox "Não mostrar novamente" para controle do usuário -->
+        <label class="small" style="margin-top:12px"><input id="dontShow" type="checkbox" style="margin-right:8px"> Não mostrar novamente</label>
+      </div>
+
+      <div class="welcome-right">
+        <div class="hero-plate">
+          <h3>Desenvolvedores</h3>
+          <p>\Raquelly\Atila\Ana Caroline\Clicia\Adrielly</p>
+        </div>
+        <div id="confettiLayer" class="confetti-layer" aria-hidden="true"></div>
+      </div>
+    </div>
   </div>
 
   <script>
-    const supabaseUrl = 'https://zszcwubydhgoyhxbxfro.supabase.co';
-    const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpzemN3dWJ5ZGhnb3loeGJ4ZnJvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4MDk5MDMsImV4cCI6MjA3NTM4NTkwM30.ryioOoPAZnZzGdcTxIjfUcSlYUUqa7arA4qlUukyV7M';
-    const supabase = window.supabase.createClient(supabaseUrl.trim(), supabaseAnonKey.trim());
+    /***** CONFIGURAÇÃO SUPABASE — SIMPLES E FUNCIONAL *****/
+    const SUPABASE_URL = 'https://zszcwubydhgoyhxbxfro.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpzemN3dWJ5ZGhnb3loeGJ4ZnJvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4MDk5MDMsImV4cCI6MjA3NTM4NTkwM30.ryioOoPAZnZzGdcTxIjfUcSlYUUqa7arA4qlUukyV7M';
+
+    // ✅ Inicialização direta e confiável
+    const { createClient } = window.supabase;
+    const supabase = createClient(SUPABASE_URL.trim(), SUPABASE_ANON_KEY.trim());
 
     function parseJwt(token) {
       try {
@@ -156,9 +383,129 @@
       }
     }
 
-    async function carregarPerfil() {
-      const container = document.getElementById('profile');
+    /***** UTILIDADES DE UI *****/
+    const avatar = document.getElementById('avatar');
+    const avatarSkeleton = document.getElementById('avatarSkeleton');
+    const userName = document.getElementById('userName');
+    const userEmail = document.getElementById('userEmail');
+    const userTag = document.getElementById('userTag');
+    const topicsGrid = document.getElementById('topicsGrid');
+    const coursesCount = document.getElementById('coursesCount');
+    const xp = document.getElementById('xp');
+    const memberSince = document.getElementById('memberSince');
+    const profileCard = document.getElementById('profileCard');
 
+    const topicos = [
+      {href:'oque-e.html', icon:'lucide-network', title:'O que é Redes de Computadores'},
+      {href:'historia.html', icon:'lucide-book', title:'História das Redes de Computadores'},
+      {href:'como-funciona.html', icon:'lucide-cpu', title:'Como Funciona Redes de Computadores'},
+      {href:'tipos.html', icon:'lucide-layers', title:'Tipos de Rede'},
+      {href:'dispositivos.html', icon:'lucide-router', title:'Dispositivos de Redes'},
+      {href:'topologia.html', icon:'lucide-share-2', title:'Topologia de Redes'},
+      {href:'protocolos.html', icon:'lucide-code', title:'Protocolos e Endereçamentos'},
+      {href:'camadas.html', icon:'lucide-layers-3', title:'Camadas de Redes'},
+      {href:'seguranca.html', icon:'lucide-shield-check', title:'Segurança de Redes'}
+    ];
+
+    function renderTopics() {
+      topicsGrid.innerHTML = '';
+      for (const t of topicos) {
+        const el = document.createElement('a');
+        el.className = 'topic';
+        el.href = t.href;
+        el.innerHTML = `<i class="${t.icon}"></i><div><strong style="display:block">${t.title}</strong><span class="muted small">Abrir</span></div>`;
+        topicsGrid.appendChild(el);
+      }
+    }
+
+    /***** TILT 3D *****/
+    (function addTilt() {
+      // desabilita tilt em dispositivos touch para evitar comportamento estranho
+      if ('ontouchstart' in window || window.matchMedia('(pointer:coarse)').matches) return;
+      const card = profileCard;
+      let rect;
+      function update(e) {
+        rect = rect || card.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+        const rotX = (y * 8).toFixed(2);
+        const rotY = (x * -12).toFixed(2);
+        card.style.transform = `perspective(1200px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateZ(4px)`;
+      }
+      function reset() { card.style.transform = ''; rect = null; }
+      card.addEventListener('pointermove', update);
+      card.addEventListener('pointerleave', reset);
+    })();
+
+    /***** THEME TOGGLE *****/
+    const themeToggle = document.getElementById('themeToggle');
+    function setTheme(name) {
+      if (name === 'light') document.documentElement.classList.add('light');
+      else document.documentElement.classList.remove('light');
+      themeToggle.setAttribute('aria-pressed', name === 'light');
+    }
+    const savedTheme = localStorage.getItem('siteTheme') || 'dark';
+    setTheme(savedTheme);
+    themeToggle.addEventListener('click', () => {
+      const next = document.documentElement.classList.contains('light') ? 'dark' : 'light';
+      setTheme(next);
+      localStorage.setItem('siteTheme', next);
+    });
+
+    /***** MODAL *****/
+    const modal = document.getElementById('modal');
+    const editBtn = document.getElementById('editBtn');
+    const closeModal = document.getElementById('closeModal');
+    const cancelEdit = document.getElementById('cancelEdit');
+    const saveProfile = document.getElementById('saveProfile');
+    const editName = document.getElementById('editName');
+    const editEmail = document.getElementById('editEmail');
+    const editPic = document.getElementById('editPic');
+
+    editBtn.addEventListener('click', () => {
+      modal.style.display = 'flex';
+      editName.value = userName.textContent === 'Carregando...' ? '' : userName.textContent;
+      editEmail.value = userEmail.textContent.includes('@') ? userEmail.textContent : '';
+      editPic.value = avatar.src || '';
+    });
+
+    [closeModal, cancelEdit].forEach(btn => {
+      btn.addEventListener('click', () => modal.style.display = 'none');
+    });
+
+    saveProfile.addEventListener('click', async () => {
+      const nome = editName.value.trim();
+      const email = editEmail.value.trim();
+      const pic = editPic.value.trim();
+
+      if (nome) userName.textContent = nome;
+      if (email) userEmail.textContent = email;
+      if (pic) loadAvatar(pic);
+
+      modal.style.display = 'none';
+
+      if (email) {
+        try {
+          const { error } = await supabase
+            .from('dadoscetep')
+            .update({ nome, picture: pic })
+            .eq('email', email);
+          if (error) console.warn('Erro ao salvar:', error);
+        } catch (err) {
+          console.warn('Erro ao salvar no Supabase:', err);
+        }
+      }
+    });
+
+    /***** AVATAR *****/
+    function loadAvatar(url) {
+      avatarSkeleton.style.display = 'none';
+      avatar.src = url || 'imagen/default.png';
+      avatar.style.display = 'block';
+    }
+
+    /***** CARREGAR PERFIL *****/
+    async function carregarPerfil() {
       let email = localStorage.getItem('userEmail');
       if (!email) {
         const token = localStorage.getItem('googleToken');
@@ -167,52 +514,133 @@
       }
 
       if (!email) {
-        container.innerHTML = `
-          <h2>Convidado</h2>
-          <p>Faça login para ver seu perfil.</p>
-          <button class="btn" onclick="location.href='index.html'">Voltar</button>
-        `;
+        userName.textContent = 'Convidado';
+        userTag.textContent = 'Faça login para ver seu perfil';
+        userEmail.textContent = '—';
+        loadAvatar('imagen/default.png');
+        coursesCount.textContent = '0';
+        xp.textContent = '0';
+        memberSince.textContent = '—';
+        renderTopics();
         return;
       }
 
-      const { data, error } = await supabase
-        .from('dadoscetep')
-        .select('nome, email, picture')
-        .eq('email', email)
-        .single();
+      userEmail.textContent = email;
+      userName.textContent = 'Carregando...';
+      avatarSkeleton.style.display = 'block';
+      avatar.style.display = 'none';
 
-      if (error || !data) {
-        container.innerHTML = `
-          <h2>Erro ao carregar</h2>
-          <p>Não foi possível obter seus dados.</p>
-          <button class="btn" onclick="location.reload()">Tentar novamente</button>
-        `;
-        console.error(error);
-        return;
+      try {
+        const { data, error } = await supabase
+          .from('dadoscetep')
+          .select('nome, email, picture, created_at')
+          .eq('email', email)
+          .single();
+
+        if (error || !data) {
+          console.warn('Usuário não encontrado:', error);
+          userName.textContent = email.split('@')[0];
+          userTag.textContent = 'Perfil básico';
+          loadAvatar('imagen/default.png');
+        } else {
+          userName.textContent = data.nome || email.split('@')[0];
+          userEmail.textContent = data.email || email;
+          userTag.textContent = 'Bem-vindo(a)';
+          loadAvatar(data.picture || 'imagen/default.png');
+          memberSince.textContent = data.created_at
+            ? new Date(data.created_at).toLocaleDateString('pt-BR')
+            : '—';
+        }
+
+        coursesCount.textContent = Math.max(5, Math.floor(Math.random() * 28));
+        xp.textContent = Math.floor(Math.random() * 9800) + ' XP';
+
+      } catch (err) {
+        console.error('Erro crítico:', err);
+        userName.textContent = email.split('@')[0];
+        userTag.textContent = 'Erro ao conectar';
+        loadAvatar('imagen/default.png');
+        coursesCount.textContent = '—';
+        xp.textContent = '—';
+        memberSince.textContent = '—';
+      } finally {
+        renderTopics();
+        profileCard.animate([{ transform: 'scale(0.996)' }, { transform: 'scale(1)' }], {
+          duration: 300,
+          easing: 'ease-out'
+        });
       }
-
-      container.innerHTML = `
-        <img src="${data.picture || 'imagen/default.png'}" alt="Foto do usuário">
-        <h2>${data.nome || 'Usuário'}</h2>
-        <p>${data.email}</p>
-
-        <div class="topics">
-          <button class="topic-btn" onclick="location.href='oque-e.html'"><i class="lucide-network"></i>O que é Redes de Computadores</button>
-          <button class="topic-btn" onclick="location.href='historia.html'"><i class="lucide-book"></i>História das Redes de Computadores</button>
-          <button class="topic-btn" onclick="location.href='como-funciona.html'"><i class="lucide-cpu"></i>Como Funciona Redes de Computadores</button>
-          <button class="topic-btn" onclick="location.href='tipos.html'"><i class="lucide-layers"></i>Tipos de Rede</button>
-          <button class="topic-btn" onclick="location.href='dispositivos.html'"><i class="lucide-router"></i>Dispositivos de Redes de Computadores</button>
-          <button class="topic-btn" onclick="location.href='topologia.html'"><i class="lucide-share-2"></i>Topologia de Redes</button>
-          <button class="topic-btn" onclick="location.href='protocolos.html'"><i class="lucide-code"></i>Protocolos e Endereçamentos</button>
-          <button class="topic-btn" onclick="location.href='camadas.html'"><i class="lucide-layers-3"></i>Camadas de Redes</button>
-          <button class="topic-btn" onclick="location.href='seguranca.html'"><i class="lucide-shield-check"></i>Segurança de Redes</button>
-        </div>
-
-        <button class="btn" style="margin-top: 25px;" onclick="location.href='index.html'">Sair</button>
-      `;
     }
 
-    document.addEventListener('DOMContentLoaded', carregarPerfil);
+    // Event listeners
+    document.getElementById('refreshBtn').addEventListener('click', carregarPerfil);
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      localStorage.removeItem('userEmail');
+      localStorage.removeItem('googleToken');
+      location.href = 'index.html';
+    });
+    document.getElementById('visitBtn').addEventListener('click', () => location.href = 'historia.html');
+
+    /***** WELCOME (first visit) LOGIC *****/
+    const welcomeModal = document.getElementById('welcomeModal');
+    const welcomeClose = document.getElementById('welcomeClose');
+    const dontShow = document.getElementById('dontShow');
+    const confettiLayer = document.getElementById('confettiLayer');
+
+    function createConfetti(count = 40) {
+      // reduz confetes em telas pequenas para desempenho
+      if (window.innerWidth < 480) count = Math.max(12, Math.floor(count / 3));
+      confettiLayer.innerHTML = '';
+      for (let i = 0; i < count; i++) {
+        const el = document.createElement('span');
+        el.className = 'confetti';
+        const left = Math.random() * 100;
+        const size = 6 + Math.random() * 14;
+        el.style.left = left + '%';
+        el.style.width = size + 'px';
+        el.style.height = (size * 1.2) + 'px';
+        el.style.background = `hsl(${Math.floor(Math.random() * 360)}, 75%, 60%)`;
+        el.style.top = (Math.random() * -30) + 'vh';
+        el.style.animationDuration = (1.2 + Math.random() * 1.6) + 's';
+        el.style.animationDelay = (Math.random() * 0.6) + 's';
+        el.style.transform = `rotate(${Math.random() * 360}deg)`;
+        confettiLayer.appendChild(el);
+      }
+    }
+
+    function showWelcome() {
+      const seen = localStorage.getItem('seenWelcome');
+      if (seen) return;
+      createConfetti(48);
+      welcomeModal.classList.add('visible');
+      // foco no botão fechar para acessibilidade
+      setTimeout(() => document.getElementById('welcomeClose').focus(), 180);
+
+      // ✅ Fazer os confetes sumirem após 3 segundos
+      setTimeout(() => {
+        if (confettiLayer) confettiLayer.innerHTML = '';
+      }, 3000); // 3000ms = 3 segundos
+    }
+
+    function hideWelcome(save) {
+      welcomeModal.classList.remove('visible');
+      if (save) localStorage.setItem('seenWelcome', '1');
+      // small celebration: pulse the profile card
+      profileCard.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.02)' }, { transform: 'scale(1)' }], { duration: 420, easing: 'ease-out' });
+    }
+
+    welcomeClose.addEventListener('click', () => {
+      hideWelcome(dontShow.checked);
+    });
+
+    // show welcome once the document is ready (before loading profile for snappiness)
+    document.addEventListener('DOMContentLoaded', () => {
+      // show welcome first visit
+      try { showWelcome(); } catch (e) { console.warn('Welcome failed:', e); }
+      // then load profile as before
+      carregarPerfil();
+    });
+
   </script>
 </body>
 </html>
