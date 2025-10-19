@@ -312,6 +312,8 @@
               nome: name
             })
             .eq('email', email);
+          // Aguardar um breve delay para garantir que a atualização seja processada
+          await new Promise(resolve => setTimeout(resolve, 500));
           window.location.href = "iniciar.html";
           return;
         }
@@ -327,7 +329,9 @@
           }, { onConflict: 'id' });
 
         if (upsertError) throw upsertError;
-        window.location.href = "home.html";
+        // Aguardar um breve delay para garantir que a inserção seja processada
+        await new Promise(resolve => setTimeout(resolve, 500));
+        window.location.href = "iniciar.html";
       } catch (err) {
         console.error('Erro no login:', err);
         alert('Falha ao processar login. Veja o console (F12) para detalhes.');
@@ -372,6 +376,8 @@
               email: email,
               ultimo_login: new Date().toISOString()
             }, { onConflict: 'id' });
+            // Aguardar um breve delay para garantir que a atualização seja processada
+            await new Promise(resolve => setTimeout(resolve, 500));
           } catch (err) { /* não crítico */ }
 
           // redireciona para dashboard

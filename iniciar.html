@@ -726,11 +726,6 @@
             <i class="lucide-mail"></i>
             <span id="userEmail" class="small muted">—@—</span>
           </div>
-
-          <div class="controls">
-            <button class="btn" id="themeToggle" aria-pressed="false" title="Alternar tema"><i class="lucide-sun"></i></button>
-            <button class="btn primary" id="visitBtn"><i class="lucide-external-link"></i> Ver conteúdo</button>
-          </div>
         </div>
 
         <div>
@@ -835,11 +830,6 @@ O objetivo é mostrar a importância das redes na sociedade atual e como elas to
 
     function renderTopics(){ topicsGrid.innerHTML=''; for(const t of topicos){ const el = document.createElement('a'); el.className='topic'; el.href=t.href; el.innerHTML = `<i class="${t.icon}"></i><div><strong>${t.title}</strong><span class="muted small">Abrir</span></div>`; topicsGrid.appendChild(el);} }
 
-    const themeToggle = document.getElementById('themeToggle');
-    function setTheme(name){ if(name==='light') document.documentElement.classList.add('light'); else document.documentElement.classList.remove('light'); themeToggle.setAttribute('aria-pressed', name === 'light'); }
-    const savedTheme = localStorage.getItem('siteTheme') || 'dark'; setTheme(savedTheme);
-    themeToggle.addEventListener('click', () => { const next = document.documentElement.classList.contains('light') ? 'dark' : 'light'; setTheme(next); localStorage.setItem('siteTheme', next); });
-
     const modal = document.getElementById('modal');
     const editBtn = document.getElementById('editBtn');
     const closeModal = document.getElementById('closeModal');
@@ -876,7 +866,6 @@ O objetivo é mostrar a importância das redes na sociedade atual e como elas to
 
     document.getElementById('refreshBtn').addEventListener('click', carregarPerfil);
     document.getElementById('logoutBtn').addEventListener('click', () => { localStorage.removeItem('userEmail'); localStorage.removeItem('googleToken'); location.href = 'index.html'; });
-    document.getElementById('visitBtn').addEventListener('click', () => location.href = 'historia.html');
 
     const welcomeModal = document.getElementById('welcomeModal');
     const welcomeClose = document.getElementById('welcomeClose');

@@ -263,7 +263,11 @@
       </aside>
     </main>
 
-    <footer role="contentinfo"><p>assddddmddndnd</p></footer>
+    <footer role="contentinfo">
+      <p>Resumo histórico: ARPANET (1969) iniciou com comutação de pacotes. E-mail (1971) revolucionou comunicação. Ethernet (1973) para LANs. TCP/IP (1983) unificou redes. WWW (1990) democratizou acesso.</p>
+      <p>Atalhos: ← / → — Navegar perguntas. Enter — Selecionar opção.</p>
+      <p>Dica: A internet nasceu de colaborações acadêmicas e militares, evoluindo para conectar bilhões hoje.</p>
+    </footer>
   </div>
 
   <script>
@@ -277,11 +281,11 @@
     };
 
     const quiz = [
-      { q: 'Em que ano a ARPANET foi iniciada?', opts: ['1959', '1969', '1979'], a: 1 },
-      { q: 'Quem é associado à criação da Ethernet?', opts: ['Tim Berners‑Lee', 'Vint Cerf', 'Robert Metcalfe'], a: 2 },
-      { q: 'Em que ano o TCP/IP foi adotado como padrão na ARPANET?', opts: ['1983', '1991', '1975'], a: 0 },
-      { q: 'Qual tecnologia permitiu a navegação por documentos ligados (WWW)?', opts: ['DNS', 'HTTP/HTML', 'SMTP'], a: 1 },
-      { q: 'O que o e‑mail permitiu nas redes?', opts: ['Transferir arquivos fisicamente', 'Enviar mensagens entre usuários', 'Conectar redes diferentes'], a: 1 }
+      { q: 'Em que ano a ARPANET foi iniciada?', opts: ['1959', '1969', '1979'], a: 1, explain: 'A ARPANET foi conectada em 29 de outubro de 1969, marcando o início das redes modernas com a primeira mensagem entre UCLA e SRI.' },
+      { q: 'Quem é associado à criação da Ethernet?', opts: ['Tim Berners‑Lee', 'Vint Cerf', 'Robert Metcalfe'], a: 2, explain: 'Robert Metcalfe desenvolveu a Ethernet em 1973 no Xerox PARC, padronizando redes locais com CSMA/CD.' },
+      { q: 'Em que ano o TCP/IP foi adotado como padrão na ARPANET?', opts: ['1983', '1991', '1975'], a: 0, explain: 'Em 1º de janeiro de 1983 (flag day), a ARPANET migrou para TCP/IP, unificando protocolos para a Internet.' },
+      { q: 'Qual tecnologia permitiu a navegação por documentos ligados (WWW)?', opts: ['DNS', 'HTTP/HTML', 'SMTP'], a: 1, explain: 'HTTP e HTML, criados por Tim Berners-Lee, permitem transferir e formatar páginas com hiperlinks na WWW.' },
+      { q: 'O que o e‑mail permitiu nas redes?', opts: ['Transferir arquivos fisicamente', 'Enviar mensagens entre usuários', 'Conectar redes diferentes'], a: 1, explain: 'O e-mail, inventado por Ray Tomlinson em 1971, habilitou comunicação assíncrona de texto via @ entre usuários remotos.' }
     ];
 
     // --- DOM ---
@@ -297,7 +301,7 @@
     const prevBtn = document.getElementById('prev');
     const nextBtn = document.getElementById('next');
     const submitBtn = document.getElementById('submit');
-    const scoreDisplay = document.getElementById('score');
+    const scoreDisplay = document.getElementById('score-display'); // Corrigido para o elemento correto
     const progressBar = document.getElementById('progress-bar');
     const timelineEvents = document.getElementById('timeline-events');
 
@@ -410,7 +414,7 @@
 
       // Atualiza pontuação (respostas dadas)
       const answered = answers.filter(a => a !== null).length;
-      scoreDisplay.textContent = `${answered}/${quiz.length}`;
+      document.getElementById('score').textContent = `${answered}/${quiz.length}`;
     }
 
     function updateProgress() {
@@ -462,21 +466,47 @@
 
       submitBtn.addEventListener('click', () => {
         if (answers.some(a => a === null)) { alert('Por favor, responda todas as perguntas antes de enviar.'); return; }
-
         let correct = 0;
         for (let i = 0; i < quiz.length; i++) if (answers[i] === quiz[i].a) correct++;
 
         scoreDisplay.innerHTML = `<i class="fas fa-trophy" aria-hidden="true"></i> ${correct}/${quiz.length}`;
 
-        // Destaca respostas por pergunta, iterando containers
-        const allOptionContainers = document.querySelectorAll('.options-container');
-        allOptionContainers.forEach((container, qIndex) => {
-          Array.from(container.children).forEach((optionEl, optIndex) => {
-            optionEl.classList.remove('selected','correct','wrong');
-            if (optIndex === quiz[qIndex].a) optionEl.classList.add('correct');
-            else if (answers[qIndex] === optIndex) optionEl.classList.add('wrong');
+        const reviewRoot = document.createElement('div');
+        quiz.forEach((item, qIndex) => {
+          const block = document.createElement('div');
+          const h = document.createElement('div'); 
+          h.style.fontWeight = '700'; 
+          h.style.marginBottom = '12px'; 
+          h.style.color = 'var(--text-primary)'; 
+          h.textContent = `${qIndex+1}. ${item.q}`;
+          block.appendChild(h);
+          const opts = document.createElement('div');
+          opts.style.display = 'grid';
+          opts.style.gap = '8px';
+          opts.style.marginBottom = '12px';
+          item.opts.forEach((op, optIndex) => {
+            const o = document.createElement('div'); 
+            o.className = 'option'; 
+            o.style.cursor = 'default'; 
+            o.style.pointerEvents = 'none';
+            o.innerHTML = `<div class="option-letter">${String.fromCharCode(65 + optIndex)}</div><div>${op}</div>`;
+            if (optIndex === item.a) o.classList.add('correct');
+            else if (answers[qIndex] === optIndex) o.classList.add('wrong');
+            opts.appendChild(o);
           });
+          block.appendChild(opts);
+          const explain = document.createElement('div'); 
+          explain.style.fontSize = '14px'; 
+          explain.style.color = 'var(--success)'; 
+          explain.style.fontStyle = 'italic'; 
+          explain.style.marginTop = '8px';
+          explain.textContent = item.explain;
+          block.appendChild(explain);
+          reviewRoot.appendChild(block);
         });
+
+        questionContainer.innerHTML = '';
+        questionContainer.appendChild(reviewRoot);
 
         if (correct === quiz.length) { showSuccessToast(); playSound('success'); } else { playSound('error'); }
       });
@@ -521,7 +551,19 @@
 
     // Toast
     function showSuccessToast() {
-      const toast = document.createElement('div'); toast.className = 'toast'; toast.style.position = 'fixed'; toast.style.top = '16px'; toast.style.left = '50%'; toast.style.transform = 'translateX(-50%)'; toast.style.padding = '12px 18px'; toast.style.borderRadius = '12px'; toast.style.background = 'linear-gradient(90deg, var(--success), #34d399)'; toast.style.color = 'var(--bg-900)'; toast.style.fontWeight = '800'; toast.style.zIndex = 1000; toast.innerHTML = '<i class="fas fa-star" aria-hidden="true"></i> Parabéns! Você acertou todas as questões!'; document.body.appendChild(toast);
+      const toast = document.createElement('div'); 
+      toast.style.position = 'fixed'; 
+      toast.style.top = '16px'; 
+      toast.style.left = '50%'; 
+      toast.style.transform = 'translateX(-50%)'; 
+      toast.style.padding = '12px 18px'; 
+      toast.style.borderRadius = '12px'; 
+      toast.style.background = 'linear-gradient(90deg, var(--success), #34d399)'; 
+      toast.style.color = 'var(--bg-900)'; 
+      toast.style.fontWeight = '800'; 
+      toast.style.zIndex = 1000; 
+      toast.innerHTML = '<i class="fas fa-star" aria-hidden="true"></i> Parabéns! Você acertou todas as questões!'; 
+      document.body.appendChild(toast);
       setTimeout(() => toast.remove(), 3000);
     }
 
