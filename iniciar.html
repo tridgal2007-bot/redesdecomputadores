@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Perfil do Usuário — Surreal</title>
+  <title>Perfil do Usuário — Surreal (Azul)</title>
 
-  <!-- Fonte e ícones -->
+  <!-- Fontes e ícones -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
   <link href="https://unpkg.com/lucide-static/font/lucide.css" rel="stylesheet">
 
@@ -14,242 +14,698 @@
 
   <meta name="color-scheme" content="light dark">
   <style>
-    :root{
-      --bg-1: #0f172a;
-      --bg-2: #011627;
-      --glass: rgba(255,255,255,0.06);
-      --accent: linear-gradient(135deg,#6ee7b7 0%,#60a5fa 45%, #a78bfa 100%);
-      --accent-2: #60a5fa;
-      --card: rgba(255,255,255,0.04);
-      --text: #e6eef8;
-      --muted: #9fb0cc;
-      --glass-border: rgba(255,255,255,0.06);
-      --shadow: 0 12px 40px rgba(2,6,23,0.6);
-      --glass-blur: 14px;
-      --rounded: 20px;
+    /* ---------- PALETA AZUL PREMIUM (REVISADA) ---------- */
+    :root {
+      --bg-1: #0a192f;          /* Deep space blue */
+      --bg-2: #112240;          /* Slightly lighter navy */
+      --card-bg: rgba(10, 25, 47, 0.6);
+      --card-border: rgba(56, 139, 253, 0.15);
+      --accent: #64b5f6;        /* Soft sky blue */
+      --accent-hover: #42a5f5;  /* Slightly deeper on hover */
+      --text: #e6f4ff;
+      --muted: #8ab4f8;
+      --shadow: 0 10px 30px rgba(0, 30, 60, 0.4);
+      --shadow-hover: 0 12px 40px rgba(0, 40, 80, 0.5);
+      --rounded: 16px;
+      --focus-ring: 0 0 0 4px rgba(66, 165, 245, 0.25);
     }
 
-    /* Light theme overrides */
+    /* Light mode (opcional, mas mantido) */
     :root.light {
-      --bg-1: #f6fbff;
-      --bg-2: #eef6ff;
-      --glass: rgba(255,255,255,0.8);
-      --card: rgba(255,255,255,0.9);
-      --text: #0b1220;
-      --muted: #475569;
-      --glass-border: rgba(8,27,52,0.06);
-      --shadow: 0 12px 40px rgba(8,16,30,0.08);
+      --bg-1: #eef7ff;
+      --bg-2: #dbebff;
+      --card-bg: #ffffff;
+      --card-border: rgba(100, 181, 246, 0.2);
+      --text: #0a2e5c;
+      --muted: #5a8fd9;
     }
 
-    *{box-sizing:border-box}
-    html,body{height:100%;margin:0;font-family:Inter, Poppins, system-ui, -apple-system; background: radial-gradient(1200px 600px at 10% 10%, rgba(96,165,250,0.08), transparent), linear-gradient(180deg,var(--bg-1),var(--bg-2)); color:var(--text); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
-
-    /* Particle / blob background */
-    .canvas-wrap{
-      position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;
-      mask-image: radial-gradient(circle at center, rgba(0,0,0,1) 0 70%, rgba(0,0,0,0.0) 100%);
-    }
-    .blob{
-      position:absolute;border-radius:50%;filter:blur(60px);opacity:0.9;mix-blend-mode:screen;
-      animation: drift 14s ease-in-out infinite;
-      transform: translate3d(0,0,0);
-    }
-    .blob.b1{width:540px;height:540px;background:linear-gradient(135deg, #60a5fa, #7c3aed);left:-120px;top:-80px;animation-duration:18s}
-    .blob.b2{width:420px;height:420px;background:linear-gradient(135deg,#34d399,#60a5fa);right:-100px;top:40%;animation-duration:22s}
-    .blob.b3{width:300px;height:300px;background:linear-gradient(135deg,#f472b6,#fb7185);left:20%;bottom:-120px;animation-duration:20s}
-    @keyframes drift{0%{transform:translateY(0) translateX(0)}50%{transform:translateY(-40px) translateX(40px)}100%{transform:translateY(0) translateX(0)}}
-
-    /* Container */
-    .wrap{
-      position:relative;z-index:2;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:48px;
+    * { box-sizing: border-box; }
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: 'Inter', 'Poppins', system-ui, sans-serif;
+      background: linear-gradient(135deg, var(--bg-1), var(--bg-2));
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
-    /* Card */
+    .wrap {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
     .profile {
-      width:980px; max-width:95%; display:grid; grid-template-columns: 380px 1fr; gap:28px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
-      border-radius:var(--rounded); padding:28px; box-shadow:var(--shadow);
-      border: 1px solid var(--glass-border); backdrop-filter: blur(var(--glass-blur));
-      position:relative; overflow:visible;
+      width: 960px;
+      max-width: 96%;
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 32px;
+      padding: 32px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--rounded);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+      position: relative;
     }
 
-    /* Left: portrait */
+    /* Left Column */
     .left {
-      display:flex;flex-direction:column;align-items:center;gap:18px;padding:18px;border-radius:16px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-    }
-    .avatar-wrap{position:relative; width:170px;height:170px; border-radius:999px; padding:8px; background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));}
-    .avatar{
-      width:100%;height:100%;border-radius:999px;object-fit:cover;display:block;border:4px solid rgba(255,255,255,0.06); box-shadow: 0 6px 20px rgba(2,6,23,0.6); transition: transform .35s cubic-bezier(.2,.9,.2,1), box-shadow .25s;
-      transform-origin:center center;
-    }
-    .avatar:hover{transform:scale(1.03) rotate(-1deg)}
-
-    .name{
-      text-align:center;
-    }
-    .name h1{margin:0;font-size:1.45rem;font-weight:800;letter-spacing:-0.4px}
-    .name p{margin:4px 0 0;color:var(--muted);font-size:0.95rem}
-
-    .badges{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:6px}
-    .badge{padding:6px 10px;border-radius:999px;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));font-weight:600;font-size:0.85rem;color:var(--muted);border:1px solid rgba(255,255,255,0.03)}
-
-    /* Right: content */
-    .right{padding:6px 4px 4px 12px;display:flex;flex-direction:column;gap:18px}
-    .topbar{display:flex;justify-content:space-between;align-items:center;gap:12px}
-    .email{font-size:0.95rem;color:var(--muted);display:flex;align-items:center;gap:10px}
-    .controls{display:flex;gap:10px;align-items:center}
-
-    .btn{
-      border: none; padding:10px 14px; border-radius:12px; cursor:pointer; font-weight:600; display:inline-flex;gap:8px;align-items:center;
-      background: linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02)); color:var(--text); border:1px solid rgba(255,255,255,0.03);
-      transition: transform .18s, box-shadow .18s;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .btn:active{transform:translateY(1px)}
-    .btn.primary{
-      background:var(--accent); color:#071135; border:none; box-shadow: 0 8px 30px rgba(96,165,250,0.12), 0 2px 0 rgba(255,255,255,0.04);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
     }
 
-    /* Topics grid */
-    .topics-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
-    .topic{
-      display:flex;align-items:center;gap:12px;padding:12px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border:1px solid rgba(255,255,255,0.03); cursor:pointer;transition:transform .15s, box-shadow .15s;
+    .avatar-wrap {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      padding: 4px;
+      background: linear-gradient(135deg, var(--accent), #2196f3);
+      box-shadow: 0 8px 24px rgba(0, 30, 60, 0.5);
     }
-    .topic:hover{transform:translateY(-6px); box-shadow:0 20px 40px rgba(2,6,23,0.35)}
-    .topic i{font-size:20px;opacity:0.95}
 
-    /* Stats */
-    .stats{display:flex;gap:12px}
-    .stat{flex:1;padding:12px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));text-align:center}
-    .stat h3{margin:0;font-size:1.15rem}
-    .stat p{margin:6px 0 0;color:var(--muted);font-size:0.85rem}
+    .avatar {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid var(--bg-1);
+      background: var(--bg-2);
+    }
 
-    /* Loader/skeleton */
-    .skeleton{height:14px;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.06), rgba(255,255,255,0.02));border-radius:8px;animation: shimmer 1.6s infinite}
-    .skeleton.avatar{height:140px;width:140px;border-radius:999px}
-    @keyframes shimmer{0%{background-position:-200px 0}100%{background-position:200px 0}}
+    .name h1 {
+      margin: 0;
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
 
-    /* Editable modal */
-    .modal{position:fixed;inset:0;background:linear-gradient(0deg, rgba(2,6,23,0.6), rgba(2,6,23,0.6));display:flex;align-items:center;justify-content:center;z-index:40;backdrop-filter: blur(6px);padding:20px}
-    .modal-card{width:720px;max-width:96%;background:var(--card);border-radius:14px;padding:20px;border:1px solid rgba(255,255,255,0.04)}
-    .row{display:flex;gap:12px;align-items:center}
-    input[type="text"], input[type="email"]{flex:1;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--text)}
+    .name p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
 
-    /* tiny utilities */
-    .muted{color:var(--muted)} .small{font-size:0.85rem}
-    .center{display:flex;align-items:center;justify-content:center}
+    .badges {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
 
-    /* tilt effect (prefers-reduced-motion safe) */
-    .tilt{transform-style:preserve-3d;transition:transform .12s cubic-bezier(.2,.9,.2,1)}
-    @media (prefers-reduced-motion: reduce){ .blob{animation:none} .tilt{transition:none} }
+    .badge {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--accent);
+      background: rgba(100, 181, 246, 0.1);
+      border: 1px solid rgba(100, 181, 246, 0.2);
+    }
+
+    /* Right Column */
+    .right {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .email {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+
+    .controls {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.2s ease;
+      min-height: 44px;
+    }
+
+    .btn.ghost {
+      background: transparent;
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .btn:focus {
+      outline: none;
+      box-shadow: var(--focus-ring);
+    }
+
+    .btn.primary {
+      background: linear-gradient(135deg, var(--accent), #42a5f5);
+      color: #0a192f;
+      border: none;
+      box-shadow: 0 6px 20px rgba(66, 165, 245, 0.3);
+    }
+
+    .btn.primary:hover {
+      background: linear-gradient(135deg, #42a5f5, #1e88e5);
+    }
+
+    .stats {
+      display: flex;
+      gap: 16px;
+    }
+
+    .stat {
+      flex: 1;
+      padding: 16px;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .stat h3 {
+      margin: 0;
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+
+    .stat p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    .topics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 16px;
+    }
+
+    .topic {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--text);
+      text-decoration: none;
+      transition: all 0.25s ease;
+    }
+
+    .topic:hover {
+      transform: translateY(-4px);
+      background: rgba(100, 181, 246, 0.1);
+      border-color: rgba(100, 181, 246, 0.3);
+      box-shadow: 0 8px 24px rgba(0, 30, 60, 0.3);
+    }
+
+    .topic i {
+      font-size: 20px;
+      color: var(--accent);
+    }
+
+    .topic strong {
+      display: block;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .topic .muted {
+      font-size: 0.8rem;
+    }
+
+    /* Modal de Edição */
+    .modal {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(10, 25, 47, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      padding: 20px;
+    }
+
+    .modal-card {
+      width: 600px;
+      max-width: 95%;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--rounded);
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .modal-card h3 {
+      margin: 0 0 16px;
+      font-weight: 700;
+    }
+
+    .modal-card input {
+      width: 100%;
+      padding: 12px;
+      margin: 6px 0 16px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(0, 0, 0, 0.2);
+      color: var(--text);
+      font-family: inherit;
+    }
+
+    .modal-card input::placeholder {
+      color: var(--muted);
+    }
+
+    /* Welcome Modal (melhorada) */
+    .welcome-modal {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(180deg, rgba(2,6,23,0.75), rgba(2,6,23,0.85));
+      backdrop-filter: blur(6px) saturate(1.1);
+      z-index: 200;
+      padding: 20px;
+    }
+
+    .welcome-card {
+      display: flex;
+      gap: 24px;
+      width: 820px;
+      max-width: 96%;
+      max-height: 80vh;
+      background: linear-gradient(180deg, rgba(12,28,48,0.7), rgba(8,20,36,0.6));
+      border: 1px solid rgba(100, 181, 246, 0.14);
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: 0 22px 60px rgba(0, 20, 40, 0.6);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .welcome-left { 
+      flex: 1; 
+      scroll-behavior: smooth;
+      transition: opacity 220ms ease, transform 220ms ease; 
+      max-height: 400px;
+      overflow-y: auto;
+      padding-right: 8px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(100, 181, 246, 0.5) transparent;
+    }
+
+    .welcome-left::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .welcome-left::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .welcome-left::-webkit-scrollbar-thumb {
+      background: rgba(100, 181, 246, 0.5);
+      border-radius: 3px;
+    }
+
+    .welcome-right { 
+      position: absolute;
+      bottom: 28px;
+      right: 28px;
+      width: 200px;
+      height: 60px;
+      flex-shrink: 0;
+      max-height: 60px;
+      overflow: hidden;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(100, 181, 246, 0.5) transparent;
+      transition: all 0.3s ease;
+    }
+
+    .welcome-right::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .welcome-right::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .welcome-right::-webkit-scrollbar-thumb {
+      background: rgba(100, 181, 246, 0.5);
+      border-radius: 3px;
+    }
+
+    .welcome-badge {
+      padding: 8px 14px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent), #42a5f5);
+      color: #0a192f;
+      font-weight: 800;
+      font-size: 0.88rem;
+      display:inline-block;
+    }
+
+    .welcome-title {
+      font-size: 2rem;
+      margin: 12px 0 6px;
+      font-weight: 900;
+      line-height: 1.05;
+      color: var(--text);
+    }
+
+    .welcome-sub {
+      color: var(--muted);
+      margin-top: 10px;
+      line-height: 1.5;
+    }
+
+    /* --- NOVO: Estilo aprimorado para o painel de desenvolvedores --- */
+    .hero-plate {
+      width: 100%;
+      height: 100%;
+      min-height: 60px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(100, 181, 246, 0.1), rgba(66, 165, 245, 0.05));
+      border: 1px solid var(--card-border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      color: var(--text);
+      padding: 12px;
+      text-align: center;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .hero-plate:hover {
+      background: linear-gradient(135deg, rgba(100, 181, 246, 0.15), rgba(66, 165, 245, 0.1));
+      border-color: rgba(100, 181, 246, 0.3);
+    }
+
+    .hero-plate.expanded {
+      position: absolute;
+      inset: 0;
+      min-height: auto;
+      padding: 40px 28px;
+      border-radius: 20px;
+      z-index: 5;
+      display: flex !important;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: flex-start;
+      gap: 20px;
+      box-shadow: none;
+    }
+
+    .hero-plate.expanded .hero-title {
+      margin-bottom: 12px;
+      text-align: left;
+      font-size: 1.4rem;
+    }
+
+    .dev-list {
+      list-style: none;
+      margin: 8px 0 0;
+      padding: 0;
+      width: 100%;
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+      max-height: none;
+    }
+
+    .hero-plate.expanded .dev-list {
+      display: flex;
+      flex: 1;
+      overflow-y: auto;
+      margin-top: 20px;
+    }
+
+    .dev-name {
+      display: block;
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--text);
+      padding: 12px 16px;
+      border-radius: 12px;
+      background: rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(2px);
+      transition: background 0.2s ease;
+      text-align: left;
+    }
+
+    .dev-name:hover {
+      background: rgba(100, 181, 246, 0.15);
+      color: var(--accent);
+    }
+
+    /* Light mode adjustments */
+    :root.light .hero-plate {
+      background: linear-gradient(135deg, rgba(200, 230, 255, 0.3), rgba(220, 240, 255, 0.2));
+      border-color: rgba(100, 181, 246, 0.2);
+    }
+
+    :root.light .hero-plate.expanded {
+      background: linear-gradient(135deg, rgba(200, 230, 255, 0.4), rgba(220, 240, 255, 0.3));
+      border-color: rgba(100, 181, 246, 0.3);
+    }
+
+    :root.light .dev-name {
+      background: rgba(0, 0, 0, 0.03);
+      color: var(--text);
+    }
+
+    :root.light .dev-name:hover {
+      background: rgba(100, 181, 246, 0.2);
+      color: #0a2e5c;
+    }
+    /* --- FIM da melhoria --- */
+
+    .welcome-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: transparent;
+      border-radius: 10px;
+      padding: 8px;
+      border: 1px solid rgba(255,255,255,0.04);
+      z-index: 10;
+    }
+
+    /* Confete */
+    .confetti-wrap {
+      pointer-events: none;
+      position: absolute;
+      inset: 0;
+      z-index: 400;
+      overflow: visible;
+    }
+
+    .confetti-piece {
+      position: absolute;
+      top: 0;
+      width: 10px;
+      height: 14px;
+      border-radius: 2px;
+      opacity: 0.95;
+      transform-origin: center;
+      will-change: transform, opacity;
+      animation-name: confetti-fall;
+      animation-timing-function: cubic-bezier(.2,.7,.3,1);
+      animation-fill-mode: forwards;
+    }
+
+    @keyframes confetti-fall {
+      0% { transform: translate3d(0,-10px,0) rotate(0deg) scale(1); opacity: 1; }
+      100% { transform: translate3d(var(--dx, 0px), 260px, 0) rotate(var(--rot, 360deg)) scale(0.95); opacity: 0; }
+    }
 
     /* Responsive */
-    @media (max-width:900px){
-      .profile{grid-template-columns:1fr; padding:18px}
-      .left{order:2}
-      .right{order:1}
-      .avatar-wrap{margin:auto}
-      .wrap{padding:24px}
-      .topics-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
-      .stats{flex-direction:column;gap:8px}
-      .stat{padding:10px}
-      .topbar{flex-direction:column;align-items:flex-start}
-      .controls{justify-content:flex-start;width:100%}
+    @media (max-width: 900px) {
+      .profile { 
+        grid-template-columns: 1fr; 
+        padding: 20px; 
+        gap: 24px;
+      }
+      .left { order: 1; }
+      .right { order: 2; }
+      .avatar-wrap { width: 130px; height: 130px; }
+      .welcome-modal { padding: 16px; }
+      .welcome-card { 
+        flex-direction: column; 
+        gap: 16px; 
+        width: 100%; 
+        max-width: 100%; 
+        max-height: 85vh;
+        padding: 20px; 
+        border-radius: 16px; 
+      }
+      .welcome-left { 
+        flex: 1; 
+        min-width: 0;
+        max-height: 300px;
+      }
+      .welcome-right { 
+        position: static;
+        width: 100%;
+        height: 60px;
+        bottom: auto;
+        right: auto;
+        max-height: 60px;
+      }
+      .welcome-title { 
+        font-size: 1.6rem;
+        line-height: 1.1;
+      }
+      .welcome-sub { 
+        font-size: 0.95rem;
+        line-height: 1.4;
+      }
+      .hero-plate { 
+        min-height: 50px; 
+        padding: 10px; 
+        gap: 8px;
+      }
+      .hero-plate.expanded {
+        position: relative;
+        inset: auto;
+        width: 100%;
+        height: auto;
+        padding: 20px 16px;
+        flex: 1;
+        min-height: 200px;
+      }
+      .hero-plate.expanded .dev-list {
+        gap: 8px;
+        margin-top: 16px;
+      }
+      .hero-title { font-size: 1.1rem; }
+      .dev-list { gap: 6px; }
+      .dev-name { 
+        font-size: 0.95rem; 
+        padding: 10px 12px; 
+      }
+      .topbar { flex-direction: column; align-items: stretch; gap: 12px; }
+      .controls { justify-content: center; }
     }
 
-    /* ------------------ WELCOME / FIRST VISIT STYLES ------------------ */
-    .welcome-modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:60;background:radial-gradient(1200px 600px at 30% 20%, rgba(96,165,250,0.08), transparent), rgba(2,6,23,0.65);backdrop-filter:blur(8px);padding:28px}
-    .welcome-modal.visible{display:flex}
-    .welcome-card{
-      width:min(880px,95%);max-width:980px;padding:28px;border-radius:20px;background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));border:1px solid rgba(255,255,255,0.06);box-shadow:0 24px 80px rgba(2,6,23,0.6);position:relative;overflow:hidden;display:flex;gap:20px;align-items:center
-    }
-    .welcome-left{flex:0 0 340px;display:flex;flex-direction:column;gap:12px;align-items:flex-start}
-    .welcome-badge{padding:8px 12px;border-radius:12px;background:linear-gradient(90deg,#6ee7b7,#60a5fa);color:#061029;font-weight:800}
-    .welcome-title{font-size:1.9rem;margin:6px 0 0;line-height:1.02;font-weight:800}
-    .welcome-sub{margin-top:6px;color:var(--muted)}
-
-    .welcome-cta{margin-top:12px;display:flex;gap:10px}
-    .welcome-cta .btn{padding:12px 16px;border-radius:14px}
-
-    .welcome-right{flex:1;position:relative;min-height:160px;display:flex;align-items:center;justify-content:center}
-
-    /* soft floating hero element */
-    .hero-plate{width:280px;height:160px;border-radius:16px;background:linear-gradient(135deg, rgba(96,165,250,0.12), rgba(167,139,250,0.12));border:1px solid rgba(255,255,255,0.03);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;transform:translateY(0);animation: heroFloat 4s ease-in-out infinite}
-    @keyframes heroFloat{0%{transform:translateY(0)}50%{transform:translateY(-10px)}100%{transform:translateY(0)}}
-
-    .hero-plate h3{margin:0;font-size:1.1rem}
-    .hero-plate p{margin:0;font-size:0.9rem;color:var(--muted)}
-
-    .confetti-layer{position:absolute;inset:0;pointer-events:none;overflow:hidden}
-    .confetti{position:absolute;width:10px;height:14px;border-radius:2px;opacity:0.95;transform-origin:center;will-change:transform,top,left;animation: confettiFall linear infinite}
-    @keyframes confettiFall{0%{transform:translateY(-20vh) rotate(0deg)}100%{transform:translateY(110vh) rotate(720deg)}}
-
-    /* entrance */
-    .welcome-card{transform:translateY(18px) scale(.985);opacity:0;animation: cardIn .48s cubic-bezier(.2,.9,.2,1) forwards}
-    .welcome-modal.visible .welcome-card{animation-delay:0s}
-    @keyframes cardIn{to{transform:none;opacity:1}}
-
-    /* small close */
-    .welcome-close{position:absolute;top:12px;right:12px;border-radius:10px;padding:6px}
-
-    @media (max-width:760px){
-      .welcome-card{flex-direction:column;align-items:stretch;padding:18px}
-      .welcome-left{flex:unset}
-      .welcome-right{min-height:120px}
-      .hero-plate{width:100%;height:120px}
-      .welcome-modal{padding:16px}
-      .welcome-title{font-size:1.6rem}
-      .welcome-sub{font-size:0.9rem}
-    }
-
-    @media (max-width:480px){
-      .blob.b1{width:260px;height:260px;left:-80px;top:-60px}
-      .blob.b2{width:200px;height:200px;right:-60px;top:35%}
-      .blob.b3{width:160px;height:160px;left:10%;bottom:-80px}
-      .avatar-wrap{width:128px;height:128px}
-      .name h1{font-size:1.1rem}
-      .profile{padding:14px}
-      .topics-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
-      .btn{padding:12px}
-      .welcome-close{top:8px;right:8px}
-      .welcome-badge{padding:6px 10px}
-      .wrap{padding:16px}
-      .left{padding:12px;gap:12px}
-      .right{padding:4px 2px 2px 6px;gap:12px}
-      .topbar{gap:8px}
-      .email{font-size:0.85rem;gap:6px}
-      .controls{gap:6px}
-      .btn{padding:8px 12px;font-size:0.85rem}
-      .stat h3{font-size:1rem}
-      .stat p{font-size:0.75rem}
-      .topics-grid{gap:8px}
-      .topic{padding:10px;gap:8px}
-      .topic i{font-size:18px}
-      .modal{padding:10px}
-      .modal-card{padding:16px}
-      input[type="text"], input[type="email"]{padding:8px;font-size:0.9rem}
+    @media (max-width: 480px) {
+      .wrap { padding: 16px; }
+      .profile { padding: 16px; gap: 20px; }
+      .avatar-wrap { width: 110px; height: 110px; }
+      .name h1 { font-size: 1.3rem; }
+      .stats { flex-direction: column; }
+      .welcome-modal { padding: 12px; }
+      .welcome-card { 
+        gap: 12px; 
+        padding: 16px; 
+        border-radius: 12px; 
+        max-height: 90vh;
+      }
+      .welcome-left { 
+        flex: 1; 
+        max-height: 250px;
+      }
+      .welcome-right { 
+        height: 50px;
+        max-height: 50px;
+      }
+      .welcome-title { 
+        font-size: 1.3rem; 
+      }
+      .welcome-sub { 
+        font-size: 0.9rem; 
+        margin-top: 8px;
+      }
+      .welcome-badge { 
+        font-size: 0.8rem; 
+        padding: 6px 12px; 
+      }
+      .hero-plate { 
+        min-height: 50px; 
+        padding: 8px; 
+        gap: 6px;
+      }
+      .hero-plate.expanded {
+        padding: 16px 12px;
+        gap: 16px;
+      }
+      .hero-title { font-size: 1rem; }
+      .dev-list { gap: 4px; }
+      .dev-name { 
+        font-size: 0.9rem; 
+        padding: 8px 10px; 
+      }
+      .welcome-title { font-size: 1.2rem; }
+      .topics-grid { 
+        grid-template-columns: 1fr; 
+        gap: 12px; 
+      }
+      .topic { 
+        padding: 16px; 
+        flex-direction: column; 
+        text-align: center; 
+        gap: 8px;
+      }
+      .topic i { font-size: 24px; }
+      .btn { 
+        padding: 12px 18px; 
+        font-size: 0.9rem; 
+        justify-content: center;
+      }
+      .modal-card { padding: 20px; }
     }
 
+    .muted { color: var(--muted); }
+    .small { font-size: 0.85rem; }
+    .center { display: flex; align-items: center; justify-content: center; }
   </style>
 </head>
 <body>
 
-  <!-- decorative blobs -->
-  <div class="canvas-wrap" aria-hidden="true">
-    <div class="blob b1"></div>
-    <div class="blob b2"></div>
-    <div class="blob b3"></div>
-  </div>
-
   <div class="wrap">
-    <main class="profile tilt" id="profileCard" role="region" aria-label="Perfil do usuário">
+    <main class="profile" id="profileCard" role="region" aria-label="Perfil do usuário">
+
       <!-- LEFT -->
       <section class="left" aria-hidden="false">
         <div class="avatar-wrap center" id="avatarWrap">
-          <div id="avatarSkeleton" class="skeleton avatar" aria-hidden="true"></div>
-          <img id="avatar" class="avatar" src="" alt="Foto do usuário" style="display:none" />
+          <img id="avatar" class="avatar" src="" alt="Foto do usuário" />
         </div>
 
         <div class="name" id="nameBlock">
@@ -257,15 +713,9 @@
           <p id="userTag" class="muted">— Perfil público</p>
         </div>
 
-        <div class="badges" id="badges">
-          <span class="badge">Aluno</span>
-          <span class="badge">Redes</span>
-          <span class="badge">Pro</span>
-        </div>
-
         <div style="width:100%;display:flex;gap:8px;justify-content:center;margin-top:12px">
-          <button class="btn" id="editBtn" title="Editar perfil"><i class="lucide-edit-2"></i>Editar</button>
-          <button class="btn" id="logoutBtn" title="Sair"><i class="lucide-log-out"></i>Sair</button>
+          <button class="btn ghost" id="editBtn" title="Editar perfil"><i class="lucide-edit-2"></i> Editar</button>
+          <button class="btn ghost" id="logoutBtn" title="Sair"><i class="lucide-log-out"></i> Sair</button>
         </div>
       </section>
 
@@ -279,34 +729,19 @@
 
           <div class="controls">
             <button class="btn" id="themeToggle" aria-pressed="false" title="Alternar tema"><i class="lucide-sun"></i></button>
-            <button class="btn primary" id="visitBtn"><i class="lucide-external-link"></i>Ver conteúdo</button>
-          </div>
-        </div>
-
-        <div class="stats" aria-hidden="false">
-          <div class="stat">
-            <h3 id="coursesCount">—</h3>
-            <p class="muted small">Tópicos lidos</p>
-          </div>
-          <div class="stat">
-            <h3 id="xp">—</h3>
-            <p class="muted small">XP acumulado</p>
-          </div>
-          <div class="stat">
-            <h3 id="memberSince">—</h3>
-            <p class="muted small">Membro desde</p>
+            <button class="btn primary" id="visitBtn"><i class="lucide-external-link"></i> Ver conteúdo</button>
           </div>
         </div>
 
         <div>
-          <h4 style="margin:10px 0 8px">Navegue — Estude rápido</h4>
+          <h4 style="margin:10px 0 8px; font-weight:600">Navegue: Estude rápido</h4>
           <div class="topics-grid" id="topicsGrid" aria-label="Tópicos de redes">
-            <!-- botões preenchidos por JS -->
+            <!-- preenchido por JS -->
           </div>
         </div>
 
         <div style="margin-top:8px;display:flex;justify-content:flex-end">
-          <button class="btn" id="refreshBtn"><i class="lucide-refresh-cw"></i>Recarregar</button>
+          <button class="btn ghost" id="refreshBtn"><i class="lucide-refresh-cw"></i> Recarregar</button>
         </div>
       </section>
     </main>
@@ -316,10 +751,9 @@
   <div id="modal" class="modal" style="display:none" role="dialog" aria-modal="true" aria-label="Editar perfil">
     <div class="modal-card">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-        <h3 style="margin:0">Editar perfil</h3>
+        <h3>Editar perfil</h3>
         <button class="btn" id="closeModal"><i class="lucide-x"></i></button>
       </div>
-
       <div style="display:flex;gap:12px;flex-direction:column">
         <label class="small">Nome</label>
         <input id="editName" type="text" placeholder="Seu nome" />
@@ -328,131 +762,84 @@
         <label class="small">URL da imagem (opcional)</label>
         <input id="editPic" type="text" placeholder="https://..." />
         <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
-          <button class="btn" id="saveProfile">Salvar</button>
-          <button class="btn" id="cancelEdit">Cancelar</button>
+          <button class="btn primary" id="saveProfile">Salvar</button>
+          <button class="btn ghost" id="cancelEdit">Cancelar</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- WELCOME (first visit) - Removi os botões "Começar agora" e "Mais tarde" conforme pedido -->
-  <div id="welcomeModal" class="welcome-modal" role="dialog" aria-modal="true" aria-label="Bem-vindo ao Perfil">
+  <!-- WELCOME MODAL (ATUALIZADO COM NOVA LISTA DE DESENVOLVEDORES) -->
+  <div id="welcomeModal" class="welcome-modal" style="display:none" role="dialog" aria-modal="true" aria-label="Bem-vindo ao Perfil">
     <div class="welcome-card" role="document">
       <button class="btn welcome-close" id="welcomeClose" title="Fechar"><i class="lucide-x"></i></button>
 
       <div class="welcome-left">
         <div class="welcome-badge">Seja bem-vindo(a)</div>
-        <h2 class="welcome-title">Olá! É ótimo ter você aqui.</h2>
-        <p class="welcome-sub">Bem vindo ao Mundo das Redes de Computadores!
-
-Seja bem-vindo ao nosso site dedicado ao universo das redes de computadores!
-
-Aqui você vai aprender de forma simples e prática como os computadores se conectam, trocam informações e formam a base da comunicação digital que usamos todos os dias.
-
+        <h2 class="welcome-title">Olá! É ótimo ter você por aqui.</h2>
+        <p class="welcome-sub">Bem-vindo ao Mundo das Redes de Computadores!<br><br>
+Seja bem-vindo ao nosso site dedicado ao universo das redes de computadores!<br><br>
+Aqui você vai aprender de forma simples e prática como os computadores se conectam, trocam informações e formam a base da comunicação digital que usamos todos os dias.<br><br>
 O objetivo é mostrar a importância das redes na sociedade atual e como elas tornam a comunicação digital possível.</p>
 
-        <!-- Mantive apenas o checkbox "Não mostrar novamente" para controle do usuário -->
-        <label class="small" style="margin-top:12px"><input id="dontShow" type="checkbox" style="margin-right:8px"> Não mostrar novamente</label>
+        <label class="small" style="margin-top:12px;display:block"><input id="dontShow" type="checkbox" style="margin-right:8px"> Não mostrar novamente</label>
       </div>
 
       <div class="welcome-right">
-        <div class="hero-plate">
-          <h3>Desenvolvedores</h3>
-          <p>\Raquelly\Atila\Ana Caroline\Clicia\Adrielly</p>
-        </div>
-        <div id="confettiLayer" class="confetti-layer" aria-hidden="true"></div>
+        <!-- Agora é um botão -->
+        <button class="hero-plate" id="devToggleBtn">
+          <h3 class="hero-title">Equipe de Desenvolvimento</h3>
+          <ul class="dev-list" id="devList" aria-label="Lista de desenvolvedores">
+            <li><span class="dev-name">Raquele de Jesus Santos</span></li>
+            <li><span class="dev-name">Átila Santos Bispo</span></li>
+            <li><span class="dev-name">Ana Caroline de Jesus</span></li>
+            <li><span class="dev-name">Clícia Moraes de Lima</span></li>
+            <li><span class="dev-name">Adriele Pereira Faustino</span></li>
+            <li><span class="dev-name">Raiane Calvalcante Santos</span></li>
+          </ul>
+        </button>
       </div>
+
+      <!-- Confete container (inserido dinamicamente) -->
+      <div class="confetti-wrap" id="confettiWrap" aria-hidden="true"></div>
     </div>
   </div>
 
+  <!-- Scripts (com melhorias para confetes) -->
   <script>
-    /***** CONFIGURAÇÃO SUPABASE — SIMPLES E FUNCIONAL *****/
     const SUPABASE_URL = 'https://zszcwubydhgoyhxbxfro.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpzemN3dWJ5ZGhnb3loeGJ4ZnJvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4MDk5MDMsImV4cCI6MjA3NTM4NTkwM30.ryioOoPAZnZzGdcTxIjfUcSlYUUqa7arA4qlUukyV7M';
-
-    // ✅ Inicialização direta e confiável
     const { createClient } = window.supabase;
     const supabase = createClient(SUPABASE_URL.trim(), SUPABASE_ANON_KEY.trim());
 
-    function parseJwt(token) {
-      try {
-        const base64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
-        return JSON.parse(atob(base64));
-      } catch (e) {
-        return null;
-      }
-    }
+    function parseJwt(token){ try{ const base64 = token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'); return JSON.parse(atob(base64)); }catch(e){return null} }
 
-    /***** UTILIDADES DE UI *****/
     const avatar = document.getElementById('avatar');
-    const avatarSkeleton = document.getElementById('avatarSkeleton');
     const userName = document.getElementById('userName');
     const userEmail = document.getElementById('userEmail');
     const userTag = document.getElementById('userTag');
     const topicsGrid = document.getElementById('topicsGrid');
-    const coursesCount = document.getElementById('coursesCount');
-    const xp = document.getElementById('xp');
-    const memberSince = document.getElementById('memberSince');
     const profileCard = document.getElementById('profileCard');
 
     const topicos = [
       {href:'oque-e.html', icon:'lucide-network', title:'O que é Redes de Computadores'},
-      {href:'historia.html', icon:'lucide-book', title:'História das Redes de Computadores'},
-      {href:'como-funciona.html', icon:'lucide-cpu', title:'Como Funciona Redes de Computadores'},
+      {href:'historia.html', icon:'lucide-book', title:'História das Redes'},
+      {href:'como-funciona.html', icon:'lucide-cpu', title:'Como Funciona'},
       {href:'tipos.html', icon:'lucide-layers', title:'Tipos de Rede'},
-      {href:'dispositivos.html', icon:'lucide-router', title:'Dispositivos de Redes'},
-      {href:'topologia.html', icon:'lucide-share-2', title:'Topologia de Redes'},
-      {href:'protocolos.html', icon:'lucide-code', title:'Protocolos e Endereçamentos'},
-      {href:'camadas.html', icon:'lucide-layers-3', title:'Camadas de Redes'},
-      {href:'seguranca.html', icon:'lucide-shield-check', title:'Segurança de Redes'}
+      {href:'dispositivos.html', icon:'lucide-router', title:'Dispositivos'},
+      {href:'topologia.html', icon:'lucide-share-2', title:'Topologias'},
+      {href:'protocolos.html', icon:'lucide-code', title:'Protocolos'},
+      {href:'camadas.html', icon:'lucide-layers-3', title:'Camadas'},
+      {href:'seguranca.html', icon:'lucide-shield-check', title:'Segurança'}
     ];
 
-    function renderTopics() {
-      topicsGrid.innerHTML = '';
-      for (const t of topicos) {
-        const el = document.createElement('a');
-        el.className = 'topic';
-        el.href = t.href;
-        el.innerHTML = `<i class="${t.icon}"></i><div><strong style="display:block">${t.title}</strong><span class="muted small">Abrir</span></div>`;
-        topicsGrid.appendChild(el);
-      }
-    }
+    function renderTopics(){ topicsGrid.innerHTML=''; for(const t of topicos){ const el = document.createElement('a'); el.className='topic'; el.href=t.href; el.innerHTML = `<i class="${t.icon}"></i><div><strong>${t.title}</strong><span class="muted small">Abrir</span></div>`; topicsGrid.appendChild(el);} }
 
-    /***** TILT 3D *****/
-    (function addTilt() {
-      // desabilita tilt em dispositivos touch para evitar comportamento estranho
-      if ('ontouchstart' in window || window.matchMedia('(pointer:coarse)').matches) return;
-      const card = profileCard;
-      let rect;
-      function update(e) {
-        rect = rect || card.getBoundingClientRect();
-        const x = (e.clientX - rect.left) / rect.width - 0.5;
-        const y = (e.clientY - rect.top) / rect.height - 0.5;
-        const rotX = (y * 8).toFixed(2);
-        const rotY = (x * -12).toFixed(2);
-        card.style.transform = `perspective(1200px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateZ(4px)`;
-      }
-      function reset() { card.style.transform = ''; rect = null; }
-      card.addEventListener('pointermove', update);
-      card.addEventListener('pointerleave', reset);
-    })();
-
-    /***** THEME TOGGLE *****/
     const themeToggle = document.getElementById('themeToggle');
-    function setTheme(name) {
-      if (name === 'light') document.documentElement.classList.add('light');
-      else document.documentElement.classList.remove('light');
-      themeToggle.setAttribute('aria-pressed', name === 'light');
-    }
-    const savedTheme = localStorage.getItem('siteTheme') || 'dark';
-    setTheme(savedTheme);
-    themeToggle.addEventListener('click', () => {
-      const next = document.documentElement.classList.contains('light') ? 'dark' : 'light';
-      setTheme(next);
-      localStorage.setItem('siteTheme', next);
-    });
+    function setTheme(name){ if(name==='light') document.documentElement.classList.add('light'); else document.documentElement.classList.remove('light'); themeToggle.setAttribute('aria-pressed', name === 'light'); }
+    const savedTheme = localStorage.getItem('siteTheme') || 'dark'; setTheme(savedTheme);
+    themeToggle.addEventListener('click', () => { const next = document.documentElement.classList.contains('light') ? 'dark' : 'light'; setTheme(next); localStorage.setItem('siteTheme', next); });
 
-    /***** MODAL *****/
     const modal = document.getElementById('modal');
     const editBtn = document.getElementById('editBtn');
     const closeModal = document.getElementById('closeModal');
@@ -462,185 +849,145 @@ O objetivo é mostrar a importância das redes na sociedade atual e como elas to
     const editEmail = document.getElementById('editEmail');
     const editPic = document.getElementById('editPic');
 
-    editBtn.addEventListener('click', () => {
-      modal.style.display = 'flex';
-      editName.value = userName.textContent === 'Carregando...' ? '' : userName.textContent;
-      editEmail.value = userEmail.textContent.includes('@') ? userEmail.textContent : '';
-      editPic.value = avatar.src || '';
-    });
-
-    [closeModal, cancelEdit].forEach(btn => {
-      btn.addEventListener('click', () => modal.style.display = 'none');
-    });
+    editBtn.addEventListener('click', () => { modal.style.display = 'flex'; editName.value = userName.textContent === 'Carregando...' ? '' : userName.textContent; editEmail.value = userEmail.textContent.includes('@') ? userEmail.textContent : ''; editPic.value = avatar.src || ''; });
+    [closeModal, cancelEdit].forEach(btn => { btn.addEventListener('click', () => modal.style.display = 'none'); });
 
     saveProfile.addEventListener('click', async () => {
-      const nome = editName.value.trim();
-      const email = editEmail.value.trim();
-      const pic = editPic.value.trim();
-
-      if (nome) userName.textContent = nome;
-      if (email) userEmail.textContent = email;
-      if (pic) loadAvatar(pic);
-
+      const nome = editName.value.trim(); const email = editEmail.value.trim(); const pic = editPic.value.trim();
+      if(nome) userName.textContent = nome; if(email) userEmail.textContent = email; if(pic) loadAvatar(pic);
       modal.style.display = 'none';
-
-      if (email) {
-        try {
-          const { error } = await supabase
-            .from('dadoscetep')
-            .update({ nome, picture: pic })
-            .eq('email', email);
-          if (error) console.warn('Erro ao salvar:', error);
-        } catch (err) {
-          console.warn('Erro ao salvar no Supabase:', err);
-        }
-      }
+      if(email){ try{ const { error } = await supabase.from('dadoscetep').update({ nome, picture: pic }).eq('email', email); if(error) console.warn('Erro ao salvar:', error); }catch(err){console.warn('Erro ao salvar no Supabase:', err);} }
     });
 
-    /***** AVATAR *****/
-    function loadAvatar(url) {
-      avatarSkeleton.style.display = 'none';
-      avatar.src = url || 'imagen/default.png';
-      avatar.style.display = 'block';
+    function loadAvatar(url){ avatar.src = url || 'imagen/default.png'; }
+
+    async function carregarPerfil(){ let email = localStorage.getItem('userEmail'); if(!email){ const token = localStorage.getItem('googleToken'); const payload = parseJwt(token); email = payload?.email; }
+      if(!email){ userName.textContent = 'Convidado'; userTag.textContent = 'Faça login para ver seu perfil'; userEmail.textContent = '—'; loadAvatar('imagen/default.png'); renderTopics(); return; }
+
+      userEmail.textContent = email; userName.textContent = 'Carregando...';
+
+      try{
+        const { data, error } = await supabase.from('dadoscetep').select('nome, email, picture, created_at').eq('email', email).single();
+        if(error || !data){ console.warn('Usuário não encontrado:', error); userName.textContent = email.split('@')[0]; userTag.textContent = 'Perfil básico'; loadAvatar('imagen/default.png'); }
+        else{ userName.textContent = data.nome || email.split('@')[0]; userEmail.textContent = data.email || email; userTag.textContent = 'Bem-vindo(a)'; loadAvatar(data.picture || 'imagen/default.png'); }
+      }catch(err){ console.error('Erro crítico:', err); userName.textContent = email.split('@')[0]; userTag.textContent = 'Erro ao conectar'; loadAvatar('imagen/default.png'); }
+      finally{ renderTopics(); profileCard.animate([{ transform: 'scale(0.998)' }, { transform: 'scale(1)' }], { duration: 300, easing: 'ease-out' }); }
     }
 
-    /***** CARREGAR PERFIL *****/
-    async function carregarPerfil() {
-      let email = localStorage.getItem('userEmail');
-      if (!email) {
-        const token = localStorage.getItem('googleToken');
-        const payload = parseJwt(token);
-        email = payload?.email;
-      }
-
-      if (!email) {
-        userName.textContent = 'Convidado';
-        userTag.textContent = 'Faça login para ver seu perfil';
-        userEmail.textContent = '—';
-        loadAvatar('imagen/default.png');
-        coursesCount.textContent = '0';
-        xp.textContent = '0';
-        memberSince.textContent = '—';
-        renderTopics();
-        return;
-      }
-
-      userEmail.textContent = email;
-      userName.textContent = 'Carregando...';
-      avatarSkeleton.style.display = 'block';
-      avatar.style.display = 'none';
-
-      try {
-        const { data, error } = await supabase
-          .from('dadoscetep')
-          .select('nome, email, picture, created_at')
-          .eq('email', email)
-          .single();
-
-        if (error || !data) {
-          console.warn('Usuário não encontrado:', error);
-          userName.textContent = email.split('@')[0];
-          userTag.textContent = 'Perfil básico';
-          loadAvatar('imagen/default.png');
-        } else {
-          userName.textContent = data.nome || email.split('@')[0];
-          userEmail.textContent = data.email || email;
-          userTag.textContent = 'Bem-vindo(a)';
-          loadAvatar(data.picture || 'imagen/default.png');
-          memberSince.textContent = data.created_at
-            ? new Date(data.created_at).toLocaleDateString('pt-BR')
-            : '—';
-        }
-
-        coursesCount.textContent = Math.max(5, Math.floor(Math.random() * 28));
-        xp.textContent = Math.floor(Math.random() * 9800) + ' XP';
-
-      } catch (err) {
-        console.error('Erro crítico:', err);
-        userName.textContent = email.split('@')[0];
-        userTag.textContent = 'Erro ao conectar';
-        loadAvatar('imagen/default.png');
-        coursesCount.textContent = '—';
-        xp.textContent = '—';
-        memberSince.textContent = '—';
-      } finally {
-        renderTopics();
-        profileCard.animate([{ transform: 'scale(0.996)' }, { transform: 'scale(1)' }], {
-          duration: 300,
-          easing: 'ease-out'
-        });
-      }
-    }
-
-    // Event listeners
     document.getElementById('refreshBtn').addEventListener('click', carregarPerfil);
-    document.getElementById('logoutBtn').addEventListener('click', () => {
-      localStorage.removeItem('userEmail');
-      localStorage.removeItem('googleToken');
-      location.href = 'index.html';
-    });
+    document.getElementById('logoutBtn').addEventListener('click', () => { localStorage.removeItem('userEmail'); localStorage.removeItem('googleToken'); location.href = 'index.html'; });
     document.getElementById('visitBtn').addEventListener('click', () => location.href = 'historia.html');
 
-    /***** WELCOME (first visit) LOGIC *****/
     const welcomeModal = document.getElementById('welcomeModal');
     const welcomeClose = document.getElementById('welcomeClose');
     const dontShow = document.getElementById('dontShow');
-    const confettiLayer = document.getElementById('confettiLayer');
+    const confettiWrap = document.getElementById('confettiWrap');
 
-    function createConfetti(count = 40) {
-      // reduz confetes em telas pequenas para desempenho
-      if (window.innerWidth < 480) count = Math.max(12, Math.floor(count / 3));
-      confettiLayer.innerHTML = '';
-      for (let i = 0; i < count; i++) {
-        const el = document.createElement('span');
-        el.className = 'confetti';
-        const left = Math.random() * 100;
-        const size = 6 + Math.random() * 14;
+    function random(min, max){ return Math.random() * (max - min) + min; }
+
+    function launchConfetti(){
+      confettiWrap.innerHTML = '';
+      const colors = ['#ff3b3b','#ffd23f','#64b5f6','#7cf59b','#d69df7','#ff8fa3'];
+      const pieces = 42;
+      for(let i=0;i<pieces;i++){
+        const el = document.createElement('div');
+        el.className = 'confetti-piece';
+        const left = Math.floor(random(5,95));
+        const dx = Math.floor(random(-80,80));
+        const rot = Math.floor(random(180,1080));
+        const delay = (random(0,0.6)).toFixed(2) + 's';
+        const duration = (random(0.9,1.6)).toFixed(2) + 's';
         el.style.left = left + '%';
-        el.style.width = size + 'px';
-        el.style.height = (size * 1.2) + 'px';
-        el.style.background = `hsl(${Math.floor(Math.random() * 360)}, 75%, 60%)`;
-        el.style.top = (Math.random() * -30) + 'vh';
-        el.style.animationDuration = (1.2 + Math.random() * 1.6) + 's';
-        el.style.animationDelay = (Math.random() * 0.6) + 's';
-        el.style.transform = `rotate(${Math.random() * 360}deg)`;
-        confettiLayer.appendChild(el);
+        el.style.background = colors[i % colors.length];
+        el.style.setProperty('--dx', dx + 'px');
+        el.style.setProperty('--rot', rot + 'deg');
+        el.style.animationDelay = delay;
+        el.style.animationDuration = duration;
+        if(Math.random() > 0.5){ el.style.width = '12px'; el.style.height = '8px'; }
+        confettiWrap.appendChild(el);
       }
+      setTimeout(()=>{ if(confettiWrap) confettiWrap.innerHTML = ''; }, 3000);
     }
 
-    function showWelcome() {
-      const seen = localStorage.getItem('seenWelcome');
-      if (seen) return;
-      createConfetti(48);
-      welcomeModal.classList.add('visible');
-      // foco no botão fechar para acessibilidade
-      setTimeout(() => document.getElementById('welcomeClose').focus(), 180);
+    function showWelcome(){ const seen = localStorage.getItem('seenWelcome'); if(seen) return; welcomeModal.style.display = 'flex'; setTimeout(() => { welcomeClose.focus(); launchConfetti(); }, 180); }
+    function hideWelcome(save){ welcomeModal.style.display = 'none'; if(save) localStorage.setItem('seenWelcome','1'); profileCard.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.02)' }, { transform: 'scale(1)' }], { duration: 420, easing: 'ease-out' }); }
+    welcomeClose.addEventListener('click', () => { hideWelcome(dontShow.checked); });
 
-      // ✅ Fazer os confetes sumirem após 3 segundos
-      setTimeout(() => {
-        if (confettiLayer) confettiLayer.innerHTML = '';
-      }, 3000); // 3000ms = 3 segundos
-    }
+    // Nova funcionalidade: toggle entre "Equipe de Desenvolvimento" <-> "Boas-vindas"
+    const devToggleBtn = document.getElementById('devToggleBtn');
+    const welcomeLeft = document.querySelector('.welcome-left');
+    const welcomeBadge = document.querySelector('.welcome-badge');
+    const welcomeTitle = document.querySelector('.welcome-title');
+    const welcomeSub = document.querySelector('.welcome-sub');
+    const dontShowContainer = dontShow.parentElement;
+    const originalHeroTitleText = (devToggleBtn.querySelector('.hero-title') || {}).textContent || 'Equipe de Desenvolvimento';
 
-    function hideWelcome(save) {
-      welcomeModal.classList.remove('visible');
-      if (save) localStorage.setItem('seenWelcome', '1');
-      // small celebration: pulse the profile card
-      profileCard.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.02)' }, { transform: 'scale(1)' }], { duration: 420, easing: 'ease-out' });
-    }
+    // referência original da lista de desenvolvedores (mantida dentro do botão)
+    const devListOriginal = document.getElementById('devList');
 
-    welcomeClose.addEventListener('click', () => {
-      hideWelcome(dontShow.checked);
+    // variável para o clone que será inserido dentro do welcome-left
+    let devListClone = null;
+
+    devToggleBtn.addEventListener('click', (e) => {
+      const isActive = devToggleBtn.classList.contains('dev-active');
+      const heroTitleEl = devToggleBtn.querySelector('.hero-title');
+
+      if (!isActive) {
+        // esconder o conteúdo de boas-vindas (mantendo os elementos no DOM)
+        welcomeBadge.style.display = 'none';
+        welcomeTitle.style.display = 'none';
+        welcomeSub.style.display = 'none';
+        dontShowContainer.style.display = 'none';
+
+        // clonar a lista de devs e inserir na área da esquerda (onde estava o texto)
+        if (devListOriginal) {
+          devListClone = devListOriginal.cloneNode(true);
+          devListClone.id = 'devListClone';
+          devListClone.classList.add('dev-list-clone');
+          devListClone.style.display = 'flex';
+          // garante layout vertical e rolagem suave
+          devListClone.style.maxHeight = '360px';
+          devListClone.style.overflowY = 'auto';
+          devListClone.style.paddingRight = '6px';
+          welcomeLeft.appendChild(devListClone);
+
+          // animação de entrada suave
+          requestAnimationFrame(() => {
+            devListClone.style.opacity = '1';
+            devListClone.style.transform = 'translateY(0)';
+          });
+        }
+
+        // marcar estado ativo e alterar texto do botão (acessível também)
+        devToggleBtn.classList.add('dev-active');
+        devToggleBtn.setAttribute('aria-pressed', 'true');
+        if (heroTitleEl) heroTitleEl.textContent = 'Boas-vindas';
+        devToggleBtn.title = 'Mostrar boas-vindas';
+      } else {
+        // voltar ao estado de boas-vindas
+        welcomeBadge.style.display = '';
+        welcomeTitle.style.display = '';
+        welcomeSub.style.display = '';
+        dontShowContainer.style.display = '';
+
+        // animação de saída e remoção da lista
+        if (devListClone) {
+          devListClone.style.opacity = '0';
+          devListClone.style.transform = 'translateY(6px)';
+          setTimeout(() => { if (devListClone) { devListClone.remove(); devListClone = null; } }, 260);
+        }
+
+        // restaurar estado do botão
+        devToggleBtn.classList.remove('dev-active');
+        devToggleBtn.setAttribute('aria-pressed', 'false');
+        if (heroTitleEl) heroTitleEl.textContent = originalHeroTitleText;
+        devToggleBtn.title = 'Equipe de Desenvolvimento';
+      }
     });
 
-    // show welcome once the document is ready (before loading profile for snappiness)
-    document.addEventListener('DOMContentLoaded', () => {
-      // show welcome first visit
-      try { showWelcome(); } catch (e) { console.warn('Welcome failed:', e); }
-      // then load profile as before
-      carregarPerfil();
-    });
+    document.addEventListener('keydown', (e) => { if(e.key === 'Escape' && welcomeModal.style.display === 'flex'){ hideWelcome(dontShow.checked); } });
 
+    document.addEventListener('DOMContentLoaded', () => { try{ showWelcome(); }catch(e){ console.warn('Welcome failed:', e);} carregarPerfil(); });
   </script>
 </body>
 </html>
