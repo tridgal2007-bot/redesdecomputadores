@@ -519,13 +519,34 @@
 
     .welcome-close {
       position: absolute;
-      top: 14px;
-      right: 14px;
-      background: transparent;
-      border-radius: 10px;
-      padding: 8px;
-      border: 1px solid rgba(255,255,255,0.04);
+      top: 12px;
+      right: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
       z-index: 10;
+      transition: all 0.2s ease;
+      color: var(--text);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .welcome-close:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: scale(1.1);
+      box-shadow: var(--shadow);
+    }
+
+    .welcome-close:focus {
+      outline: none;
+      box-shadow: var(--focus-ring);
+    }
+
+    .welcome-close i {
+      font-size: 1.2rem;
     }
 
     /* Confete */
@@ -705,7 +726,7 @@
       <!-- LEFT -->
       <section class="left" aria-hidden="false">
         <div class="avatar-wrap center" id="avatarWrap">
-          <img id="avatar" class="avatar" src="" alt="Foto do usuário" />
+          <img id="avatar" class="avatar" src="" alt="Foto do usuário" loading="lazy" />
         </div>
 
         <div class="name" id="nameBlock">
@@ -771,11 +792,9 @@
 
       <div class="welcome-left">
         <div class="welcome-badge">Seja bem-vindo(a)</div>
-        <h2 class="welcome-title">Olá! É ótimo ter você por aqui.</h2>
-        <p class="welcome-sub">Bem-vindo ao Mundo das Redes de Computadores!<br><br>
-Seja bem-vindo ao nosso site dedicado ao universo das redes de computadores!<br><br>
-Aqui você vai aprender de forma simples e prática como os computadores se conectam, trocam informações e formam a base da comunicação digital que usamos todos os dias.<br><br>
-O objetivo é mostrar a importância das redes na sociedade atual e como elas tornam a comunicação digital possível.</p>
+        <h2 class="welcome-title">Bem-vindo ao Mundo das Redes de Computadores!</h2>
+Descubra de forma simples e prática como os computadores se conectam, trocam dados e formam a rede que impulsiona nossa comunicação digital diária.<br><br>
+Nosso objetivo: mostrar a importância das redes na sociedade moderna e como elas viabilizam o mundo conectado que conhecemos.</p>
 
         <label class="small" style="margin-top:12px;display:block"><input id="dontShow" type="checkbox" style="margin-right:8px"> Não mostrar novamente</label>
       </div>
@@ -828,7 +847,18 @@ O objetivo é mostrar a importância das redes na sociedade atual e como elas to
       {href:'seguranca.html', icon:'lucide-shield-check', title:'Segurança'}
     ];
 
-    function renderTopics(){ topicsGrid.innerHTML=''; for(const t of topicos){ const el = document.createElement('a'); el.className='topic'; el.href=t.href; el.innerHTML = `<i class="${t.icon}"></i><div><strong>${t.title}</strong><span class="muted small">Abrir</span></div>`; topicsGrid.appendChild(el);} }
+    function renderTopics(){ 
+      const fragment = document.createDocumentFragment(); 
+      topicsGrid.innerHTML=''; 
+      for(const t of topicos){ 
+        const el = document.createElement('a'); 
+        el.className='topic'; 
+        el.href=t.href; 
+        el.innerHTML = `<i class="${t.icon}"></i><div><strong>${t.title}</strong><span class="muted small">Abrir</span></div>`; 
+        fragment.appendChild(el);
+      } 
+      topicsGrid.appendChild(fragment); 
+    }
 
     const modal = document.getElementById('modal');
     const editBtn = document.getElementById('editBtn');
@@ -878,6 +908,7 @@ O objetivo é mostrar a importância das redes na sociedade atual e como elas to
       confettiWrap.innerHTML = '';
       const colors = ['#ff3b3b','#ffd23f','#64b5f6','#7cf59b','#d69df7','#ff8fa3'];
       const pieces = 42;
+      const fragment = document.createDocumentFragment();
       for(let i=0;i<pieces;i++){
         const el = document.createElement('div');
         el.className = 'confetti-piece';
@@ -893,9 +924,12 @@ O objetivo é mostrar a importância das redes na sociedade atual e como elas to
         el.style.animationDelay = delay;
         el.style.animationDuration = duration;
         if(Math.random() > 0.5){ el.style.width = '12px'; el.style.height = '8px'; }
-        confettiWrap.appendChild(el);
+        fragment.appendChild(el);
       }
-      setTimeout(()=>{ if(confettiWrap) confettiWrap.innerHTML = ''; }, 3000);
+      confettiWrap.appendChild(fragment);
+      requestAnimationFrame(() => {
+        setTimeout(()=>{ if(confettiWrap) confettiWrap.innerHTML = ''; }, 3000);
+      });
     }
 
     function showWelcome(){ const seen = localStorage.getItem('seenWelcome'); if(seen) return; welcomeModal.style.display = 'flex'; setTimeout(() => { welcomeClose.focus(); launchConfetti(); }, 180); }
@@ -963,7 +997,9 @@ O objetivo é mostrar a importância das redes na sociedade atual e como elas to
         if (devListClone) {
           devListClone.style.opacity = '0';
           devListClone.style.transform = 'translateY(6px)';
-          setTimeout(() => { if (devListClone) { devListClone.remove(); devListClone = null; } }, 260);
+          requestAnimationFrame(() => {
+            setTimeout(() => { if (devListClone) { devListClone.remove(); devListClone = null; } }, 260);
+          });
         }
 
         // restaurar estado do botão
