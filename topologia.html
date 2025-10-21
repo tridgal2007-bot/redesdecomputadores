@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0d1525" />
-  <title>Como Funcionam Redes de Computadores</title>
+  <title>Topologias de Rede</title>
 
   <!-- Fontes premium -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -70,82 +70,32 @@
 
     .content-section, .quiz-section { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 18px; padding: 20px; box-shadow: 0 6px 24px rgba(0, 10, 20, 0.5); backdrop-filter: blur(8px); position: relative; overflow: hidden; width: 100%; }
 
-    /* Tabs (simplified to single) */
-    .tabs { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
-    .tab { padding: 9px 14px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 13px; background: linear-gradient(90deg, var(--accent-light), var(--accent)); color: var(--bg-900); border: 1px solid var(--accent); }
+    /* Types Explorer - Adapted for Topologies */
+    .types-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
+    .types-title { color: var(--text-primary); font-size: 18px; font-weight: 700; }
+    .types-list { display: grid; gap: 12px; margin-top: 12px; }
+    .type-item { background: rgba(255,255,255,0.03); border: 1px solid var(--card-border); border-radius: 12px; padding: 16px; cursor: pointer; transition: var(--transition); position: relative; overflow: hidden; }
+    .type-item:hover { background: rgba(143, 233, 255, 0.06); transform: translateY(-2px); box-shadow: var(--glow); }
+    .type-item.active { background: rgba(0, 168, 255, 0.08); border-color: var(--accent); }
+    .type-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+    .type-icon { font-size: 20px; color: var(--accent-light); }
+    .type-title { font-size: 16px; font-weight: 700; color: var(--text-primary); flex: 1; }
+    .type-description { line-height: 1.5; color: var(--text-secondary); font-size: 14px; display: none; }
+    .type-item.active .type-description { display: block; }
+    .type-toggle { background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 16px; transition: var(--transition); }
+    .type-item.active .type-toggle { transform: rotate(180deg); color: var(--accent); }
 
-    .tabpanel { display: block; }
-    .tabpanel h3 { color: var(--text-primary); font-size: 16px; font-weight: 700; margin-bottom: 10px; }
-    .tabpanel p, .tabpanel li { line-height: 1.5; font-size: 14px; color: var(--text-secondary); }
+    /* Canvas Integration */
+    canvas { background: #091a2f; width: 100%; height: 400px; border-radius: 10px; margin-top: 20px; display: block; }
 
-    /* Simulator - Improved responsive */
-    .sim-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
-    .sim-title { color: var(--text-primary); font-size: 18px; font-weight: 700; }
-    #sim { 
-      width: 100%; 
-      height: 300px; 
-      min-height: 250px; 
-      max-height: 400px;
-      background: rgba(4, 16, 41, 0.8); 
-      border: 1px solid var(--card-border); 
-      border-radius: 12px; 
-      display: flex; 
-      align-items: center; 
-      justify-content: center; 
-      position: relative; 
-      overflow: hidden; 
-      margin-bottom: 12px; 
-    }
-    @media (min-width: 992px) { #sim { height: 360px; } }
-    @media (max-width: 768px) { #sim { height: 250px; } }
-    @media (max-width: 480px) { #sim { height: 200px; } }
-
-    .node { 
-      width: 60px; 
-      height: 60px; 
-      min-width: 40px; 
-      min-height: 40px;
-      border-radius: 12px; 
-      background: linear-gradient(135deg, var(--text-primary), var(--accent-light)); 
-      display: flex; 
-      flex-direction: column; 
-      align-items: center; 
-      justify-content: center; 
-      border: 1px solid var(--card-border); 
-      position: absolute; 
-      cursor: pointer; 
-      transition: var(--transition); 
-      font-size: 10px; 
-      text-align: center; 
-      padding: 4px; 
-      box-shadow: var(--glow); 
-      z-index: 5;
-    }
-    .node .label { font-size: 9px; margin-top: 4px; color: var(--bg-900); font-weight: 600; }
-    .node:hover { transform: scale(1.1); box-shadow: 0 0 15px rgba(0, 168, 255, 0.4); z-index: 10; }
-    @media (max-width: 768px) {
-      .node { width: 50px; height: 50px; font-size: 9px; padding: 3px; }
-      .node .label { font-size: 8px; }
-    }
-    @media (max-width: 480px) {
-      .node { width: 40px; height: 40px; font-size: 8px; padding: 2px; }
-      .node .label { font-size: 7px; }
-    }
-    svg.packet { position: absolute; width: 12px; height: 12px; z-index: 3; }
-
-    /* Connection lines for improved visual */
-    .connection { position: absolute; height: 2px; background: linear-gradient(90deg, var(--accent), var(--accent-light)); transform-origin: left center; box-shadow: 0 0 6px rgba(0, 168, 255, 0.25); z-index: 1; }
-
-    .sim-controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-    select { background: rgba(255,255,255,0.03); border: 1px solid var(--card-border); color: var(--text-primary); padding: 6px 8px; border-radius: 6px; font-size: 12px; }
-
-    /* Concepts */
-    .concepts-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
+    /* Concepts (integrated) */
+    .concepts-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
     .concepts-title { color: var(--text-primary); font-size: 18px; font-weight: 700; }
     .concepts-list { display: grid; gap: 8px; }
-    .concept-item { padding: 10px; background: rgba(255,255,255,0.02); border-radius: 8px; border-left: 3px solid var(--accent); }
+    .concept-item { padding: 10px; background: rgba(255,255,255,0.02); border-radius: 8px; border-left: 3px solid var(--accent); display: flex; align-items: center; gap: 8px; }
+    .concept-icon { color: var(--accent-light); font-size: 14px; }
 
-    /* Quiz like first */
+    /* Quiz like previous */
     .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
     .quiz-title { color: var(--text-primary); font-size: 18px; font-weight: 700; }
     .progress-container { height: 8px; background: rgba(255,255,255,0.06); border-radius: 6px; margin: 12px 0; overflow: hidden; }
@@ -178,9 +128,10 @@
       .quiz-controls { width: 100%; flex-direction: column; align-items: center; }
       .nav-buttons, .score-display { width: 100%; justify-content: center; }
       .btn, .ghost { width: auto; padding: 8px 12px; font-size: 12px; }
-      .tabs { justify-content: center; }
-      .sim-controls { flex-direction: column; align-items: stretch; }
-      select { width: 100%; }
+      .types-list { gap: 10px; }
+      .type-item { padding: 14px; }
+      .type-title { font-size: 15px; }
+      canvas { height: 300px; }
     }
     @media (max-width: 480px) {
       .container { padding: 12px; }
@@ -188,6 +139,8 @@
       h1 { font-size: 18px; }
       .subtitle { font-size: 12px; }
       .btn, .ghost { padding: 6px 10px; font-size: 11px; }
+      .type-item { padding: 12px; }
+      canvas { height: 250px; }
     }
 
   </style>
@@ -195,11 +148,11 @@
 <body>
   <div class="container">
     <header role="banner">
-      <div class="logo" aria-hidden="true">C→Net</div>
+      <div class="logo" aria-hidden="true">T→Net</div>
 
       <div class="header-content">
-        <h1>Como Funcionam Redes de Computadores</h1>
-        <p class="subtitle">Explore conceitos fundamentais, simule tráfego de pacotes e teste seu conhecimento com interações práticas.</p>
+        <h1>Topologias de Rede</h1>
+        <p class="subtitle">Explore as principais topologias de rede, visualize-as em diagramas interativos e teste seu conhecimento com um quiz prático.</p>
       </div>
 
       <div class="controls" aria-hidden="false">
@@ -211,43 +164,26 @@
 
     <main class="main-content" role="main">
       <section class="content-section" aria-labelledby="content-title">
-        <div class="sim-header">
-          <h2 class="sim-title" id="content-title">Simulador e Conceitos</h2>
-          <div class="event-year-display">Modo: <span id="current-mode">Como funciona uma rede?</span></div>
+        <div class="types-header">
+          <h2 class="types-title" id="content-title">Explorador de Topologias</h2>
+          <div class="event-year-display">Topologia: <span id="current-type">Estrela</span></div>
         </div>
 
-        <!-- Simplified to single tab -->
-        <div class="tabs" role="tablist">
-          <button class="tab active" data-tab="o-que">Como funciona uma rede?</button>
-        </div>
-        <div id="o-que" class="tabpanel active">
-          <h3>Como funciona uma rede?</h3>
-          <p>Uma rede de computadores conecta dispositivos para que troquem dados. Isso envolve hardware (cabos, switches, roteadores), protocolos (regras de comunicação) e serviços (DNS, HTTP, etc.). Os dados são divididos em pacotes, enviados por caminhos e reensamblados no destino.</p>
+        <div class="types-list" id="types-list">
+          <!-- Types will be inserted by JS -->
         </div>
 
-        <div class="sim-section">
-          <h3>Simulador simples</h3>
-          <p class="muted small">Clique em um nó para ver informações. Clique em "Enviar pacote" para animar um pacote entre nós. Agora totalmente responsivo!</p>
-          <div id="sim" aria-label="Simulador de rede">
-            <!-- nodes serão inseridos por JS -->
-          </div>
-          <div class="sim-controls">
-            <select id="from" class="muted small"></select>
-            <select id="to" class="muted small"></select>
-            <button id="send" class="btn"><i class="fas fa-paper-plane" aria-hidden="true"></i> Enviar pacote</button>
-            <button id="random" class="ghost"><i class="fas fa-random" aria-hidden="true"></i> Aleatório</button>
-          </div>
-        </div>
+        <canvas id="redeCanvas" width="1400" height="400"></canvas>
 
         <div class="concepts-section">
           <div class="concepts-header">
             <h3 class="concepts-title">Conceitos rápidos</h3>
           </div>
           <ul class="concepts-list">
-            <li class="concept-item"><strong>IP:</strong> endereço lógico (ex: 192.168.1.5).</li>
-            <li class="concept-item"><strong>MAC:</strong> endereço de hardware do adaptador de rede.</li>
-            <li class="concept-item"><strong>Roteador:</strong> conecta redes diferentes e encaminha pacotes.</li>
-            <li class="concept-item"><strong>Switch:</strong> conecta dispositivos numa mesma rede local.</li>
+            <li class="concept-item"><i class="fas fa-sitemap concept-icon" aria-hidden="true"></i><strong>Definição:</strong> Arranjo lógico/físico de dispositivos em uma rede.</li>
+            <li class="concept-item"><i class="fas fa-bug concept-icon" aria-hidden="true"></i><strong>Falhas:</strong> Topologias como barramento são sensíveis a quebras no cabo principal.</li>
+            <li class="concept-item"><i class="fas fa-chart-network concept-icon" aria-hidden="true"></i><strong>Desempenho:</strong> Malha oferece redundância, mas consome mais recursos.</li>
+            <li class="concept-item"><i class="fas fa-tools concept-icon" aria-hidden="true"></i><strong>Aplicações:</strong> Estrela comum em LANs modernas por simplicidade.</li>
           </ul>
         </div>
       </section>
@@ -275,43 +211,134 @@
     </main>
 
     <footer role="contentinfo">
-      <p>Resumo: Redes conectam via hardware e protocolos em camadas TCP/IP. Simule pacotes para entender fluxo. Quiz testa conceitos chave como IP, roteamento e switches.</p>
+      <p>Resumo: Estrela para gerenciamento fácil, Anel para fluxo sequencial, Barramento para simplicidade, Malha para redundância. Clique nas topologias para expandir e visualizar.</p>
       <p>Atalhos: ← / → — Navegar perguntas. Enter — Selecionar opção.</p>
-      <p>Dica: Comece pelo simulador para visualizar o tráfego antes do quiz!</p>
+      <p>Dica: Explore as topologias e visualize os diagramas antes do quiz!</p>
     </footer>
   </div>
 
   <script>
-    // --- Dados ---
-    const tabsData = {
-      'o-que': { title: 'Como funciona uma rede?', text: 'Uma rede de computadores conecta dispositivos para que troquem dados. Isso envolve hardware (cabos, switches, roteadores), protocolos (regras de comunicação) e serviços (DNS, HTTP, etc.). Os dados são divididos em pacotes, enviados por caminhos e reensamblados no destino.' }
-    };
+    // --- Canvas Setup ---
+    const canvas = document.getElementById("redeCanvas");
+    const ctx = canvas.getContext("2d");
 
-    // Nodes with relative positions (0-1 scale for responsive)
-    const nodes = [
-      {id:'pc1', label:'PC 1', ip:'192.168.1.2', x:0.08, y:0.15}, // Relative x,y
-      {id:'pc2', label:'PC 2', ip:'192.168.1.3', x:0.38, y:0.20},
-      {id:'server', label:'Servidor', ip:'192.168.1.10', x:0.22, y:0.75},
-      {id:'router', label:'Roteador', ip:'192.168.1.1', x:0.65, y:0.35}
+    function desenharDispositivo(x, y, label) {
+      ctx.beginPath();
+      ctx.arc(x, y, 20, 0, Math.PI * 2);
+      ctx.fillStyle = "#00b7ff";
+      ctx.fill();
+      ctx.strokeStyle = "#00ffff";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.fillStyle = "#fff";
+      ctx.font = "bold 12px 'Space Grotesk'";
+      ctx.textAlign = "center";
+      ctx.fillText(label, x, y + 5);
+    }
+
+    function limpar() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function mostrarTopologia(tipo) {
+      limpar();
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = "#00ffff";
+      ctx.textAlign = "center";
+
+      if (tipo === "estrela") {
+        let centro = { x: canvas.width / 2, y: canvas.height / 2 };
+        let dispositivos = [
+          { x: centro.x - 150, y: centro.y - 100 },
+          { x: centro.x + 150, y: centro.y - 100 },
+          { x: centro.x - 150, y: centro.y + 100 },
+          { x: centro.x + 150, y: centro.y + 100 },
+          { x: centro.x, y: centro.y - 150 }
+        ];
+        dispositivos.forEach((d, i) => {
+          ctx.beginPath();
+          ctx.moveTo(centro.x, centro.y);
+          ctx.lineTo(d.x, d.y);
+          ctx.stroke();
+          desenharDispositivo(d.x, d.y, "PC" + (i + 1));
+        });
+        desenharDispositivo(centro.x, centro.y, "Hub");
+      }
+
+      if (tipo === "anel") {
+        let centro = { x: canvas.width / 2, y: canvas.height / 2 };
+        let r = 150;
+        ctx.beginPath();
+        for (let i = 0; i < 6; i++) {
+          let ang = (i / 6) * Math.PI * 2;
+          let x = centro.x + Math.cos(ang) * r;
+          let y = centro.y + Math.sin(ang) * r;
+          let nextAng = ((i + 1) / 6) * Math.PI * 2;
+          let nx = centro.x + Math.cos(nextAng) * r;
+          let ny = centro.y + Math.sin(nextAng) * r;
+          ctx.moveTo(x, y);
+          ctx.lineTo(nx, ny);
+          desenharDispositivo(x, y, "PC" + (i + 1));
+        }
+        ctx.stroke();
+      }
+
+      if (tipo === "barramento") {
+        let y = canvas.height / 2;
+        ctx.beginPath();
+        ctx.moveTo(100, y);
+        ctx.lineTo(canvas.width - 100, y);
+        ctx.stroke();
+        for (let i = 0; i < 5; i++) {
+          let x = 200 + i * 150;
+          ctx.beginPath();
+          ctx.moveTo(x, y);
+          ctx.lineTo(x, y - 70);
+          ctx.stroke();
+          desenharDispositivo(x, y - 90, "PC" + (i + 1));
+        }
+      }
+
+      if (tipo === "malha") {
+        let pontos = [
+          { x: canvas.width / 3, y: canvas.height / 3 },
+          { x: (2 * canvas.width) / 3, y: canvas.height / 3 },
+          { x: canvas.width / 3, y: (2 * canvas.height) / 3 },
+          { x: (2 * canvas.width) / 3, y: (2 * canvas.height) / 3 }
+        ];
+        for (let i = 0; i < pontos.length; i++) {
+          for (let j = i + 1; j < pontos.length; j++) {
+            ctx.beginPath();
+            ctx.moveTo(pontos[i].x, pontos[i].y);
+            ctx.lineTo(pontos[j].x, pontos[j].y);
+            ctx.stroke();
+          }
+        }
+        pontos.forEach((p, i) => desenharDispositivo(p.x, p.y, "PC" + (i + 1)));
+      }
+    }
+
+    // --- Dados ---
+    const typesData = [
+      { id: 'estrela', title: 'Topologia em Estrela', icon: 'fas fa-star', text: 'Todos os dispositivos se conectam a um ponto central (hub ou switch). Fácil de gerenciar e adicionar novos nós, mas falha no centro afeta toda a rede. Comum em LANs modernas.', tts: 'Estrela: Conexões centrais para gerenciamento simples, mas ponto único de falha.' },
+      { id: 'anel', title: 'Topologia em Anel', icon: 'fas fa-circle', text: 'Dispositivos formam um círculo fechado, com dados passando sequencialmente (ex: token passing). Eficiente em tráfego previsível, mas quebra no anel interrompe o fluxo.', tts: 'Anel: Fluxo sequencial em círculo, eficiente mas sensível a falhas.' },
+      { id: 'barramento', title: 'Topologia em Barramento', icon: 'fas fa-minus', text: 'Um único cabo principal conecta todos os dispositivos. Simples e barata de instalar, mas difícil de diagnosticar falhas e suscetível a colisões.', tts: 'Barramento: Cabo único simples, mas propenso a falhas e colisões.' },
+      { id: 'malha', title: 'Topologia em Malha', icon: 'fas fa-th', text: 'Cada dispositivo se conecta diretamente a todos os outros. Alta redundância e desempenho, mas cara e complexa devido ao grande número de cabos.', tts: 'Malha: Conexões totais para redundância máxima, mas cara e complexa.' }
     ];
 
     const quiz = [
-      { q: 'Como os dados são enviados em uma rede?', opts: ['Em blocos contínuos', 'Divididos em pacotes', 'Apenas por cabos'], a: 1, explain: 'Os dados são divididos em pacotes para transmissão eficiente e reensamblados no destino.' },
-      { q: 'O que é um endereço IP?', opts: ['Endereço físico do cabo', 'Identificador lógico do dispositivo', 'Nome do roteador'], a: 1, explain: 'IP é um endereço lógico que identifica dispositivos em uma rede.' },
-      { q: 'Qual dispositivo conecta computadores em uma rede local?', opts: ['Roteador', 'Switch', 'Modem'], a: 1, explain: 'O switch conecta e gerencia o tráfego entre dispositivos na mesma rede local.' },
-      { q: 'O que um roteador faz?', opts: ['Armazena dados localmente', 'Encaminha pacotes entre redes diferentes', 'Imprime documentos'], a: 1, explain: 'O roteador direciona pacotes de uma rede para outra, como da casa para a internet.' },
-      { q: 'Por que redes usam protocolos?', opts: ['Para decorar cabos', 'Definir regras de comunicação', 'Aumentar o tamanho dos pacotes'], a: 1, explain: 'Protocolos são conjuntos de regras que garantem que dispositivos se comuniquem corretamente.' }
+      { q: 'Qual topologia conecta todos os dispositivos a um ponto central?', opts: ['Anel', 'Estrela', 'Malha'], a: 1, explain: 'Estrela usa um hub central para conexões radiais, facilitando o gerenciamento.' },
+      { q: 'Em qual topologia os dados passam por todos os dispositivos em sequência?', opts: ['Anel', 'Barramento', 'Estrela'], a: 0, explain: 'Anel forma um loop onde os dados circulam sequencialmente entre nós.' },
+      { q: 'Qual topologia usa um único cabo principal para conectar dispositivos?', opts: ['Barramento', 'Malha', 'Estrela'], a: 0, explain: 'Barramento emprega um cabo coaxial compartilhado por todos os dispositivos.' },
+      { q: 'Qual topologia tem o maior número de conexões físicas?', opts: ['Estrela', 'Anel', 'Malha'], a: 2, explain: 'Malha requer conexões diretas entre todos os pares de dispositivos.' },
+      { q: 'Qual topologia é mais suscetível a falhas se o cabo principal quebrar?', opts: ['Barramento', 'Malha', 'Anel'], a: 0, explain: 'Barramento depende de um único cabo; uma quebra afeta toda a rede.' }
     ];
 
     // --- DOM ---
-    const currentMode = document.getElementById('current-mode');
-    const playAll = document.getElementById('readAll'); // renamed for consistency
+    const currentType = document.getElementById('current-type');
+    const typesList = document.getElementById('types-list');
+    const readAll = document.getElementById('readAll');
     const download = document.getElementById('download');
-    const sim = document.getElementById('sim');
-    const fromSel = document.getElementById('from');
-    const toSel = document.getElementById('to');
-    const sendBtn = document.getElementById('send');
-    const randomBtn = document.getElementById('random');
     const questionContainer = document.getElementById('question-container');
     const prevBtn = document.getElementById('prev');
     const nextBtn = document.getElementById('next');
@@ -320,175 +347,58 @@
     const progressBar = document.getElementById('progress-bar');
 
     // --- Estado ---
-    let currentTab = 'o-que';
+    let currentTypeId = 'estrela';
     let currentQuestion = 0;
     const answers = new Array(quiz.length).fill(null);
     let utterance = null;
 
     // --- Inicialização ---
     document.addEventListener('DOMContentLoaded', () => {
-      setupTabs();
-      renderSimulator(); // New function for responsive render
-      populateSelects();
+      renderTypes();
+      mostrarTopologia(currentTypeId); // Inicializar canvas
       renderQuestion();
       setupEventListeners();
       updateProgress();
     });
 
-    // Tabs (simplified)
-    function setupTabs() {
-      // Set initial content
-      document.getElementById('o-que').innerHTML = `<h3>${tabsData[currentTab].title}</h3><div class="muted">${tabsData[currentTab].text}</div>`;
-      currentMode.textContent = tabsData[currentTab].title;
-    }
-
-    // Improved Simulator: Responsive positioning and connections
-    function renderSimulator() {
-      const width = sim.clientWidth;
-      const height = sim.clientHeight;
-      sim.innerHTML = ''; // Clear
-
-      // Render connections first (static lines between nodes)
-      const connections = [
-        { from: 'pc1', to: 'router' },
-        { from: 'pc2', to: 'router' },
-        { from: 'router', to: 'server' }
-      ];
-
-      connections.forEach(conn => {
-        const fromNode = nodes.find(n => n.id === conn.from);
-        const toNode = nodes.find(n => n.id === conn.to);
-        if (!fromNode || !toNode) return;
-
-        const fromX = fromNode.x * width;
-        const fromY = fromNode.y * height;
-        const toX = toNode.x * width;
-        const toY = toNode.y * height;
-
-        const dx = toX - fromX;
-        const dy = toY - fromY;
-        const length = Math.sqrt(dx * dx + dy * dy);
-        const angle = Math.atan2(dy, dx) * 180 / Math.PI;
-
-        const connection = document.createElement('div');
-        connection.className = 'connection';
-        connection.style.width = `${length}px`;
-        connection.style.left = `${fromX}px`;
-        connection.style.top = `${fromY}px`;
-        connection.style.transform = `rotate(${angle}deg)`;
-        sim.appendChild(connection);
-      });
-
-      // Render nodes with scaled positions
-      nodes.forEach(n => {
-        const nodeWidth = Math.min(60, width * 0.12); // Scale based on width
-        const nodeHeight = Math.min(60, height * 0.2);
-        const fontSize = Math.min(10, nodeWidth * 0.15);
-
-        const el = document.createElement('div');
-        el.className = 'node';
-        el.style.width = `${nodeWidth}px`;
-        el.style.height = `${nodeHeight}px`;
-        el.style.fontSize = `${fontSize}px`;
-        el.style.left = `${n.x * (width - nodeWidth)}px`;
-        el.style.top = `${n.y * (height - nodeHeight)}px`;
-        el.dataset.id = n.id;
-        el.innerHTML = `<strong>${n.label}</strong><div class="label">${n.ip}</div>`;
-        el.setAttribute('role', 'img');
-        el.setAttribute('aria-label', `${n.label} (IP: ${n.ip})`);
-        el.addEventListener('click', () => {
-          // Improved: Use a simple tooltip instead of alert for better UX
-          const tooltip = document.createElement('div');
-          tooltip.style.position = 'absolute';
-          tooltip.style.background = 'rgba(0,0,0,0.8)';
-          tooltip.style.color = 'white';
-          tooltip.style.padding = '8px';
-          tooltip.style.borderRadius = '6px';
-          tooltip.style.fontSize = '12px';
-          tooltip.style.zIndex = '20';
-          tooltip.style.left = '50%';
-          tooltip.style.top = '50%';
-          tooltip.style.transform = 'translate(-50%, -50%)';
-          tooltip.innerHTML = `<strong>${n.label}</strong><br>IP: ${n.ip}<br>MAC: 00:1A:2B:3C:${n.id.slice(-2)}`;
-          tooltip.addEventListener('click', () => tooltip.remove());
-          document.body.appendChild(tooltip);
-          setTimeout(() => { if (document.body.contains(tooltip)) tooltip.remove(); }, 3000);
+    // Render types as expandable cards
+    function renderTypes() {
+      typesList.innerHTML = '';
+      typesData.forEach(type => {
+        const item = document.createElement('div');
+        item.className = `type-item ${type.id === currentTypeId ? 'active' : ''}`;
+        item.dataset.id = type.id;
+        item.innerHTML = `
+          <div class="type-header">
+            <i class="${type.icon} type-icon" aria-hidden="true"></i>
+            <span class="type-title">${type.title}</span>
+            <button class="type-toggle" aria-label="Expandir/Contrair"><i class="fas fa-chevron-down" aria-hidden="true"></i></button>
+          </div>
+          <div class="type-description">${type.text}</div>
+        `;
+        item.addEventListener('click', (e) => {
+          if (e.target.closest('.type-toggle')) return;
+          item.classList.toggle('active');
         });
-        sim.appendChild(el);
+        item.querySelector('.type-toggle').addEventListener('click', (e) => {
+          e.stopPropagation();
+          item.classList.toggle('active');
+        });
+        typesList.appendChild(item);
       });
+      updateCurrentType();
     }
 
-    function populateSelects() {
-      nodes.forEach(n => {
-        const o1 = document.createElement('option'); o1.value = n.id; o1.textContent = n.label + ' (' + n.ip + ')'; fromSel.appendChild(o1);
-        const o2 = document.createElement('option'); o2.value = n.id; o2.textContent = n.label + ' (' + n.ip + ')'; toSel.appendChild(o2);
-      });
-    }
-
-    function sendPacket(fromId, toId) {
-      const from = nodes.find(n => n.id === fromId);
-      const to = nodes.find(n => n.id === toId);
-      if (!from || !to || fromId === toId) return;
-
-      const width = sim.clientWidth;
-      const height = sim.clientHeight;
-
-      // Cleanup previous
-      sim.querySelectorAll('.packet, .info-msg').forEach(el => el.remove());
-
-      const p = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-      p.classList.add('packet');
-      p.setAttribute('viewBox', '0 0 24 24');
-      p.style.left = `${from.x * width}px`;
-      p.style.top = `${from.y * height}px`;
-      p.innerHTML = '<circle cx="12" cy="12" r="6" fill="white" opacity="0.9"/><animate attributeName="opacity" values="0.9;0.3;0.9" dur="1s" repeatCount="indefinite"/>';
-      sim.appendChild(p);
-
-      const startX = from.x * width;
-      const startY = from.y * height;
-      const endX = to.x * width;
-      const endY = to.y * height;
-      const dx = endX - startX, dy = endY - startY;
-      let t = 0; const dur = 800; const start = performance.now();
-      const info = document.createElement('div'); 
-      info.className = 'info-msg muted small'; 
-      info.style.position = 'absolute'; 
-      info.style.left = '10px'; 
-      info.style.bottom = '8px'; 
-      info.style.background = 'rgba(0,0,0,0.5)'; 
-      info.style.padding = '4px 8px'; 
-      info.style.borderRadius = '4px'; 
-      info.style.transition = 'opacity 0.3s';
-      info.textContent = `Enviando de ${from.label} → ${to.label}`;
-      sim.appendChild(info);
-
-      function step(now) {
-        t = (now - start) / dur;
-        if (t > 1) t = 1;
-        p.style.left = (startX + dx * t) + 'px';
-        p.style.top = (startY + dy * t) + 'px';
-        if (t < 1) requestAnimationFrame(step);
-        else {
-          sim.removeChild(p);
-          sim.removeChild(info);
-          const msg = document.createElement('div'); 
-          msg.className = 'info-msg muted small'; 
-          msg.style.position = 'absolute'; 
-          msg.style.right = '10px'; 
-          msg.style.bottom = '8px'; 
-          msg.style.background = 'rgba(74,222,128,0.2)'; 
-          msg.style.padding = '4px 8px'; 
-          msg.style.borderRadius = '4px'; 
-          msg.style.color = 'var(--success)';
-          msg.innerHTML = 'Pacote entregue <i class="fas fa-check"></i>';
-          sim.appendChild(msg);
-          setTimeout(() => { if (sim.contains(msg)) sim.removeChild(msg); }, 1500); // Longer success msg
-        }
+    function updateCurrentType() {
+      const activeItem = document.querySelector('.type-item.active') || typesList.firstElementChild;
+      if (activeItem) {
+        currentTypeId = activeItem.dataset.id;
+        currentType.textContent = typesData.find(t => t.id === currentTypeId).title;
+        mostrarTopologia(currentTypeId); // Atualizar canvas
       }
-      requestAnimationFrame(step);
     }
 
-    // Quiz like first
+    // Quiz like previous
     function renderQuestion() {
       const q = quiz[currentQuestion];
       questionContainer.innerHTML = `
@@ -526,18 +436,13 @@
 
     // Listeners
     function setupEventListeners() {
-      // Simulator
-      sendBtn.addEventListener('click', () => sendPacket(fromSel.value, toSel.value));
-      randomBtn.addEventListener('click', () => {
-        const a = nodes[Math.floor(Math.random() * nodes.length)];
-        let b = nodes[Math.floor(Math.random() * nodes.length)];
-        while (b.id === a.id) b = nodes[Math.floor(Math.random() * nodes.length)];
-        fromSel.value = a.id; toSel.value = b.id;
-        sendPacket(a.id, b.id);
-      });
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && (document.activeElement.id === 'from' || document.activeElement.id === 'to')) {
-          sendPacket(fromSel.value, toSel.value);
+      // Types: Click to update current and canvas
+      typesList.addEventListener('click', (e) => {
+        const item = e.target.closest('.type-item');
+        if (item) {
+          document.querySelectorAll('.type-item').forEach(i => i.classList.remove('active'));
+          item.classList.add('active');
+          updateCurrentType();
         }
       });
 
@@ -612,19 +517,12 @@
         const html = '<!doctype html>\n' + document.documentElement.outerHTML;
         const blob = new Blob([html], {type: 'text/html'});
         const url = URL.createObjectURL(blob);
-        const a = document.createElement('a'); a.href = url; a.download = 'como_funcionam_redes_premium.html'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+        const a = document.createElement('a'); a.href = url; a.download = 'topologias_rede_premium.html'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
       });
 
-      playAll.addEventListener('click', () => {
-        const allText = Object.values(tabsData).map(t => t.title + '. ' + t.text).join(' ');
+      readAll.addEventListener('click', () => {
+        const allText = typesData.map(t => t.tts).join(' ');
         speak(allText);
-      });
-
-      // Resize for responsive sim
-      let resizeTimeout;
-      window.addEventListener('resize', () => {
-        clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(renderSimulator, 250); // Debounce
       });
     }
 
