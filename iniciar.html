@@ -5,9 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Perfil do Usuário — Surreal (Azul)</title>
 
-  <!-- Fontes e ícones -->
+  <!-- Fontes -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-  <link href="https://unpkg.com/lucide-static/font/lucide.css" rel="stylesheet">
 
   <!-- Supabase (CDN) -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -251,9 +250,14 @@
       box-shadow: 0 8px 24px rgba(0, 30, 60, 0.3);
     }
 
-    .topic i {
-      font-size: 20px;
+    .topic i,
+    .topic svg {
       color: var(--accent);
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .topic strong {
@@ -695,8 +699,12 @@
       }
       .welcome-title { font-size: 1.2rem; }
       .topics-grid { 
-        grid-template-columns: 1fr; 
+        grid-template-columns: repeat(2, 1fr); 
         gap: 12px; 
+      }
+      .topics-grid > a:nth-child(9) {
+        grid-column: span 2;
+        justify-self: center;
       }
       .topic { 
         padding: 16px; 
@@ -704,7 +712,10 @@
         text-align: center; 
         gap: 8px;
       }
-      .topic i { font-size: 24px; }
+      .topic svg { 
+        width: 28px;
+        height: 28px;
+      }
       .btn { 
         padding: 12px 18px; 
         font-size: 0.9rem; 
@@ -820,7 +831,7 @@ Nosso objetivo: mostrar a importância das redes na sociedade moderna e como ela
     </div>
   </div>
 
-  <!-- Scripts (com melhorias para confetes) -->
+  <!-- Scripts -->
   <script>
     const SUPABASE_URL = 'https://zszcwubydhgoyhxbxfro.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpzemN3dWJ5ZGhnb3loeGJ4ZnJvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4MDk5MDMsImV4cCI6MjA3NTM4NTkwM30.ryioOoPAZnZzGdcTxIjfUcSlYUUqa7arA4qlUukyV7M';
@@ -836,19 +847,72 @@ Nosso objetivo: mostrar a importância das redes na sociedade moderna e como ela
     const topicsGrid = document.getElementById('topicsGrid');
     const profileCard = document.getElementById('profileCard');
 
+    // ✅ TÓPICOS COM SVGs REAIS (SEM DEPENDÊNCIA EXTERNA)
     const topicos = [
-      {href:'oque-e.html', icon:'lucide-network', title:'O que é Redes de Computadores'},
-      {href:'historia.html', icon:'lucide-book', title:'História das Redes'},
-      {href:'como-funciona.html', icon:'lucide-cpu', title:'Como Funciona'},
-      {href:'tipos.html', icon:'lucide-layers', title:'Tipos de Rede'},
-      {href:'dispositivos.html', icon:'lucide-router', title:'Dispositivos'},
-      {href:'topologia.html', icon:'lucide-share-2', title:'Topologias'},
-      {href:'protocolos.html', icon:'lucide-code', title:'Protocolos'},
-      {href:'camadas.html', icon:'lucide-layers-3', title:'Camadas'},
-      {href:'seguranca.html', icon:'lucide-shield-check', title:'Segurança'}
+      {
+        href: 'oque-e.html',
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 0 0-7 17l1.59-1.59C7.46 18.8 8.7 19.5 10 19.5c1.3 0 2.54-.7 3.41-1.59L15 19.5A10 10 0 0 0 12 2z"></path><path d="M16.72 11.03a3.5 3.5 0 0 0-4.72-4.72"></path><path d="M12 12a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"></path></svg>',
+        title: 'Conceito de redes'
+      },
+      {
+        href: 'historia.html',
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path><path d="M8 7h6"></path><path d="M8 11h4"></path><path d="M8 15h6"></path></svg>',
+        title: 'História das Redes'
+      },
+      {
+        href: 'como-funciona.html',
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"></rect><path d="M9 18h6"></path><path d="M9 14h6"></path><path d="M8 6h.01"></path><path d="M16 6h.01"></path><path d="M12 6h.01"></path></svg>',
+        title: 'Como Funciona'
+      },
+      {
+        href: 'tipos.html',
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"></path><path d="m21 12-9 9-9-9"></path><path d="M21 12H3"></path></svg>',
+        title: 'Tipos de Rede'
+      },
+      {
+        href: 'dispositivos.html',
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 22h20"></path><path d="M12 22V8"></path><path d="M6 22V12"></path><path d="M18 22V16"></path><path d="M12 8L8 12"></path><path d="M12 8l4 4"></path></svg>',
+        title: 'Dispositivos'
+      },
+      {
+        href: 'topologia.html',
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="15" r="3"></circle><circle cx="9" cy="7" r="4"></circle><path d="M10 15H6a2 2 0 0 0-2 2v2"></path><path d="m21 15-3.05-3.05a2 2 0 0 0-2.85.05l-.9.9a2 2 0 0 0-.05 2.85L15 18"></path><path d="M10 7h11"></path><path d="M18 21v-7"></path></svg>',
+        title: 'Topologias'
+      },
+      {
+        href: 'protocolos.html',
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 6 4 14"></path><path d="M12 6v14"></path><path d="M8 8v12"></path><path d="M4 4v16"></path></svg>',
+        title: 'Protocolos'
+      },
+      {
+        href: 'camadas.html',
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"></path><path d="M2 12h20"></path><path d="M2 7h20"></path><path d="M2 17h20"></path></svg>',
+        title: 'Camadas'
+      },
+      {
+        href: 'seguranca.html',
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>',
+        title: 'Segurança'
+      }
     ];
 
-    function renderTopics(){ topicsGrid.innerHTML=''; for(const t of topicos){ const el = document.createElement('a'); el.className='topic'; el.href=t.href; el.innerHTML = `<i class="${t.icon}"></i><div><strong>${t.title}</strong><span class="muted small">Abrir</span></div>`; topicsGrid.appendChild(el);} }
+    // ✅ RENDERIZA OS TÓPICOS COM ÍCONES REAIS
+    function renderTopics(){
+      topicsGrid.innerHTML = '';
+      for (const t of topicos) {
+        const el = document.createElement('a');
+        el.className = 'topic';
+        el.href = t.href;
+        el.innerHTML = `
+          <div style="display:flex;align-items:center;justify-content:center;width:24px;height:24px">${t.svg}</div>
+          <div>
+            <strong>${t.title}</strong>
+            <span class="muted small">Abrir</span>
+          </div>
+        `;
+        topicsGrid.appendChild(el);
+      }
+    }
 
     const modal = document.getElementById('modal');
     const editBtn = document.getElementById('editBtn');
@@ -922,7 +986,7 @@ Nosso objetivo: mostrar a importância das redes na sociedade moderna e como ela
     function hideWelcome(save){ welcomeModal.style.display = 'none'; if(save) localStorage.setItem('seenWelcome','1'); profileCard.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.02)' }, { transform: 'scale(1)' }], { duration: 420, easing: 'ease-out' }); }
     welcomeClose.addEventListener('click', () => { hideWelcome(dontShow.checked); });
 
-    // Nova funcionalidade: toggle entre "Equipe de Desenvolvimento" <-> "Boas-vindas"
+    // Toggle equipe de desenvolvedores
     const devToggleBtn = document.getElementById('devToggleBtn');
     const welcomeLeft = document.querySelector('.welcome-left');
     const welcomeBadge = document.querySelector('.welcome-badge');
@@ -930,11 +994,7 @@ Nosso objetivo: mostrar a importância das redes na sociedade moderna e como ela
     const welcomeSub = document.querySelector('.welcome-sub');
     const dontShowContainer = dontShow.parentElement;
     const originalHeroTitleText = (devToggleBtn.querySelector('.hero-title') || {}).textContent || 'Equipe de Desenvolvimento';
-
-    // referência original da lista de desenvolvedores (mantida dentro do botão)
     const devListOriginal = document.getElementById('devList');
-
-    // variável para o clone que será inserido dentro do welcome-left
     let devListClone = null;
 
     devToggleBtn.addEventListener('click', (e) => {
@@ -942,51 +1002,41 @@ Nosso objetivo: mostrar a importância das redes na sociedade moderna e como ela
       const heroTitleEl = devToggleBtn.querySelector('.hero-title');
 
       if (!isActive) {
-        // esconder o conteúdo de boas-vindas (mantendo os elementos no DOM)
         welcomeBadge.style.display = 'none';
         welcomeTitle.style.display = 'none';
         welcomeSub.style.display = 'none';
         dontShowContainer.style.display = 'none';
 
-        // clonar a lista de devs e inserir na área da esquerda (onde estava o texto)
         if (devListOriginal) {
           devListClone = devListOriginal.cloneNode(true);
           devListClone.id = 'devListClone';
-          devListClone.classList.add('dev-list-clone');
           devListClone.style.display = 'flex';
-          // garante layout vertical e rolagem suave
           devListClone.style.maxHeight = '360px';
           devListClone.style.overflowY = 'auto';
           devListClone.style.paddingRight = '6px';
           welcomeLeft.appendChild(devListClone);
-
-          // animação de entrada suave
           requestAnimationFrame(() => {
             devListClone.style.opacity = '1';
             devListClone.style.transform = 'translateY(0)';
           });
         }
 
-        // marcar estado ativo e alterar texto do botão (acessível também)
         devToggleBtn.classList.add('dev-active');
         devToggleBtn.setAttribute('aria-pressed', 'true');
         if (heroTitleEl) heroTitleEl.textContent = 'Boas-vindas';
         devToggleBtn.title = 'Mostrar boas-vindas';
       } else {
-        // voltar ao estado de boas-vindas
         welcomeBadge.style.display = '';
         welcomeTitle.style.display = '';
         welcomeSub.style.display = '';
         dontShowContainer.style.display = '';
 
-        // animação de saída e remoção da lista
         if (devListClone) {
           devListClone.style.opacity = '0';
           devListClone.style.transform = 'translateY(6px)';
           setTimeout(() => { if (devListClone) { devListClone.remove(); devListClone = null; } }, 260);
         }
 
-        // restaurar estado do botão
         devToggleBtn.classList.remove('dev-active');
         devToggleBtn.setAttribute('aria-pressed', 'false');
         if (heroTitleEl) heroTitleEl.textContent = originalHeroTitleText;
