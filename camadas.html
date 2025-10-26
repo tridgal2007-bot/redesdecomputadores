@@ -4,240 +4,206 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0d1525" />
-  <title>Packet-Lite Pro — Construção Guiada com Validação</title>
-
+  <title>Packet-Lite Pro — Construção Guiada (Modo Realista)</title>
   <!-- Fontes premium -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
   <!-- Ícones premium -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
   <style>
-    :root {
-      --bg-900: #071428;
-      --bg-gradient: linear-gradient(160deg, #0a0e17 0%, #0d1525 35%, #121c33 70%, #1a2540 100%);
-      --card-bg: rgba(18, 28, 51, 0.7);
-      --card-border: rgba(143, 233, 255, 0.15);
-      --accent: #00a8ff;
-      --accent-light: #8fe9ff;
-      --text-primary: #ffffff;
-      --text-secondary: #b8d7ea;
-      --success: #4ade80;
-      --warning: #fbbf24;
-      --error: #f87171;
-      --timeline-bg: rgba(0, 168, 255, 0.08);
-      --timeline-progress: linear-gradient(90deg, var(--accent-light), var(--accent));
-      --glow: 0 0 20px rgba(0, 168, 255, 0.35);
-      --transition: all 0.28s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      --rope-base: rgba(0,168,255,0.18);
-      --rope-top: rgba(0,168,255,0.95);
-      --rope-highlight: rgba(99,102,241,0.95);
-      --status-active: #4ade80;
-      --status-inactive: #f87171;
-      --status-connecting: #fbbf24;
+    :root{
+      --bg-900:#071428;
+      --bg-gradient: linear-gradient(160deg,#030416 0%,#071428 35%,#0a1730 70%,#112034 100%);
+      --panel: rgba(11,20,34,0.7);
+      --card-border: rgba(143,233,255,0.08);
+      --accent:#00a8ff;
+      --accent-light:#8fe9ff;
+      --text:#e6f6ff;
+      --muted:#9fbfda;
+      --success:#4ade80;
+      --warning:#fbbf24;
+      --error:#f87171;
+      --glass: rgba(255,255,255,0.03);
+      --glow: 0 10px 30px rgba(0,168,255,0.08);
+      --transition: all .22s cubic-bezier(.2,.9,.2,1);
       --step-complete: #8b5cf6;
     }
-
-    /* Reduced motion preference */
-    @media (prefers-reduced-motion: reduce) {
-      :root { --transition: none; }
-      * { transition: none !important; animation: none !important; }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;background:var(--bg-gradient);font-family:'Space Grotesk','Montserrat',system-ui,-apple-system,'Segoe UI',Roboto,Arial;color:var(--muted);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
+    .container{max-width:1400px;margin:0 auto;padding:18px;min-height:100vh;display:flex;flex-direction:column;gap:12px}
+    header{display:flex;align-items:center;gap:16px;padding:8px 0}
+    .logo{width:72px;height:72px;border-radius:14px;background:linear-gradient(135deg,var(--text),var(--accent));display:grid;place-items:center;color:#041127;font-weight:900;font-size:20px;box-shadow:var(--glow)}
+    h1{margin:0;color:var(--text);font-size:22px;font-weight:800;letter-spacing:-0.4px;background:linear-gradient(to right,var(--text),var(--accent-light));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+    .subtitle{font-size:13px;color:var(--muted);margin-top:6px}
+    .controls{margin-left:auto;display:flex;gap:8px;align-items:center}
+    .main{display:flex;gap:18px;flex:1}
+    .panel{background:var(--panel);border:1px solid var(--card-border);border-radius:14px;padding:18px;box-shadow:0 6px 24px rgba(0,0,0,0.45);backdrop-filter:blur(6px);overflow:hidden}
+    .left{flex:0 0 320px}
+    .center{flex:1;min-height:560px;position:relative;display:flex;flex-direction:column}
+    .right{flex:0 0 360px;min-width:280px}
+    /* device palette */
+    .device-btn{display:flex;gap:10px;align-items:center;padding:10px;border-radius:10px;background:var(--glass);border:1px solid rgba(255,255,255,0.02);cursor:pointer;transition:var(--transition);user-select:none}
+    .device-btn:hover{transform:translateY(-4px);box-shadow:var(--glow)}
+    .device-icon{width:44px;height:44px;border-radius:8px;background:linear-gradient(180deg,rgba(255,255,255,0.03),rgba(0,0,0,0.12));display:grid;place-items:center;font-size:20px;color:var(--accent-light)}
+    .muted{color:var(--muted);font-size:12px}
+    /* canvas */
+    #topo{flex:1;border-radius:12px;overflow:hidden;position:relative;background:
+      radial-gradient(circle at 10% 20%, rgba(8,168,255,0.03) 0%, transparent 20%),
+      linear-gradient(180deg, rgba(255,255,255,0.01), transparent 20%);
+      cursor: grab;
+      transition: cursor 0.2s;
     }
+    #topo.panning{cursor: grabbing;}
+    svg#links{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:2}
+    /* device element */
+    .device{position:absolute;width:160px;padding:10px;border-radius:10px;background:linear-gradient(180deg,#071623,#061422);box-shadow:0 8px 30px rgba(0,0,0,0.6);cursor:grab;user-select:none;z-index:5;border:1px solid rgba(255,255,255,0.02)}
+    .device:active{cursor:grabbing}
+    .dev-head{display:flex;gap:10px;align-items:center}
+    .dev-name{font-weight:700;font-size:13px;color:var(--text);outline:none}
+    .dev-type{font-size:11px;color:var(--muted)}
+    .ports{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;justify-content:center}
+    .port{width:20px;height:20px;border-radius:4px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.03);display:grid;place-items:center;font-size:11px;cursor:pointer;position:relative;transition:box-shadow .18s}
+    .port.wifi{border-radius:50%}
+    .port.connected::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(90deg,rgba(139,92,246,0.18),rgba(0,168,255,0.12));opacity:0.9}
+    .port .led{position:absolute;right:-6px;top:-6px;width:10px;height:10px;border-radius:50%;background:#333;border:1px solid rgba(255,255,255,0.06)}
+    .led.up{background:var(--success);box-shadow:0 0 8px rgba(74,222,128,0.25)}
+    .led.down{background:#333;opacity:0.35}
+    .port:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,0.6)}
+    .network-status{display:flex;gap:6px;margin-top:8px;justify-content:center}
+    .network-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.03)}
+    .network-dot.active{background:var(--success);box-shadow:0 0 6px rgba(74,222,128,0.18)}
+    /* link styles in svg via stroke colors (css vars used inline) */
+    /* inspector */
+    .inspector h3{margin:0 0 8px 0;color:var(--text)}
+    .inspector-row{display:flex;justify-content:space-between;align-items:center;padding:8px;background:rgba(255,255,255,0.02);border-radius:8px;margin-bottom:8px;font-size:13px}
+    .inspector-row input, .inspector-row select{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--text);padding:6px;border-radius:6px;width:100%}
+    .small{font-size:12px;padding:6px 10px;border-radius:8px;background:linear-gradient(90deg,var(--accent-light),var(--accent));color:#041127;border:none;cursor:pointer}
+    .ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted);padding:6px 10px;border-radius:8px}
+    .delete-btn{background:linear-gradient(90deg,var(--error),#ef4444);color:#fff;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px}
+    .delete-btn:hover{background:linear-gradient(90deg,#dc2626,#b91c1c)}
+    /* modals */
+    .modal-back{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:none;z-index:1200;align-items:center;justify-content:center}
+    .modal-back.active{display:flex}
+    .modal{background:var(--panel);padding:18px;border-radius:12px;border:1px solid var(--card-border);width:420px;max-width:96%}
+    .modal h3{margin:0 0 8px 0;color:var(--text)}
+    /* link label near curve */
+    .link-label{font-family:'Space Grotesk';font-size:11px;fill:#cfefff;pointer-events:none}
+    footer{font-size:12px;color:var(--muted);text-align:center;margin-top:12px}
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    html, body { height: 100%; margin: 0; background: var(--bg-gradient); color: var(--text-secondary); font-family: 'Space Grotesk', 'Montserrat', system-ui, -apple-system, 'Segoe UI', Roboto, Arial; overflow-x: hidden; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
-
-    /* Container central */
-    .container { width: 100%; max-width: 1400px; margin: 0 auto; padding: 18px; min-height: 100vh; display: flex; flex-direction: column; }
-
-    header { display: flex; align-items: center; gap: 16px; padding: 12px 0; position: relative; z-index: 10; flex-wrap: wrap; }
-
-    .logo { width: 70px; height: 70px; border-radius: 16px; background: linear-gradient(135deg, var(--text-primary), var(--accent)); display: grid; place-items: center; color: var(--bg-900); font-weight: 800; font-size: 20px; box-shadow: var(--glow); transition: var(--transition); flex-shrink: 0; }
-    .logo:hover { transform: scale(1.04); }
-
-    .header-content { flex: 1; min-width: 0; }
-    h1 { margin: 0; color: var(--text-primary); font-size: 22px; font-weight: 800; letter-spacing: -0.4px; background: linear-gradient(to right, var(--text-primary), var(--accent-light)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
-    .subtitle { margin-top: 6px; color: var(--text-secondary); font-size: 13px; line-height: 1.4; max-width: 64ch; }
-
-    .controls { display: flex; gap: 10px; align-items: center; margin-left: auto; flex-wrap: wrap; justify-content: flex-end; }
-
-    .btn { background: linear-gradient(90deg, var(--accent-light), var(--accent)); color: var(--bg-900); border: 0; padding: 9px 14px; border-radius: 10px; cursor: pointer; font-weight: 700; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; box-shadow: var(--glow); transition: var(--transition); white-space: nowrap; }
-    .btn:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(0,168,255,0.28); }
-
-    .ghost { background: transparent; border: 1px solid var(--card-border); color: var(--text-primary); padding: 8px 12px; border-radius: 10px; cursor: pointer; font-weight: 600; transition: var(--transition); white-space: nowrap; }
-    .ghost:hover { background: rgba(143, 233, 255, 0.06); transform: translateY(-1px); }
-
-    /* Main layout */
-    .main-content { display: flex; flex-direction: column; gap: 20px; margin-top: 18px; flex: 1; }
-    @media (min-width: 992px) { .main-content { flex-direction: row; } }
-
-    .content-section, .quiz-section { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 18px; padding: 20px; box-shadow: 0 6px 24px rgba(0, 10, 20, 0.5); backdrop-filter: blur(8px); position: relative; overflow: hidden; flex: 1; }
-    @media (min-width: 992px) {
-      .content-section.left { flex: 0 0 300px; }
-      .content-section.canvas { flex: 1; }
-      .quiz-section.right { flex: 0 0 360px; }
+    /* === Build Steps (do primeiro arquivo, adaptado) === */
+    .build-steps { margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
+    .step {
+      padding: 12px; border-radius: 8px; background: rgba(255,255,255,0.02);
+      transition: var(--transition); cursor: pointer; position: relative; overflow: hidden;
     }
-
-    /* Adapted from first: Devices as expandable? But keep buttons for now, style like device-item */
-    .title { color: var(--text-primary); font-size: 18px; font-weight: 700; margin-bottom: 12px; }
-    .devices { display: flex; flex-direction: column; gap: 8px; }
-    .device-btn { display: flex; gap: 10px; align-items: center; padding: 10px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid var(--card-border); cursor: pointer; transition: var(--transition); opacity: 0.5; pointer-events: none; }
-    .device-btn.active { opacity: 1; pointer-events: auto; background: rgba(0, 168, 255, 0.08); border-color: var(--accent); }
-    .device-btn:hover { background: rgba(143, 233, 255, 0.06); transform: translateY(-2px); box-shadow: var(--glow); }
-    .device-icon { font-size: 20px; color: var(--accent-light); width: 36px; height: 36px; border-radius: 6px; display: grid; place-items: center; background: rgba(255,255,255,0.03); }
-    .device-label { font-size: 16px; font-weight: 700; color: var(--text-primary); flex: 1; }
-    .muted { color: var(--text-secondary); font-size: 12px; }
-
-    /* Canvas wrap */
-    .canvas-wrap { position: relative; border-radius: 12px; overflow: hidden; background: radial-gradient(circle at 20% 30%, rgba(0,168,255,0.05) 0%, transparent 70%); min-height: 560px; }
-    #topo { width: 100%; height: 100%; min-height: 560px; background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent); display: block; position: relative; }
-    svg#links { position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; }
-
-    /* Device styles adapted */
-    .device { position: absolute; width: 140px; padding: 8px; border-radius: 10px; background: linear-gradient(180deg, #0e1a2a, #061021); box-shadow: 0 6px 30px rgba(0,10,20,0.6); cursor: move; user-select: none; transition: var(--transition); will-change: transform; }
-    .device:hover { transform: scale(1.02); box-shadow: var(--glow); }
-    .dev-head { display: flex; align-items: center; gap: 8px; }
-    .dev-name { font-weight: 700; font-size: 13px; color: var(--text-primary); }
-    .ports { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; justify-content: center; }
-    .port { width: 18px; height: 18px; border-radius: 4px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.03); cursor: pointer; display: grid; place-items: center; font-size: 11px; position: relative; overflow: hidden; transition: var(--transition); }
-    .port.wifi { background: linear-gradient(90deg, #0b2b2b, #062b20); border-radius: 50%; }
-    .port:hover { background: rgba(0, 168, 255, 0.12); }
-    .port.connected::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: var(--status-active); border-radius: inherit; opacity: 0.3; }
-    .port.connecting::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: var(--status-connecting); border-radius: inherit; opacity: 0.3; animation: pulse 1.5s infinite; }
-
-    /* Device-specific animations adapted */
-    .device[data-type="switch"] .device-icon::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 30px; height: 30px; border-radius: 50%; background: radial-gradient(circle, rgba(0,168,255,0.4) 0%, transparent 70%); animation: switchGlow 3s infinite alternate; }
-    .device[data-type="router"] .device-icon::before { content: ''; position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 8px; height: 20px; background: linear-gradient(to top, #00a8ff, #3b82f6); border-radius: 4px; box-shadow: 0 0 10px rgba(0,168,255,0.7); animation: routerAntenna 2s infinite; }
-    .device[data-type="phone"] .device-icon::after { content: ''; position: absolute; top: 5px; right: 5px; width: 6px; height: 6px; background: var(--status-active); border-radius: 50%; box-shadow: 0 0 8px var(--status-active); animation: phoneSignal 1.5s infinite; }
-    .device[data-type="ap"] .device-icon::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; border-radius: 50%; border: 2px solid rgba(0,168,255,0.3); animation: apRadar 4s infinite; }
-    .device[data-type="server"] .device-icon::before { content: ''; position: absolute; bottom: 5px; left: 5px; width: 10px; height: 10px; background: var(--status-active); border-radius: 2px; box-shadow: 0 0 5px var(--status-active); animation: serverActivity 1s infinite; }
-    .device[data-type="firewall"] .device-icon::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 30px; height: 30px; border-radius: 50%; background: radial-gradient(circle, rgba(248,113,113,0.3) 0%, transparent 70%); animation: firewallPulse 2s infinite; }
-    .device[data-type="camera"] .device-icon::before { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 20px; height: 20px; border-radius: 50%; background: radial-gradient(circle, rgba(139,92,246,0.5) 0%, transparent 70%); animation: cameraScan 3s infinite; }
-
-    /* Right panel adapted to quiz-like */
-    .quiz-title { color: var(--text-primary); font-size: 18px; font-weight: 700; margin-bottom: 12px; }
-    .status { padding: 8px; border-radius: 8px; background: rgba(255,255,255,0.03); font-size: 13px; display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
-    .status-indicator { width: 10px; height: 10px; border-radius: 50%; }
-    .status-active .status-indicator { background: var(--status-active); }
-    .status-inactive .status-indicator { background: var(--status-inactive); }
-    .status-connecting .status-indicator { background: var(--status-connecting); animation: pulse 1.5s infinite; }
-    .status-error .status-indicator { background: var(--error); }
-    .log { height: 200px; overflow: auto; padding: 8px; border-radius: 8px; background: rgba(0,0,0,0.15); font-family: monospace; font-size: 12px; color: var(--text-secondary); }
-
-    /* Build steps adapted - com suporte a minimizado */
-    .build-steps { margin-top: 20px; display: flex; flex-direction: column; gap: 12px; }
-    .step { padding: 12px; border-radius: 8px; background: rgba(255,255,255,0.02); transition: var(--transition); cursor: pointer; position: relative; overflow: hidden; }
     .step:hover { background: rgba(0,168,255,0.05); }
-    .step.completed { background: rgba(139,92,246,0.15); border-left: 3px solid var(--step-complete); }
-    .step.active { background: rgba(0,168,255,0.1); border-left: 3px solid var(--accent); box-shadow: 0 4px 12px rgba(0,168,255,0.2); }
+    .step.completed {
+      background: rgba(139,92,246,0.12); border-left: 3px solid var(--step-complete);
+    }
+    .step.active {
+      background: rgba(0,168,255,0.08); border-left: 3px solid var(--accent);
+      box-shadow: 0 4px 12px rgba(0,168,255,0.15);
+    }
     .step.collapsed .step-description { max-height: 0; opacity: 0; overflow: hidden; transition: max-height 0.3s ease, opacity 0.3s ease; }
-    .step:not(.collapsed) .step-description { max-height: 100px; opacity: 1; }
-    .step-title { font-weight: 600; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; color: var(--text-primary); }
-    .step-icon { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: rgba(255,255,255,0.05); color: var(--accent); font-weight: 700; }
-    .step-description { font-size: 13px; color: var(--text-secondary); margin-bottom: 8px; transition: max-height 0.3s ease, opacity 0.3s ease; }
-    .step-progress { height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; }
-    .step-progress-fill { height: 100%; background: var(--accent); width: 0%; transition: width 0.5s ease; }
+    .step:not(.collapsed) .step-description { max-height: 120px; opacity: 1; }
+    .step-title {
+      font-weight: 600; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; color: var(--text);
+    }
+    .step-icon {
+      width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center;
+      background: rgba(255,255,255,0.04); color: var(--accent); font-weight: 700;
+    }
+    .step-description {
+      font-size: 13px; color: var(--muted); margin-bottom: 8px;
+      transition: max-height 0.3s ease, opacity 0.3s ease;
+    }
+    .step-progress { height: 4px; background: rgba(255,255,255,0.08); border-radius: 2px; overflow: hidden; }
+    .step-progress-fill {
+      height: 100%; background: var(--accent); width: 0%; transition: width 0.5s ease;
+    }
     .step.completed .step-progress-fill { background: var(--step-complete); width: 100%; }
 
-    /* Controls buttons adapted */
-    button { background: linear-gradient(90deg, var(--accent-light), var(--accent)); color: var(--bg-900); border: 0; padding: 9px 14px; border-radius: 10px; cursor: pointer; font-weight: 700; font-size: 13px; transition: var(--transition); white-space: nowrap; display: inline-flex; align-items: center; gap: 8px; box-shadow: var(--glow); }
-    button:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(0,168,255,0.28); }
-    button.small { padding: 8px; font-size: 12px; }
-
-    .badge { display: inline-block; padding: 5px 8px; border-radius: 999px; background: rgba(255,255,255,0.03); font-size: 12px; color: var(--text-secondary); }
-
-    /* Legend adapted */
-    .legend { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 10px; }
-    .legend .item { display: flex; gap: 6px; align-items: center; background: rgba(255,255,255,0.02); padding: 6px; border-radius: 8px; font-size: 12px; color: var(--text-secondary); }
-
-    footer { margin-top: 22px; padding: 14px; text-align: center; color: var(--text-secondary); font-size: 12px; border-top: 1px solid var(--card-border); }
-
-    /* Animations from second, adapted */
-    @keyframes pulse { 0% { opacity: 0.3; } 50% { opacity: 0.8; } 100% { opacity: 0.3; } }
-    @keyframes switchGlow { 0% { box-shadow: 0 0 5px rgba(0,168,255,0.3); } 100% { box-shadow: 0 0 20px rgba(0,168,255,0.6); } }
-    @keyframes routerAntenna { 0% { height: 20px; opacity: 0.7; } 50% { height: 25px; opacity: 1; } 100% { height: 20px; opacity: 0.7; } }
-    @keyframes phoneSignal { 0% { box-shadow: 0 0 0px var(--status-active); } 50% { box-shadow: 0 0 12px var(--status-active); } 100% { box-shadow: 0 0 0px var(--status-active); } }
-    @keyframes apRadar { 0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.3; } 100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; } }
-    @keyframes serverActivity { 0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; } }
-    @keyframes firewallPulse { 0% { box-shadow: 0 0 5px rgba(248,113,113,0.3); } 100% { box-shadow: 0 0 15px rgba(248,113,113,0.6); } }
-    @keyframes cameraScan { 0% { background: radial-gradient(circle, rgba(139,92,246,0.5) 0%, transparent 70%); } 50% { background: radial-gradient(circle, rgba(139,92,246,0.8) 0%, transparent 70%); } 100% { background: radial-gradient(circle, rgba(139,92,246,0.5) 0%, transparent 70%); } }
-
-    /* Build progress container adapted */
-    .build-progress-container { margin-top: 16px; background: rgba(255,255,255,0.02); border-radius: 8px; padding: 12px; }
-    .build-progress-title { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; color: var(--text-primary); }
-    .build-progress-bar { height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; }
-    .build-progress-fill { height: 100%; background: var(--timeline-progress); width: 0%; transition: width 0.5s ease; }
+    /* Build progress container */
+    .build-progress-container {
+      margin-bottom: 16px;
+    }
+    .build-progress-title {
+      display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px; color: var(--muted);
+    }
+    .build-progress-bar {
+      height: 8px; background: rgba(255,255,255,0.04); border-radius: 4px; overflow: hidden;
+    }
+    .build-progress-fill {
+      height: 100%; background: linear-gradient(90deg,var(--accent-light),var(--accent));
+      width: 0%; transition: width 0.5s ease;
+    }
 
     /* Error message */
-    .error-message { background: rgba(248,113,113,0.1); border-left: 3px solid var(--error); padding: 8px; border-radius: 4px; margin-top: 8px; font-size: 12px; color: var(--text-secondary); display: none; }
+    .error-message {
+      margin-top: 12px; padding: 8px; background: rgba(248,113,113,0.08);
+      border-left: 3px solid var(--error); border-radius: 6px; color: var(--muted); display: none;
+    }
 
-    /* Link styles adapted */
-    svg > g.link { pointer-events: auto; cursor: pointer; }
-    .link-label { font-family: 'Space Grotesk', system-ui, Arial; font-size: 11px; fill: #cfefff; pointer-events: none; }
-
-    /* Network status dots */
-    .network-status { display: flex; justify-content: center; margin-top: 8px; gap: 4px; }
-    .network-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--status-inactive); transition: var(--transition); }
-    .network-dot.active { background: var(--status-active); box-shadow: 0 0 6px var(--status-active); }
-    .network-dot.connecting { background: var(--status-connecting); animation: pulse 1.5s infinite; }
-
-    /* Tutorial overlay adapted */
-    .tutorial-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
-    .tutorial-overlay.active { opacity: 1; pointer-events: auto; }
-    .tutorial-content { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 24px; max-width: 600px; width: 90%; box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative; }
-    .tutorial-title { font-size: 24px; font-weight: 700; margin-bottom: 16px; color: var(--accent); }
-    .tutorial-text { line-height: 1.6; margin-bottom: 20px; color: var(--text-secondary); }
-    .tutorial-actions { display: flex; gap: 12px; justify-content: flex-end; }
-    .close-tutorial { position: absolute; top: 16px; right: 16px; background: rgba(255,255,255,0.1); border: none; width: 30px; height: 30px; border-radius: 50%; color: var(--text-secondary); cursor: pointer; transition: var(--transition); }
+    /* Tutorial overlay */
+    .tutorial-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.7); display: flex; justify-content: center;
+      align-items: center; z-index: 2000; opacity: 0; pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .tutorial-overlay.active {
+      opacity: 1; pointer-events: auto;
+    }
+    .tutorial-content {
+      background: var(--panel); padding: 24px; border-radius: 16px;
+      border: 1px solid var(--card-border); max-width: 600px; width: 90%;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative;
+    }
+    .tutorial-title {
+      font-size: 22px; font-weight: 700; margin-bottom: 16px; color: var(--accent);
+    }
+    .tutorial-text {
+      line-height: 1.6; margin-bottom: 20px; color: var(--muted);
+    }
+    .tutorial-actions {
+      display: flex; gap: 12px; justify-content: flex-end;
+    }
+    .close-tutorial {
+      position: absolute; top: 16px; right: 16px; background: rgba(255,255,255,0.06);
+      border: none; width: 30px; height: 30px; border-radius: 50%; color: var(--muted);
+      cursor: pointer; transition: var(--transition);
+    }
     .close-tutorial:hover { background: rgba(143,233,255,0.1); }
 
-    /* Responsive tweaks */
+    /* Rotação do ícone de celular em dispositivos móveis */
     @media (max-width: 768px) {
-      .logo { width: 60px; height: 60px; font-size: 18px; }
-      h1 { font-size: 20px; }
-      .subtitle { font-size: 13px; }
-      .main-content { flex-direction: column; }
-      .content-section.left, .quiz-section.right { flex: none; }
-      .device-btn { padding: 14px; }
-      .device-label { font-size: 15px; }
-    }
-    @media (max-width: 480px) {
-      .container { padding: 12px; }
-      .logo { width: 50px; height: 50px; font-size: 16px; }
-      h1 { font-size: 18px; }
-      .subtitle { font-size: 12px; }
-      button { padding: 6px 10px; font-size: 11px; }
-      .device-btn { padding: 12px; }
+      .device-icon i.fas.fa-mobile-alt {
+        transform: rotate(90deg);
+      }
     }
 
-    /* Hide right on small screens */
-    @media (max-width: 1000px) { .quiz-section.right { display: none; } }
+    @media(max-width:1000px){.right{display:none}.left{flex:0 0 280px}}
   </style>
 </head>
 <body>
   <div class="container">
     <header role="banner">
       <div class="logo" aria-hidden="true">P-Lite</div>
-
-      <div class="header-content">
-        <h1>Packet-Lite Pro — Construção Guiada com Validação</h1>
-        <p class="subtitle">Construa e valide redes de computadores passo a passo, com simulações interativas e validação automática.</p>
+      <div style="min-width:0">
+        <h1>Packet-Lite Pro — Construção Guiada (Modo Realista)</h1>
+        <div class="subtitle">Interface aprimorada: portas, cabos, IP/MAC, velocidade, inspector e tráfego visual.</div>
       </div>
-
       <div class="controls" aria-hidden="false">
+        <button id="exportState" class="ghost">Exportar</button>
+        <button id="importState" class="ghost">Importar</button>
       </div>
     </header>
+    <main class="main">
+      <section class="panel left" aria-labelledby="build-title">
+        <h2 id="build-title" style="color:var(--text);margin:0 0 10px 0">Construção da Rede</h2>
 
-    <main class="main-content" role="main">
-      <section class="content-section left" aria-labelledby="build-title">
-        <div class="devices-header">
-          <h2 class="title" id="build-title">Construção da Rede</h2>
-        </div>
-
+        <!-- Build Progress -->
         <div class="build-progress-container">
           <div class="build-progress-title">
             <span>Progresso da Construção</span>
@@ -248,130 +214,212 @@
           </div>
         </div>
 
+        <!-- Build Steps -->
         <div class="build-steps" id="buildSteps">
-          <!-- Steps will be populated by JS -->
+          <!-- Steps populated by JS -->
         </div>
 
-        <hr style="margin: 12px 0; border: 0; border-top: 1px solid var(--card-border);"/>
+        <hr style="border:0;border-top:1px solid var(--card-border);margin:12px 0" />
 
-        <div class="devices-header">
-          <h3 class="title">Dispositivos</h3>
+        <div style="margin-bottom:8px"><strong style="color:var(--text)">Dispositivos</strong></div>
+        <div id="devicePalette" style="display:flex;flex-direction:column;gap:8px"></div>
+        <hr style="border:0;border-top:1px solid var(--card-border);margin:12px 0" />
+        <div style="margin-bottom:8px"><strong style="color:var(--text)">Ações</strong></div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <button id="clear" class="small">Reiniciar Canvas</button>
+          <button id="autoLayout" class="ghost">Auto-arranjar</button>
+          <button id="simulateTraffic" class="ghost">Gerar Tráfego Aleatório</button>
         </div>
-        <div class="devices" id="devicePalette">
-          <!-- buttons populated by JS -->
+        <div style="margin-top:14px">
+          <div style="color:var(--muted);font-size:13px;margin-bottom:6px">Legenda</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px">
+            <div style="padding:6px;background:rgba(0,168,255,0.06);border-radius:8px;color:var(--accent);font-size:12px">Cabo Ethernet</div>
+            <div style="padding:6px;background:rgba(139,92,246,0.06);border-radius:8px;color:#8b5cf6;font-size:12px">Fibra</div>
+            <div style="padding:6px;background:rgba(255,195,0,0.06);border-radius:8px;color:var(--warning);font-size:12px">Wi-Fi</div>
+          </div>
         </div>
-
-        <hr style="margin: 12px 0; border: 0; border-top: 1px solid var(--card-border);"/>
-
-        <div class="devices-header">
-          <h3 class="title">Ações</h3>
+        <div style="color:var(--muted);font-size:13px;margin-top:12px">
+          <strong>Navegação:</strong> Arraste o canvas para mover como um mapa. Clique em fios para excluir.
         </div>
-        <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">
-          <button id="clear" class="btn small">Reiniciar Construção</button>
-        </div>
-
-        <div class="legend">
-          <div class="item"><div style="width: 10px; height: 10px; background: var(--rope-base); border-radius: 2px;"></div> Cabo</div>
-          <div class="item"><div style="width: 10px; height: 10px; background: var(--rope-top); border-radius: 999px;"></div> Traço</div>
-          <div class="item"><div style="width: 10px; height: 10px; background: var(--status-active); border-radius: 999px;"></div> Ativo</div>
-          <div class="item"><div style="width: 10px; height: 10px; background: var(--status-inactive); border-radius: 999px;"></div> Inativo</div>
-        </div>
-
-        <div class="error-message" id="errorMessage"></div>
+        <div id="errorMessage" class="error-message"></div>
       </section>
-
-      <section class="content-section canvas" aria-labelledby="canvas-title">
-        <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 8px;">
-          <div class="badge">Packet-Lite Pro</div>
-          <div class="badge">Construção Guiada • HTML único</div>
-          <div style="flex: 1;"></div>
-          <div style="color: var(--text-secondary); font-size: 13px;">Siga os passos para construir sua rede desde o básico até dispositivos finais.</div>
+      <section class="panel center">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+          <div class="badge" style="padding:6px 10px;background:rgba(255,255,255,0.02);border-radius:8px;color:var(--muted)">Packet-Lite Pro</div>
+          <div style="color:var(--muted);font-size:13px">Canvas — arraste para navegar, dispositivos para mover, clique em portas para conectar (agora com escolha de cabo)</div>
+          <div style="flex:1"></div>
+          <div id="status" style="color:var(--muted);font-size:13px">Pronto</div>
         </div>
-
-        <div id="topo" style="position: relative; min-height: 560px;">
+        <div id="topo" style="position:relative;flex:1">
           <svg id="links"></svg>
         </div>
       </section>
-
-      <aside class="quiz-section right" aria-labelledby="sim-title">
-        <div class="quiz-header">
-          <h2 class="quiz-title" id="sim-title">Informações & Simulação</h2>
-        </div>
-
-        <div class="controls">
-          <div class="status status-active" id="status">
-            <div class="status-indicator"></div>
-            <span>Iniciando construção da rede...</span>
+      <aside class="panel right inspector" aria-labelledby="sim-title">
+        <h3 id="sim-title">Inspetor de Dispositivo</h3>
+        <div id="inspectorEmpty" style="color:var(--muted);margin-top:8px">Clique em um dispositivo (ou botão direito) para ver/configurar.</div>
+        <div id="inspector" style="display:none;margin-top:8px">
+          <div class="inspector-row">
+            <div style="flex:1">
+              <div style="font-size:12px;color:var(--muted)">Hostname</div>
+              <input id="inspHostname" type="text" />
+            </div>
+            <div style="width:12px"></div>
           </div>
-          <div style="display: flex; gap: 8px; margin-bottom: 8px;">
-            <button id="pingBtn" class="btn small">Simular Ping</button>
-            <button id="pathBtn" class="btn small">Mostrar caminho</button>
+          <div class="inspector-row">
+            <div style="flex:1">
+              <div style="font-size:12px;color:var(--muted)">MAC</div>
+              <input id="inspMac" type="text" />
+            </div>
+            <div style="width:12px"></div>
           </div>
-          <div style="margin-top: 8px; color: var(--text-secondary);">Log</div>
-          <div class="log" id="log"></div>
+          <div class="inspector-row">
+            <div style="flex:1">
+              <div style="font-size:12px;color:var(--muted)">IP (static/DHCP)</div>
+              <div style="display:flex;gap:8px">
+                <input id="inspIp" type="text" />
+                <select id="inspIpMode" style="width:110px">
+                  <option value="dhcp">DHCP</option>
+                  <option value="static">Static</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="inspector-row">
+            <div style="flex:1">
+              <div style="font-size:12px;color:var(--muted)">Role</div>
+              <select id="inspRole">
+                <option value="edge">Edge/Client</option>
+                <option value="server">Server</option>
+                <option value="infra">Infrastructure</option>
+              </select>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button id="applyConfig" class="small">Aplicar</button>
+            <button id="resetMac" class="ghost">Gerar MAC</button>
+            <button id="inspectPing" class="ghost">Pingar (loopback)</button>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button id="deleteDevice" class="delete-btn">Excluir Dispositivo</button>
+          </div>
+          <hr style="border:0;border-top:1px solid var(--card-border);margin:12px 0" />
+          <div style="color:var(--muted);font-size:13px;margin-bottom:6px">Status & Tráfego</div>
+          <div style="display:flex;gap:8px;flex-direction:column">
+            <div style="display:flex;justify-content:space-between">
+              <div style="color:var(--muted);font-size:12px">Conexões</div>
+              <div id="inspConns" style="font-weight:700;color:var(--text)">0</div>
+            </div>
+            <div style="display:flex;justify-content:space-between">
+              <div style="color:var(--muted);font-size:12px">Throughput</div>
+              <div id="inspThroughput" style="font-weight:700;color:var(--text)">0 kb/s</div>
+            </div>
+            <div style="display:flex;justify-content:space-between">
+              <div style="color:var(--muted);font-size:12px">Last Seen</div>
+              <div id="inspLastSeen" style="font-weight:700;color:var(--text)">—</div>
+            </div>
+          </div>
         </div>
       </aside>
     </main>
-
-    <footer role="contentinfo">
-      <p>Resumo: Construa redes passo a passo com validação automática. Use Shift+Click para selecionar dispositivos e simular conectividade!</p>
-      <p>Atalhos: Clique em portas para conectar. Right-click para remover. Arraste para mover.</p>
-      <p>Dica: Siga os passos para uma rede completa e segura.</p>
-    </footer>
+    <footer>Use Shift+Clique para selecionar 2 dispositivos e "Simular Ping". Right-click em um dispositivo para abrir configurações rápidas. Arraste o canvas para navegar.</footer>
   </div>
 
+  <!-- Tutorial Overlay -->
   <div class="tutorial-overlay" id="tutorialOverlay">
     <div class="tutorial-content">
       <button class="close-tutorial" id="closeTutorial">✕</button>
       <h2 class="tutorial-title" id="tutorialTitle">Bem-vindo ao Packet-Lite Pro</h2>
-      <p class="tutorial-text" id="tutorialText">Este simulador educacional guiará você na construção de uma rede completa, passo a passo, desde os componentes básicos até dispositivos finais como PCs, celulares e servidores.</p>
+      <p class="tutorial-text" id="tutorialText">Este simulador educacional guiará você na construção de uma rede completa, passo a passo, com configurações realistas de IP, MAC, tipos de cabo e inspeção de tráfego.</p>
       <div class="tutorial-actions">
-        <button class="btn small" id="startTutorial">Começar Construção</button>
+        <button class="small" id="startTutorial">Começar Construção</button>
       </div>
     </div>
   </div>
 
+  <!-- Modals -->
+  <div class="modal-back" id="cableModal">
+    <div class="modal">
+      <h3>Escolha o tipo de cabo</h3>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button class="small" data-cable="copper">Cabo Ethernet (1 Gbps)</button>
+        <button class="small" data-cable="fiber">Fibra (10 Gbps)</button>
+        <button class="small" data-cable="wifi">Wi-Fi (802.11ac)</button>
+      </div>
+      <div style="margin-top:12px;text-align:right"><button id="cancelCable" class="ghost">Cancelar</button></div>
+    </div>
+  </div>
+
   <script>
-    // --- Model --- (adapted icons to FA)
+    /***********************************************
+     * Packet-Lite Pro — Realista + Tutorial Guiado
+     ***********************************************/
+    /* --- DOM refs --- */
     const topo = document.getElementById('topo');
     const svg = document.getElementById('links');
-    const statusEl = document.getElementById('status');
-    const logEl = document.getElementById('log');
     const devicePalette = document.getElementById('devicePalette');
-    const buildStepsContainer = document.getElementById('buildSteps');
-    const tutorialOverlay = document.getElementById('tutorialOverlay');
-    const tutorialTitle = document.getElementById('tutorialTitle');
-    const tutorialText = document.getElementById('tutorialText');
     const buildProgressFill = document.getElementById('build-progress-fill');
     const progressPercent = document.getElementById('progress-percent');
     const errorMessageEl = document.getElementById('errorMessage');
+    const statusEl = document.getElementById('status');
+    const inspector = document.getElementById('inspector');
+    const inspectorEmpty = document.getElementById('inspectorEmpty');
+    const inspHostname = document.getElementById('inspHostname');
+    const inspMac = document.getElementById('inspMac');
+    const inspIp = document.getElementById('inspIp');
+    const inspIpMode = document.getElementById('inspIpMode');
+    const inspRole = document.getElementById('inspRole');
+    const inspConns = document.getElementById('inspConns');
+    const inspThroughput = document.getElementById('inspThroughput');
+    const inspLastSeen = document.getElementById('inspLastSeen');
+    const cableModal = document.getElementById('cableModal');
+    const tutorialOverlay = document.getElementById('tutorialOverlay');
+    const tutorialTitle = document.getElementById('tutorialTitle');
+    const tutorialText = document.getElementById('tutorialText');
+    const buildStepsContainer = document.getElementById('buildSteps');
+    const deleteDeviceBtn = document.getElementById('deleteDevice');
 
-    let nodes = {}; // id -> {id,type,x,y,name,ports:[], el: null}
-    let links = []; // {id,aNode,aPort,bNode,bPort,type}
+    /* --- State --- */
+    let nodes = {};
+    let links = [];
     let nextId = 1;
-    let connStart = null; // {nodeId, portIndex}
+    let connStart = null;
+    let connStartPortEl = null;
     let selectedForSim = [];
+    let deviceCounts = {};
+    let currentInspector = null;
+    let dhcpPool = { base: '192.168.100.', next: 10 };
+    let drawScheduled = false;
     let networkStatusInterval = null;
     let currentStep = 0;
     let buildSteps = [];
     let tutorialCompleted = false;
     let firstTimeUser = true;
 
-    // Throttle function for performance
-    function throttle(func, limit) {
-      let inThrottle;
-      return function() {
-        const args = arguments;
-        const context = this;
-        if (!inThrottle) {
-          func.apply(context, args);
-          inThrottle = true;
-          setTimeout(() => inThrottle = false, limit);
-        }
-      }
-    }
+    // Panning state
+    let panX = 0;
+    let panY = 0;
+    let isPanning = false;
+    let panStartX = 0;
+    let panStartY = 0;
 
-    // Build process steps
+    /* --- Device definitions --- */
+    const deviceDefs = {
+      pc: {label:'PC',ports:1,icon:'fas fa-desktop',role:'edge'},
+      laptop:{label:'Laptop',ports:1,icon:'fas fa-laptop',role:'edge'},
+      phone:{label:'Phone',ports:1,icon:'fas fa-mobile-alt',note:'wifi',role:'edge'},
+      tablet:{label:'Tablet',ports:1,icon:'fas fa-tablet-alt',note:'wifi',role:'edge'},
+      switch:{label:'Switch',ports:8,icon:'fas fa-network-wired',role:'infra'},
+      router:{label:'Router',ports:4,icon:'fas fa-route',role:'infra'},
+      cloud:{label:'Cloud',ports:4,icon:'fas fa-cloud',role:'infra'},
+      server:{label:'Server',ports:4,icon:'fas fa-server',role:'server'},
+      printer:{label:'Printer',ports:1,icon:'fas fa-print',role:'edge'},
+      ap:{label:'AccessPoint',ports:1,icon:'fas fa-wifi',note:'wifi',role:'infra'},
+      firewall:{label:'Firewall',ports:2,icon:'fas fa-shield-alt',role:'infra'},
+      camera:{label:'Camera',ports:1,icon:'fas fa-video',role:'edge'}
+    };
+    const paletteOrder = ['router','switch','server','ap','pc','laptop','phone','printer','firewall','cloud','camera'];
+
+    /* --- Build Process (adapted to realistic mode) --- */
     const buildProcess = [
       {
         title: "Infraestrutura Básica",
@@ -389,108 +437,79 @@
       },
       {
         title: "Servidores e Recursos",
-        description: "Adicione servidores para fornecer serviços como arquivos, impressão e internet.",
+        description: "Adicione servidores, impressora e firewall para fornecer serviços e segurança.",
         devices: ['server', 'printer', 'firewall'],
         required: 3,
         completed: false
       },
       {
         title: "Dispositivos Finais",
-        description: "Adicione PCs, laptops e outros dispositivos que os usuários utilizarão.",
+        description: "Adicione PCs, laptops e tablets que os usuários utilizarão.",
         devices: ['pc', 'laptop', 'tablet'],
         required: 4,
         completed: false
       },
       {
         title: "Dispositivos Móveis",
-        description: "Adicione celulares e tablets que se conectam via Wi-Fi.",
+        description: "Adicione celulares e um ponto de acesso (AP) para conexão Wi-Fi.",
         devices: ['phone', 'ap'],
         required: 2,
         completed: false
       },
       {
         title: "Conexões e Testes",
-        description: "Conecte todos os dispositivos e teste a comunicação entre eles.",
+        description: "Conecte todos os dispositivos, escolha o tipo de cabo e teste a conectividade.",
         devices: [],
         required: 0,
         completed: false
       }
     ];
 
-    // Network validation rules
     const networkRules = {
-      // Maximum devices allowed
-      maxDevices: {
-        router: 2,
-        switch: 5,
-        server: 3,
-        firewall: 1,
-        ap: 2
-      },
-      
-      // Connection rules
       connectionRules: {
-        // Cannot connect two routers directly
         router: { cannotConnectTo: ['router'] },
-        // Firewall must be between router and internal network
         firewall: { mustBeConnectedTo: ['router'] },
-        // AP must be connected to switch or router
         ap: { mustBeConnectedTo: ['switch', 'router'] },
-        // Phones/tablets can only connect to AP (wireless)
         phone: { canOnlyConnectTo: ['ap'] },
         tablet: { canOnlyConnectTo: ['ap'] }
-      }
+      },
+      maxDevices: { router:2, switch:6, server:4, firewall:2, ap:3 }
     };
 
-    function log(text){const line=document.createElement('div');line.textContent=text;logEl.prepend(line)}
-    function setStatus(t, statusClass = 'status-active'){statusEl.className = 'status ' + statusClass; statusEl.innerHTML = `<div class="status-indicator"></div><span>${t}</span>`;}
-    function showError(message) {
-      errorMessageEl.textContent = message;
+    /* --- Utilities --- */
+    function log(text){
+      const d = new Date();
+      statusEl.textContent = `${d.toLocaleTimeString()} — ${text}`;
+    }
+    function showError(msg){
+      errorMessageEl.textContent = msg;
       errorMessageEl.style.display = 'block';
-      setTimeout(() => {
-        errorMessageEl.style.display = 'none';
-      }, 5000);
+      setTimeout(()=> errorMessageEl.style.display = 'none', 5000);
+    }
+    function makeId(prefix){ return prefix + (nextId++); }
+    function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c])) }
+
+    /* --- MAC & IP --- */
+    function generateMac(){
+      const hex = '0123456789ABCDEF';
+      let mac = '02';
+      for(let i=0;i<5;i++){
+        mac += ':' + hex[Math.floor(Math.random()*16)] + hex[Math.floor(Math.random()*16)];
+      }
+      return mac;
+    }
+    function allocateIp(){
+      const ip = dhcpPool.base + (dhcpPool.next++);
+      return ip;
     }
 
-    function makeId(prefix){return prefix+ (nextId++)}
-
-    // Device definitions (changed to FA icons)
-    const deviceDefs = {
-      pc: {label:'PC', ports:1, icon:'fas fa-desktop'},
-      laptop:{label:'Laptop',ports:1,icon:'fas fa-laptop'},
-      phone:{label:'Phone',ports:1,icon:'fas fa-mobile-alt',note:'wifi'},
-      tablet:{label:'Tablet',ports:1,icon:'fas fa-tablet-alt',note:'wifi'},
-      switch:{label:'Switch',ports:8,icon:'fas fa-exchange-alt'},
-      router:{label:'Router',ports:4,icon:'fas fa-route'},
-      cloud:{label:'Cloud',ports:4,icon:'fas fa-cloud'},
-      server:{label:'Server',ports:4,icon:'fas fa-server'},
-      printer:{label:'Printer',ports:1,icon:'fas fa-print'},
-      ap:{label:'AccessPoint',ports:1,icon:'fas fa-wifi',note:'wifi'},
-      firewall:{label:'Firewall',ports:2,icon:'fas fa-shield-alt'},
-      camera:{label:'Camera',ports:1,icon:'fas fa-video'}
-    };
-
-    const paletteOrder = ['pc','laptop','phone','tablet','switch','router','server','printer','ap','firewall','camera','cloud'];
-
-    // Cache for device counts to avoid repeated filtering
-    let deviceCounts = {};
-
-    function updateDeviceCounts() {
-      deviceCounts = {};
-      Object.values(nodes).forEach(node => {
-        if (!deviceCounts[node.type]) deviceCounts[node.type] = 0;
-        deviceCounts[node.type]++;
-      });
-    }
-
-    // Initialize build steps
-    function initBuildSteps() {
+    /* --- Build Steps UI --- */
+    function initBuildSteps(){
       buildStepsContainer.innerHTML = '';
       buildSteps = [];
-      
-      buildProcess.forEach((step, index) => {
+      buildProcess.forEach((step, index)=>{
         const stepEl = document.createElement('div');
-        stepEl.className = 'step collapsed'; // Inicia minimizado
+        stepEl.className = 'step collapsed';
         stepEl.dataset.step = index;
         stepEl.innerHTML = `
           <div class="step-title">
@@ -502,684 +521,39 @@
             <div class="step-progress-fill"></div>
           </div>
         `;
-        
         buildSteps.push(stepEl);
         buildStepsContainer.appendChild(stepEl);
-        
         stepEl.addEventListener('click', () => {
-          if(index <= currentStep) {
-            toggleStepCollapse(index);
-          }
+          if(index <= currentStep) toggleStepCollapse(index);
         });
       });
-      
       activateStep(0);
     }
-
-    function toggleStepCollapse(stepIndex) {
+    function toggleStepCollapse(stepIndex){
       const step = buildSteps[stepIndex];
-      if (step.classList.contains('collapsed')) {
-        step.classList.remove('collapsed');
-      } else {
-        step.classList.add('collapsed');
-      }
+      if(!step) return;
+      step.classList.toggle('collapsed');
     }
-
-    function activateStep(stepIndex) {
+    function activateStep(stepIndex){
       currentStep = stepIndex;
-      
-      // Minimiza passos anteriores completos e expande o atual
-      buildSteps.forEach((step, index) => {
-        step.classList.remove('active');
-        if (index < stepIndex && buildProcess[index].completed) {
-          step.classList.add('collapsed', 'completed');
-        } else if (index === stepIndex) {
-          step.classList.remove('collapsed');
-          step.classList.add('active');
+      buildSteps.forEach((stepEl, i)=>{
+        stepEl.classList.remove('active');
+        stepEl.classList.remove('collapsed');
+        if(i < stepIndex && buildProcess[i].completed) {
+          stepEl.classList.add('collapsed','completed');
+        } else if(i === stepIndex) {
+          stepEl.classList.add('active');
         } else {
-          step.classList.add('collapsed');
+          stepEl.classList.add('collapsed');
         }
       });
-      
-      // Update progress
       updateBuildProgress();
-      
-      // Show tutorial if needed (agora para cada passo se firstTimeUser)
       if(firstTimeUser && !tutorialCompleted) {
         showTutorial(stepIndex);
       }
     }
 
-    // build palette - agora todos ativos por padrão
-    function initDevicePalette() {
-      devicePalette.innerHTML = '';
-      paletteOrder.forEach(type=>{
-        const def=deviceDefs[type];
-        const btn=document.createElement('div'); 
-        btn.className='device-btn active'; // Sempre ativo
-        btn.dataset.type=type;
-        btn.innerHTML = `<i class="${def.icon} device-icon" aria-hidden="true"></i><div><div class="device-label">${def.label}</div><div class="muted">${def.ports} portas ${def.note? '• '+def.note:''}</div></div>`;
-        devicePalette.appendChild(btn);
-        btn.addEventListener('click',()=>{ addDevice(type); })
-      });
-    }
-
-    // Remove validação de dispositivo por passo - agora só valida maxDevices e regras de conexão
-    function validateDeviceAddition(type) {
-      // Check maximum devices allowed
-      if(networkRules.maxDevices[type]) {
-        const currentCount = deviceCounts[type] || 0;
-        if(currentCount >= networkRules.maxDevices[type]) {
-          showError(`Máximo de ${networkRules.maxDevices[type]} ${deviceDefs[type].label}(s) atingido.`);
-          return false;
-        }
-      }
-      
-      return true;
-    }
-
-    function addDevice(type){
-      // Validate device addition
-      if(!validateDeviceAddition(type)) {
-        return;
-      }
-  
-      const id = makeId('n');
-      const def = deviceDefs[type];
-      const node = {id,type,x:60 + (Object.keys(nodes).length%6)*20,y:60 + (Math.floor(Object.keys(nodes).length/6)%6)*20,name: def.label+'-'+id.slice(1),ports:[]};
-      for(let i=0;i<def.ports;i++) node.ports.push({});
-      nodes[id]=node;
-      drawNode(node);
-      setStatus('Adicionado '+node.name)
-      log(`Dispositivo adicionado: ${node.name} (${type})`);
-      updateDeviceCounts();
-      updateNetworkStatus();
-      checkStepCompletion(currentStep);
-      
-      // Save state to localStorage
-      saveStateToLocalStorage();
-    }
-
-    // draw node element (adapted icon to i)
-    function drawNode(node){
-      const existing = document.querySelector(`[data-id="${node.id}"]`);
-      if(existing) existing.remove();
-
-      const el = document.createElement('div');
-      el.className='device';
-      el.style.left=(node.x)+'px'; el.style.top=(node.y)+'px';
-      el.dataset.id=node.id;
-      el.dataset.type=node.type;
-      node.el = el; // Cache the element
-      const def = deviceDefs[node.type] || {icon:'fas fa-question', label:node.type, ports:node.ports.length};
-      el.innerHTML = `
-        <div class="dev-head"><i class="${def.icon}" style="font-size:22px;position:relative;" aria-hidden="true"></i><div>
-          <div class="dev-name" contenteditable="true">${escapeHtml(node.name)}</div>
-          <div style="font-size:12px;color:var(--text-secondary)">${node.type.toUpperCase()}</div>
-        </div></div>
-        <div class="ports"></div>
-        <div class="network-status"></div>
-      `;
-      topo.appendChild(el);
-
-      const portsWrap = el.querySelector('.ports');
-      node.ports.forEach((p,i)=>{
-        const pEl = document.createElement('div'); 
-        pEl.className='port'+(def.note && def.note.includes('wifi') ? ' wifi' : '');
-        pEl.dataset.pinIndex=i; pEl.title = `Porta ${i}`;
-        pEl.innerHTML = '';
-        portsWrap.appendChild(pEl);
-
-        pEl.addEventListener('click',(ev)=>{ ev.stopPropagation(); onPortClick(node.id,i,pEl)});
-      });
-      
-      // Add network status dots
-      const statusWrap = el.querySelector('.network-status');
-      for(let i=0; i<Math.min(3, node.ports.length); i++) {
-        const dot = document.createElement('div');
-        dot.className = 'network-dot';
-        statusWrap.appendChild(dot);
-      }
-
-      // draggable
-      makeDraggable(el, node);
-
-      // rename - optimized, no renderAll
-      const nameEl = el.querySelector('.dev-name');
-      nameEl.addEventListener('blur',()=>{
-        const newName = nameEl.textContent.trim();
-        node.name = newName || node.name;
-        nameEl.textContent = node.name;
-      });
-
-      // right click to delete node
-      el.addEventListener('contextmenu',(e)=>{e.preventDefault(); removeNode(node.id)})
-
-      // shift+click selection for simulation
-      el.addEventListener('click',(e)=>{ if(e.shiftKey){ toggleSelectForSim(node.id, el) } })
-    }
-
-    function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"<",">":">","\"":"&quot;","'":"&#39;"}[c])) }
-
-    function toggleSelectForSim(id, el){
-      const idx = selectedForSim.indexOf(id);
-      if(idx>-1){ selectedForSim.splice(idx,1); el.style.boxShadow=''; setStatus('Removido da seleção: '+nodes[id].name)}
-      else{ selectedForSim.push(id); el.style.boxShadow='0 0 0 3px rgba(0,168,255,0.15)'; setStatus('Selecionado para simulação: '+nodes[id].name)}
-    }
-
-    // Validate connection
-    function validateConnection(aNode, bNode) {
-      const aType = nodes[aNode].type;
-      const bType = nodes[bNode].type;
-      
-      // Check connection rules
-      if(networkRules.connectionRules[aType]) {
-        const rules = networkRules.connectionRules[aType];
-        
-        // Cannot connect to certain types
-        if(rules.cannotConnectTo && rules.cannotConnectTo.includes(bType)) {
-          showError(`Não é possível conectar ${deviceDefs[aType].label} diretamente a ${deviceDefs[bType].label}.`);
-          return false;
-        }
-        
-        // Must be connected to certain types
-        if(rules.mustBeConnectedTo && !rules.mustBeConnectedTo.includes(bType)) {
-          showError(`${deviceDefs[aType].label} deve ser conectado a: ${rules.mustBeConnectedTo.map(t => deviceDefs[t].label).join(', ')}.`);
-          return false;
-        }
-      }
-      
-      if(networkRules.connectionRules[bType]) {
-        const rules = networkRules.connectionRules[bType];
-        
-        // Can only connect to certain types
-        if(rules.canOnlyConnectTo && !rules.canOnlyConnectTo.includes(aType)) {
-          showError(`${deviceDefs[bType].label} só pode se conectar a: ${rules.canOnlyConnectTo.map(t => deviceDefs[t].label).join(', ')}.`);
-          return false;
-        }
-      }
-      
-      return true;
-    }
-
-    // on port click: start or finish connection
-    function onPortClick(nodeId, portIndex, portEl){
-      if(!connStart){ 
-        connStart = {nodeId,portIndex}; 
-        portEl.style.outline='2px solid rgba(0,168,255,0.7)'; 
-        setStatus('Iniciando conexão em '+nodes[nodeId].name+' porta '+portIndex, 'status-connecting'); 
-        return;
-      }
-      // cancel if same
-      if(connStart.nodeId===nodeId && connStart.portIndex===portIndex){
-        clearConnStart(); setStatus('Conexão cancelada', 'status-inactive'); return;
-      }
-      
-      // Validate connection
-      if(!validateConnection(connStart.nodeId, nodeId)) {
-        clearConnStart();
-        return;
-      }
-      
-      // create link
-      const linkId = makeId('l');
-      links.push({id:linkId,aNode:connStart.nodeId,aPort:connStart.portIndex,bNode:nodeId,bPort:portIndex,type:'Ethernet'});
-      setStatus('Conexão criada: '+nodes[connStart.nodeId].name+' ↔ '+nodes[nodeId].name, 'status-active');
-      drawLinks();
-      updateNetworkStatus();
-      clearConnStart();
-      
-      // Check if final step is completed
-      if(currentStep === buildProcess.length - 1) {
-        buildProcess[currentStep].completed = true;
-        updateBuildProgress();
-      }
-      
-      // Save state to localStorage
-      saveStateToLocalStorage();
-    }
-
-    function clearConnStart(){ 
-      connStart=null; 
-      // Only clear outlines on active ports
-      if (connStart) {
-        const portEl = document.querySelector(`[data-id="${connStart.nodeId}"] .port[data-pin-index="${connStart.portIndex}"]`);
-        if (portEl) portEl.style.outline = '';
-      }
-      document.querySelectorAll('.port[style*="outline"]').forEach(p => p.style.outline = '');
-    }
-
-    // draw links as SVG paths with a base stroke + dotted overlay for rope effect
-    function drawLinks(){
-      // clean
-      while(svg.firstChild) svg.removeChild(svg.firstChild);
-      const topoRect = topo.getBoundingClientRect();
-
-      // add group for links (ensures pointer-events work)
-      links.forEach(l=>{
-        const aEl = document.querySelector(`[data-id="${l.aNode}"]`);
-        const bEl = document.querySelector(`[data-id="${l.bNode}"]`);
-        if(!aEl||!bEl) return;
-        const aPortEl = aEl.querySelectorAll('.port')[l.aPort];
-        const bPortEl = bEl.querySelectorAll('.port')[l.bPort];
-        if(!aPortEl||!bPortEl) return;
-
-        const aP = aPortEl.getBoundingClientRect();
-        const bP = bPortEl.getBoundingClientRect();
-        const x1 = aP.left - topoRect.left + aP.width/2;
-        const y1 = aP.top - topoRect.top + aP.height/2;
-        const x2 = bP.left - topoRect.left + bP.width/2;
-        const y2 = bP.top - topoRect.top + bP.height/2;
-
-        const cx1 = x1 + (x2-x1)*0.25;
-        const cx2 = x1 + (x2-x1)*0.75;
-
-        // path d as cubic bezier for smooth rope
-        const d = `M ${x1} ${y1} C ${cx1} ${y1} ${cx2} ${y2} ${x2} ${y2}`;
-
-        // group for link to allow hover and click
-        const g = document.createElementNS('http://www.w3.org/2000/svg','g');
-        g.classList.add('link');
-        g.dataset.linkId = l.id;
-
-        // base stroke (slightly transparent thicker)
-        const base = document.createElementNS('http://www.w3.org/2000/svg','path');
-        base.setAttribute('d', d);
-        base.setAttribute('stroke', 'var(--rope-base)');
-        base.setAttribute('stroke-width', 8);
-        base.setAttribute('fill','none');
-        base.setAttribute('stroke-linecap','round');
-        base.setAttribute('stroke-linejoin','round');
-        g.appendChild(base);
-
-        // top stroke (solid thin)
-        const top = document.createElementNS('http://www.w3.org/2000/svg','path');
-        top.setAttribute('d', d);
-        top.setAttribute('stroke', 'var(--rope-top)');
-        top.setAttribute('stroke-width', 4);
-        top.setAttribute('fill','none');
-        top.setAttribute('stroke-linecap','round');
-        top.setAttribute('stroke-linejoin','round');
-        g.appendChild(top);
-
-        // dotted overlay to look like rope fibers (rounded dashes)
-        const rope = document.createElementNS('http://www.w3.org/2000/svg','path');
-        rope.setAttribute('d', d);
-        rope.setAttribute('stroke', 'var(--rope-top)');
-        rope.setAttribute('stroke-width', 8);
-        rope.setAttribute('fill','none');
-        rope.setAttribute('stroke-linecap','round');
-        rope.setAttribute('stroke-dasharray','1 12'); // round dots separated
-        rope.setAttribute('opacity','0.85');
-        g.appendChild(rope);
-
-        // traffic animation (moving dash) - small moving highlight on top
-        const traffic = document.createElementNS('http://www.w3.org/2000/svg','path');
-        traffic.setAttribute('d', d);
-        traffic.setAttribute('stroke', 'var(--rope-highlight)');
-        traffic.setAttribute('stroke-width', 3);
-        traffic.setAttribute('fill','none');
-        traffic.setAttribute('stroke-linecap','round');
-        traffic.setAttribute('stroke-dasharray','0 200'); // initially invisible
-        traffic.setAttribute('data-anim','0');
-        traffic.style.transition = 'stroke-dashoffset 0.2s linear';
-        g.appendChild(traffic);
-
-        // label (cable type) placed near midpoint
-        const midLabel = document.createElementNS('http://www.w3.org/2000/svg','text');
-        midLabel.setAttribute('class','link-label');
-        midLabel.setAttribute('x', (x1+x2)/2 + 8);
-        midLabel.setAttribute('y', (y1+y2)/2 - 8);
-        midLabel.textContent = l.type || 'Ethernet';
-        g.appendChild(midLabel);
-
-        // interactive: click to delete link
-        g.addEventListener('click', (ev)=>{
-          ev.stopPropagation();
-          if(confirm('Remover conexão?')){ 
-            links = links.filter(x=>x.id!==l.id); 
-            drawLinks(); 
-            setStatus('Conexão removida', 'status-active'); 
-            updateNetworkStatus();
-            saveStateToLocalStorage();
-          }
-        });
-
-        // hover highlight
-        g.addEventListener('mouseenter', ()=>{ top.setAttribute('stroke', 'var(--rope-highlight)'); rope.setAttribute('opacity','1'); })
-        g.addEventListener('mouseleave', ()=>{ top.setAttribute('stroke', 'var(--rope-top)'); rope.setAttribute('opacity','0.85'); })
-
-        svg.appendChild(g);
-      });
-
-      // update port outlines (connected or not)
-      updatePortOutlines();
-      // updateNetworkStatus(); // Call separately to avoid recursion
-    }
-
-    function updatePortOutlines(){
-      // reset
-      document.querySelectorAll('.port').forEach(p=> {
-        p.classList.remove('connected');
-        p.style.boxShadow='';
-      });
-      // for each link, outline the ports involved
-      links.forEach(l=>{
-        const aEl = document.querySelector(`[data-id="${l.aNode}"]`);
-        const bEl = document.querySelector(`[data-id="${l.bNode}"]`);
-        if(!aEl||!bEl) return;
-        const aPorts = aEl.querySelectorAll('.port');
-        const bPorts = bEl.querySelectorAll('.port');
-        if(l.aPort < aPorts.length) {
-          const aPortEl = aPorts[l.aPort];
-          aPortEl.classList.add('connected');
-          aPortEl.style.boxShadow='inset 0 0 0 2px var(--rope-highlight)';
-        }
-        if(l.bPort < bPorts.length) {
-          const bPortEl = bPorts[l.bPort];
-          bPortEl.classList.add('connected');
-          bPortEl.style.boxShadow='inset 0 0 0 2px var(--rope-highlight)';
-        }
-      });
-    }
-
-    // Throttled redraw for drag
-    const throttledRedraw = throttle(drawLinks, 50);
-
-    // draggable implementation - throttled redraw
-    function makeDraggable(el,node){
-      let ox=0,oy=0,drag=false;
-      el.addEventListener('mousedown', (e)=>{ if(e.target.classList.contains('port')) return; drag=true; ox=e.clientX; oy=e.clientY; el.style.zIndex=1000 })
-      const throttledMove = (e) => {
-        if(!drag) return; 
-        const dx=e.clientX-ox, dy=e.clientY-oy; 
-        node.x+=dx; node.y+=dy; 
-        el.style.left=node.x+'px'; el.style.top=node.y+'px'; 
-        ox=e.clientX; oy=e.clientY; 
-        throttledRedraw();
-      };
-      window.addEventListener('mousemove', throttledMove);
-      window.addEventListener('mouseup', ()=>{ if(drag){ drag=false; el.style.zIndex=''; } }, {once: true});
-    }
-
-    function removeNode(id){
-      // remove links referencing
-      links = links.filter(l=> l.aNode!==id && l.bNode!==id );
-      delete nodes[id];
-      if (nodes[id] && nodes[id].el) nodes[id].el.remove();
-      drawLinks(); setStatus('Removido nó '+id); log('Removido nó '+id)
-      updateDeviceCounts();
-      updateNetworkStatus();
-      checkStepCompletion(currentStep);
-      saveStateToLocalStorage();
-    }
-
-    // Modified clear: agora reseta também o progresso dos passos para permitir reinício completo
-    document.getElementById('clear').addEventListener('click',()=>{
-      if(!confirm('Reiniciar o canvas? O progresso dos passos também será resetado.')) return; 
-      nodes={}; 
-      links=[]; 
-      nextId=1; 
-      // Resetar progresso
-      buildProcess.forEach(step => { step.completed = false; });
-      currentStep = 0;
-      deviceCounts = {};
-      Array.from(topo.querySelectorAll('.device')).forEach(x=>x.remove()); 
-      drawLinks(); 
-      setStatus('Canvas e progresso reiniciados — comece do passo 1', 'status-warning');
-      if(networkStatusInterval) clearInterval(networkStatusInterval);
-      initBuildSteps();
-      updateBuildProgress();
-      saveStateToLocalStorage();
-    })
-
-    // simple simulation utilities
-    function buildAdj(){ const g = {}; Object.keys(nodes).forEach(id=>g[id]=new Set()); links.forEach(l=>{ g[l.aNode].add(l.bNode); g[l.bNode].add(l.aNode); }); return g }
-
-    function findPath(src,dst){ const g=buildAdj(); const q=[src]; const prev={}; prev[src]=null; while(q.length){ const u=q.shift(); if(u===dst) break; for(const v of g[u]) if(!(v in prev)){ prev[v]=u; q.push(v); } } if(!(dst in prev)) return null; const path=[]; let cur=dst; while(cur!==null){ path.push(cur); cur=prev[cur]; } return path.reverse(); }
-
-    document.getElementById('pingBtn').addEventListener('click',()=>{
-      if(selectedForSim.length!==2){ alert('Selecione exatamente 2 dispositivos (Shift+Clique em cada).'); return }
-      const [a,b]=selectedForSim; const path=findPath(a,b);
-      if(!path){ 
-        setStatus('Ping: destino inacessível', 'status-inactive'); 
-        log('Ping: sem rota entre '+nodes[a].name+' e '+nodes[b].name); 
-        return 
-      }
-      setStatus('Ping: OK — '+(path.length-1)+' hops', 'status-active'); 
-      log('Ping de '+nodes[a].name+' para '+nodes[b].name+' OK — caminho: '+path.map(x=>nodes[x].name).join(' → '));
-      animatePacketAlongPath(path);
-    })
-
-    document.getElementById('pathBtn').addEventListener('click',()=>{
-      if(selectedForSim.length!==2){ alert('Selecione exatamente 2 dispositivos (Shift+Clique em cada).'); return }
-      const [a,b]=selectedForSim; const path=findPath(a,b);
-      if(!path){ setStatus('Sem caminho', 'status-inactive'); return }
-      highlightPath(path);
-    })
-
-    function highlightPath(path){
-      drawLinks(); // reset
-      for(let i=0;i<path.length-1;i++){
-        const a=path[i], b=path[i+1];
-        const l = links.find(L=> (L.aNode===a && L.bNode===b) || (L.aNode===b && L.bNode===a));
-        if(!l) continue;
-        // find group for this link and change top stroke
-        const g = svg.querySelector(`g.link[data-link-id="${l.id}"]`);
-        if(!g) continue;
-        const paths = g.querySelectorAll('path');
-        paths.forEach(p=> p.setAttribute('stroke', 'var(--rope-highlight)') );
-      }
-    }
-
-    // packet animation: create a small circle and move along path curve
-    function animatePacketAlongPath(path){
-      drawLinks();
-      const topoRect = topo.getBoundingClientRect();
-      const pathElements = [];
-      for(let i=0;i<path.length-1;i++){
-        const a=path[i], b=path[i+1];
-        const l = links.find(L=> (L.aNode===a && L.bNode===b) || (L.aNode===b && L.bNode===a));
-        if(!l) continue;
-        const g = svg.querySelector(`g.link[data-link-id="${l.id}"]`);
-        if(!g) continue;
-        const actualPath = g.querySelector('path'); // base path
-        if(actualPath) pathElements.push(actualPath);
-      }
-
-      if(pathElements.length===0) return;
-
-      // create circle and animate along combined length
-      const circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
-      circle.setAttribute('r',7); circle.setAttribute('fill','var(--rope-highlight)'); svg.appendChild(circle);
-
-      // flatten combined path into lengths and mapping
-      const segs = pathElements.map(p=>({path:p, len: p.getTotalLength()}));
-      const totalLen = segs.reduce((s,x)=>s+x.len,0);
-      const speed = 200; // px per second
-      const duration = Math.max(400, totalLen / speed * 1000); // ms
-      const start = performance.now();
-
-      // also animate the "traffic" path overlay on each link to show movement
-      const trafficPaths = pathElements.map(p=>{
-        const g = p.parentNode;
-        const traffic = g.querySelectorAll('path')[3]; // index 3 is traffic in our drawLinks order
-        if(traffic) traffic.setAttribute('stroke-dasharray','6 200');
-        return traffic;
-      }).filter(Boolean);
-
-      let animId;
-      const anim = (now)=>{
-        const t = (now - start) / duration;
-        if(t>=1){ 
-          circle.remove(); 
-          trafficPaths.forEach(tp=> tp.setAttribute('stroke-dasharray','0 200'));
-          cancelAnimationFrame(animId);
-          return;
-        }
-        const pos = t * totalLen;
-        let acc = 0; let segIndex = 0;
-        while(segIndex < segs.length && acc + segs[segIndex].len < pos){ acc += segs[segIndex].len; segIndex++; }
-        if(segIndex >= segs.length) segIndex = segs.length-1;
-        const seg = segs[segIndex];
-        const local = Math.max(0, pos - acc);
-        const pt = seg.path.getPointAtLength(local);
-        circle.setAttribute('cx', pt.x); circle.setAttribute('cy', pt.y);
-
-        // animate traffic dash offset to look like movement - throttled update
-        if (now % 100 < 16) { // Update every ~100ms
-          trafficPaths.forEach((tp, idx)=>{
-            const offset = (now/10) % 400;
-            tp.setAttribute('stroke-dashoffset', -offset);
-          });
-        }
-
-        animId = requestAnimationFrame(anim);
-      };
-      animId = requestAnimationFrame(anim);
-    }
-
-    // state load
-    function loadState(s){
-      // clear
-      Object.keys(nodes).forEach(k=>{ 
-        if (nodes[k] && nodes[k].el) nodes[k].el.remove(); 
-      }); 
-      nodes={}; links=[]; nextId=1;
-      deviceCounts = {};
-      if(!s) return;
-      
-      // restore nodes
-      for(const id in s.nodes){ 
-        const n=s.nodes[id]; 
-        nodes[id]=JSON.parse(JSON.stringify(n)); 
-        drawNode(nodes[id]);
-      }
-      // restore links
-      links = (s.links||[]).map(x=>JSON.parse(JSON.stringify(x)));
-      
-      // restore build process
-      if(s.buildProcess) {
-        for(let i = 0; i < s.buildProcess.length && i < buildProcess.length; i++) {
-          buildProcess[i].completed = s.buildProcess[i].completed;
-        }
-        currentStep = s.currentStep || 0;
-      }
-      
-      // ensure nextId large enough
-      const max = Math.max(0, ...Object.keys(nodes).map(k=>parseInt(k.slice(1)||0)), ...links.map(l=>parseInt(l.id.slice(1)||0)) ); nextId = Math.max(nextId, max+1);
-      drawLinks();
-      updateDeviceCounts();
-      initBuildSteps();
-      updateNetworkStatus();
-    }
-
-    // LocalStorage functions
-    function saveStateToLocalStorage() {
-      try {
-        const state = {
-          nodes,
-          links,
-          currentStep,
-          buildProcess: buildProcess.map(s => ({...s, completed: s.completed})),
-          timestamp: Date.now()
-        };
-        localStorage.setItem('packetLiteState', JSON.stringify(state));
-      } catch (e) {
-        console.warn('Não foi possível salvar o estado no localStorage:', e);
-      }
-    }
-    
-    function loadStateFromLocalStorage() {
-      try {
-        const savedState = localStorage.getItem('packetLiteState');
-        if(savedState) {
-          const state = JSON.parse(savedState);
-          // Only load if state is less than 30 days old
-          if(Date.now() - state.timestamp < 30 * 24 * 60 * 60 * 1000) {
-            loadState(state);
-            return true;
-          }
-        }
-      } catch (e) {
-        console.warn('Erro ao carregar estado do localStorage:', e);
-      }
-      return false;
-    }
-    
-    function checkFirstTimeUser() {
-      const firstTime = localStorage.getItem('packetLiteFirstTime');
-      if(firstTime === 'false') {
-        firstTimeUser = false;
-        return false;
-      }
-      return true;
-    }
-
-    // Throttled drawLinks for resize/scroll
-    const throttledDrawLinks = throttle(drawLinks, 100);
-
-    // keep links up to date on resize/scroll
-    window.addEventListener('resize', throttledDrawLinks);
-    window.addEventListener('scroll', throttledDrawLinks);
-
-    // Network status monitoring
-    function updateNetworkStatus() {
-      // Clear previous interval
-      if(networkStatusInterval) clearInterval(networkStatusInterval);
-      
-      // Precompute connected ports per node for efficiency
-      const connectedPortsPerNode = {};
-      Object.keys(nodes).forEach(id => connectedPortsPerNode[id] = []);
-      links.forEach(link => {
-        connectedPortsPerNode[link.aNode].push(link.aPort);
-        connectedPortsPerNode[link.bNode].push(link.bPort);
-      });
-      
-      // Update status for each device
-      Object.entries(nodes).forEach(([id, node]) => {
-        const el = node.el;
-        if(!el) return;
-        
-        const statusDots = el.querySelectorAll('.network-dot');
-        const nodeConnectedPorts = connectedPortsPerNode[id];
-        
-        // Update status dots
-        statusDots.forEach((dot, i) => {
-          if(i < nodeConnectedPorts.length) {
-            dot.className = 'network-dot active';
-          } else if(i < node.ports.length) {
-            dot.className = 'network-dot';
-          } else {
-            dot.className = 'network-dot';
-          }
-        });
-      });
-      
-      // Set overall network status
-      if(links.length > 0) {
-        setStatus('Rede ativa com ' + links.length + ' conexões', 'status-active');
-      } else {
-        setStatus('Nenhuma conexão ativa', 'status-inactive');
-      }
-      
-      // Start periodic status updates with reduced frequency
-      networkStatusInterval = setInterval(() => {
-        // Simulate network activity by randomly toggling dots
-        Object.values(nodes).forEach(node => {
-          const el = node.el;
-          if(!el) return;
-          
-          const statusDots = el.querySelectorAll('.network-dot.active');
-          if (statusDots.length > 0 && Math.random() > 0.8) { // Reduced probability
-            const randomDot = statusDots[Math.floor(Math.random() * statusDots.length)];
-            randomDot.style.opacity = Math.random() > 0.5 ? '0.3' : '1';
-          }
-        });
-      }, 3000); // Increased interval to 3s
-    }
-
-    // Tutorial functions - agora mostra para cada passo
+    /* --- Tutorial --- */
     function showTutorial(stepIndex) {
       const step = buildProcess[stepIndex];
       tutorialTitle.textContent = step.title;
@@ -1191,132 +565,848 @@
       `;
       tutorialOverlay.classList.add('active');
     }
-    
-    function getStepInstructions(stepIndex) {
+    function getStepInstructions(stepIndex){
       switch(stepIndex) {
         case 0:
-          return "1. Clique no botão 'Router' na seção de dispositivos<br>2. Um roteador será adicionado à área de trabalho<br>3. Você pode arrastá-lo para qualquer posição";
+          return "1. Clique no botão 'Router'<br>2. Um roteador será adicionado<br>3. Você pode arrastá-lo e configurar IP/MAC pelo inspector";
         case 1:
-          return "1. Adicione dois switches clicando no botão 'Switch'<br>2. Posicione-os próximos ao roteador<br>3. Os switches permitirão conectar múltiplos dispositivos";
+          return "1. Adicione dois switches<br>2. Conecte-os ao roteador: clique em uma porta, escolha 'Cabo Ethernet', depois clique na porta do roteador";
         case 2:
-          return "1. Adicione um servidor, uma impressora e um firewall<br>2. O servidor fornecerá serviços de rede<br>3. O firewall protegerá sua rede";
+          return "1. Adicione um servidor, uma impressora e um firewall<br>2. Conecte-os aos switches ou roteador conforme as regras<br>3. Use o inspector para configurar IPs estáticos se necessário";
         case 3:
-          return "1. Adicione PCs, laptops e tablets<br>2. Estes são os dispositivos que os usuários utilizarão<br>3. Conecte-os aos switches";
+          return "1. Adicione PCs, laptops e tablets<br>2. Conecte-os aos switches com cabo Ethernet<br>3. Verifique IPs via DHCP no inspector";
         case 4:
-          return "1. Adicione celulares e um ponto de acesso (AP)<br>2. Os celulares se conectarão via Wi-Fi ao AP<br>3. O AP deve ser conectado à rede com fio";
+          return "1. Adicione um AP e celulares<br>2. Conecte o AP à rede com fio<br>3. Conecte os celulares ao AP usando 'Wi-Fi'";
         case 5:
-          return "1. Conecte todos os dispositivos clicando nas portas<br>2. Teste a conectividade com o botão 'Simular Ping'<br>3. Parabéns! Sua rede está completa!";
+          return "1. Selecione dois dispositivos com Shift+Clique<br>2. Clique em 'Simular Ping' na barra superior<br>3. Parabéns! Sua rede realista está pronta!";
         default:
           return "Siga as instruções para este passo.";
       }
     }
-    
     document.getElementById('startTutorial').addEventListener('click', () => {
       tutorialOverlay.classList.remove('active');
-      setStatus(`Passo "${buildProcess[currentStep].title}" iniciado! ${buildProcess[currentStep].description}`, 'status-active');
+      log(`Passo "${buildProcess[currentStep].title}" iniciado!`);
     });
-    
     document.getElementById('closeTutorial').addEventListener('click', () => {
       tutorialOverlay.classList.remove('active');
-      firstTimeUser = false; // Para não mostrar mais tutoriais
+      firstTimeUser = false;
       localStorage.setItem('packetLiteFirstTime', 'false');
     });
-    
-    // Prevent closing tutorial on overlay click
     tutorialOverlay.addEventListener('click', (e) => {
       if(e.target === tutorialOverlay) {
         e.stopPropagation();
       }
     });
 
-    function updateBuildProgress() {
-      // Calculate completion
+    /* --- Build Progress --- */
+    function updateBuildProgress(){
       let completedSteps = 0;
-      let totalSteps = buildProcess.length;
-      
-      for(let i = 0; i < buildProcess.length; i++) {
+      const totalSteps = buildProcess.length;
+      for(let i=0;i<buildProcess.length;i++){
         if(buildProcess[i].completed) {
           completedSteps++;
-          if (buildSteps[i]) buildSteps[i].classList.add('completed');
+          if(buildSteps[i]) buildSteps[i].classList.add('completed');
         } else {
-          if (buildSteps[i]) buildSteps[i].classList.remove('completed');
+          if(buildSteps[i]) buildSteps[i].classList.remove('completed');
         }
       }
-      
       const progress = Math.round((completedSteps / totalSteps) * 100);
       buildProgressFill.style.width = `${progress}%`;
       progressPercent.textContent = `${progress}%`;
-      
-      // Check if current step is completed
+      checkStepCompletion(currentStep);
+    }
+    function checkStepCompletion(stepIndex){
+      const step = buildProcess[stepIndex];
+      if(step.completed) return;
+      let deviceCount = 0;
+      step.devices.forEach(type => { deviceCount += deviceCounts[type] || 0; });
+      if(deviceCount >= step.required){
+        step.completed = true;
+        log(`Passo "${step.title}" concluído!`);
+        if(stepIndex < buildProcess.length - 1){
+          setTimeout(() => {
+            activateStep(stepIndex + 1);
+            log(`Avançando para: ${buildProcess[stepIndex + 1].title}`);
+          }, 1500);
+        } else {
+          log('Construção da rede concluída! Parabéns!');
+          localStorage.setItem('packetLiteFirstTime', 'false');
+        }
+        updateBuildProgress();
+      } else {
+        const progress = step.required > 0 ? Math.min(100, Math.round((deviceCount / step.required) * 100)) : 0;
+        if(buildSteps[stepIndex]) buildSteps[stepIndex].querySelector('.step-progress-fill').style.width = `${progress}%`;
+      }
+    }
+
+    /* --- Device Palette --- */
+    function initDevicePalette(){
+      devicePalette.innerHTML = '';
+      paletteOrder.forEach(type=>{
+        const def = deviceDefs[type];
+        const btn = document.createElement('div');
+        btn.className = 'device-btn';
+        btn.innerHTML = `<div class="device-icon"><i class="${def.icon}"></i></div><div><div style="font-weight:700;color:var(--text)">${def.label}</div><div class="muted" style="font-size:12px">${def.ports} portas ${def.note? '• '+def.note:''}</div></div>`;
+        devicePalette.appendChild(btn);
+        btn.addEventListener('click', ()=> addDevice(type));
+      });
+    }
+
+    /* --- Add Device --- */
+    function updateDeviceCounts(){
+      deviceCounts = {};
+      Object.values(nodes).forEach(n => deviceCounts[n.type] = (deviceCounts[n.type] || 0) + 1);
+    }
+    function addDevice(type){
+      const def = deviceDefs[type];
+      if(networkRules.maxDevices[type] && (deviceCounts[type] || 0) >= networkRules.maxDevices[type]){
+        showError(`Máximo de ${networkRules.maxDevices[type]} ${def.label}(s) atingido.`);
+        return;
+      }
+      const id = makeId('n');
+      const base = Object.keys(nodes).length;
+      const node = {
+        id, type,
+        x: 40 + (base % 6) * 160 - panX,  // Adjust for current pan
+        y: 40 + Math.floor(base/6) * 120 - panY,
+        name: def.label + '-' + id.slice(1),
+        ports: Array.from({length:def.ports}, ()=>({})),
+        el: null,
+        mac: generateMac(),
+        ip: null,
+        ipMode: 'dhcp',
+        role: def.role || 'edge',
+        throughput: 0,
+        lastSeen: null
+      };
+      if(node.ipMode === 'dhcp') node.ip = allocateIp();
+      nodes[id] = node;
+      drawNode(node);
+      updateDeviceCounts();
+      log('Adicionado: ' + node.name);
+      scheduleDrawLinks();
+      saveStateToLocalStorage();
       checkStepCompletion(currentStep);
     }
 
-    function checkStepCompletion(stepIndex) {
-      const step = buildProcess[stepIndex];
-      if(step.completed) return;
-      
-      // Count devices of required types using cache
-      let deviceCount = 0;
-      step.devices.forEach(type => {
-        deviceCount += deviceCounts[type] || 0;
+    /* --- Draw Node --- */
+    function drawNode(node){
+      const existing = document.querySelector(`[data-id="${node.id}"]`);
+      if(existing) existing.remove();
+      const def = deviceDefs[node.type] || {icon:'fas fa-question',label:node.type,ports:node.ports.length};
+      const el = document.createElement('div');
+      el.className = 'device';
+      el.style.left = (node.x + panX) + 'px';  // Apply pan offset
+      el.style.top = (node.y + panY) + 'px';
+      el.dataset.id = node.id;
+      el.dataset.type = node.type;
+      el.innerHTML = `
+        <div class="dev-head">
+          <div class="device-icon" style="width:42px;height:42px;border-radius:8px"><i class="${def.icon}" style="font-size:18px;color:var(--accent)"></i></div>
+          <div style="min-width:0">
+            <div class="dev-name" contenteditable="true" spellcheck="false">${escapeHtml(node.name)}</div>
+            <div class="dev-type">${node.type.toUpperCase()} • ${node.ip || '—'}</div>
+          </div>
+        </div>
+        <div class="ports"></div>
+        <div class="network-status"></div>
+      `;
+      topo.appendChild(el);
+      node.el = el;
+      const portsWrap = el.querySelector('.ports');
+      portsWrap.innerHTML = '';
+      node.ports.forEach((p,i)=>{
+        const pEl = document.createElement('div');
+        pEl.className = 'port' + (deviceDefs[node.type].note && deviceDefs[node.type].note.includes('wifi') ? ' wifi' : '');
+        pEl.dataset.pinIndex = i;
+        pEl.title = `Porta ${i}`;
+        pEl.innerHTML = `<div class="led down"></div>`;
+        portsWrap.appendChild(pEl);
       });
-      
-      if(deviceCount >= step.required) {
-        step.completed = true;
-        log(`Passo "${step.title}" concluído!`);
-        
-        // Move to next step if available
-        if(stepIndex < buildProcess.length - 1) {
-          setTimeout(() => {
-            activateStep(stepIndex + 1);
-            setStatus(`Passo "${step.title}" concluído! Avançando para: ${buildProcess[stepIndex + 1].title}`, 'status-active');
-          }, 1500);
+      const nameEl = el.querySelector('.dev-name');
+      nameEl.addEventListener('blur', ()=> {
+        const v = nameEl.textContent.trim();
+        node.name = v || node.name;
+        nameEl.textContent = node.name;
+        saveStateToLocalStorage();
+      });
+      const statusWrap = el.querySelector('.network-status');
+      statusWrap.innerHTML = '';
+      const count = Math.min(3, node.ports.length);
+      for(let i=0;i<count;i++){ const dot = document.createElement('div'); dot.className='network-dot'; statusWrap.appendChild(dot); }
+    }
+
+    /* --- Port Click & Cable Modal --- */
+    topo.addEventListener('click', (e)=>{
+      const portEl = e.target.closest('.port');
+      if(portEl){
+        const deviceEl = portEl.closest('.device');
+        const nodeId = deviceEl.dataset.id;
+        const portIndex = parseInt(portEl.dataset.pinIndex,10);
+        onPortClick(nodeId, portIndex, portEl);
+        return;
+      }
+      const dev = e.target.closest('.device');
+      if(dev){
+        const nodeId = dev.dataset.id;
+        if(e.shiftKey){
+          toggleSelectForSim(nodeId, dev);
         } else {
-          setStatus('Construção da rede concluída! Parabéns!', 'status-active');
-          // Mark as not first time user after completing
-          localStorage.setItem('packetLiteFirstTime', 'false');
+          selectInspector(nodeId);
         }
-        
-        updateBuildProgress();
       } else {
-        // Update progress bar for current step
-        const progress = step.required > 0 ? Math.min(100, Math.round((deviceCount / step.required) * 100)) : 0;
-        if (buildSteps[stepIndex]) {
-          buildSteps[stepIndex].querySelector('.step-progress-fill').style.width = `${progress}%`;
+        clearInspector();
+      }
+    });
+    topo.addEventListener('contextmenu', (e)=>{
+      const dev = e.target.closest('.device');
+      if(dev){
+        e.preventDefault();
+        const nodeId = dev.dataset.id;
+        selectInspector(nodeId);
+        const node = nodes[nodeId];
+        const newMode = node.ipMode === 'dhcp' ? 'static' : 'dhcp';
+        if(confirm(`Alternar IP para ${newMode.toUpperCase()}?`)){
+          node.ipMode = newMode;
+          if(newMode === 'dhcp') node.ip = allocateIp();
+          else node.ip = node.ip || '0.0.0.0';
+          updateInspectorValues(node);
+          drawNode(node);
+          scheduleDrawLinks();
+          saveStateToLocalStorage();
+          log(`${node.name} agora em ${newMode.toUpperCase()}`);
         }
+      }
+    });
+    function onPortClick(nodeId, portIndex, portEl){
+      if(!connStart){
+        connStart = { nodeId, portIndex };
+        connStartPortEl = portEl;
+        portEl.style.outline = '2px solid rgba(0,168,255,0.6)';
+        openCableModal();
+        return;
+      }
+      if(connStart.nodeId === nodeId && connStart.portIndex === portIndex){
+        clearConnStart();
+        log('Conexão cancelada');
+        return;
+      }
+      if(!validateConnection(connStart.nodeId, nodeId)){
+        clearConnStart();
+        return;
+      }
+      const cableType = connStart.cable || 'copper';
+      const linkId = makeId('l');
+      const speed = cableType === 'fiber' ? 10000 : (cableType === 'wifi' ? 600 : 1000);
+      const label = cableType === 'fiber' ? 'Fibra 10Gbps' : cableType === 'wifi' ? 'Wi-Fi 802.11ac' : 'Ethernet 1Gbps';
+      links.push({ id: linkId, aNode: connStart.nodeId, aPort: connStart.portIndex, bNode: nodeId, bPort: portIndex, type: cableType, speed, label });
+      scheduleDrawLinks();
+      updatePortOutlines();
+      updateNetworkStatus();
+      clearConnStart();
+      log('Conexão criada');
+      saveStateToLocalStorage();
+      if(currentStep === buildProcess.length - 1) {
+        buildProcess[currentStep].completed = true;
+        updateBuildProgress();
+      }
+    }
+    function openCableModal(){
+      cableModal.classList.add('active');
+    }
+    function closeCableModal(){
+      cableModal.classList.remove('active');
+    }
+    cableModal.addEventListener('click', (e)=>{ if(e.target === cableModal) closeCableModal(); });
+    cableModal.querySelectorAll('[data-cable]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const t = btn.dataset.cable;
+        if(connStart) connStart.cable = t;
+        closeCableModal();
+        log('Tipo de cabo escolhido: ' + t);
+      });
+    });
+    document.getElementById('cancelCable').addEventListener('click', ()=>{
+      clearConnStart();
+      closeCableModal();
+    });
+    function clearConnStart(){
+      if(connStartPortEl) connStartPortEl.style.outline = '';
+      connStart = null; connStartPortEl = null;
+    }
+
+    /* --- Validation --- */
+    function validateConnection(aNodeId, bNodeId){
+      const a = nodes[aNodeId], b = nodes[bNodeId];
+      if(!a || !b) return false;
+      const aType = a.type, bType = b.type;
+      const rA = networkRules.connectionRules[aType];
+      if(rA){
+        if(rA.cannotConnectTo && rA.cannotConnectTo.includes(bType)){
+          showError(`${deviceDefs[aType].label} não pode conectar diretamente a ${deviceDefs[bType].label}`);
+          return false;
+        }
+        if(rA.mustBeConnectedTo && !rA.mustBeConnectedTo.includes(bType)){
+          showError(`${deviceDefs[aType].label} deve ser conectado a ${rA.mustBeConnectedTo.map(t=>deviceDefs[t].label).join(', ')}`);
+          return false;
+        }
+      }
+      const rB = networkRules.connectionRules[bType];
+      if(rB && rB.canOnlyConnectTo && !rB.canOnlyConnectTo.includes(aType)){
+        showError(`${deviceDefs[bType].label} só pode se conectar a: ${rB.canOnlyConnectTo.map(t=>deviceDefs[t].label).join(', ')}`);
+        return false;
+      }
+      return true;
+    }
+
+    /* --- SVG Links --- */
+    function scheduleDrawLinks(){
+      if(drawScheduled) return;
+      drawScheduled = true;
+      requestAnimationFrame(()=>{ _drawLinks(); drawScheduled = false; });
+    }
+    function _drawLinks(){
+      while(svg.firstChild) svg.removeChild(svg.firstChild);
+      const topoRect = topo.getBoundingClientRect();
+      const deviceEls = Array.from(topo.querySelectorAll('.device'));
+      const portRects = {};
+      deviceEls.forEach(devEl => {
+        const devId = devEl.dataset.id;
+        const ports = Array.from(devEl.querySelectorAll('.port'));
+        portRects[devId] = ports.map(p => p.getBoundingClientRect());
+      });
+      const frag = document.createDocumentFragment();
+      links.forEach(l => {
+        const aRects = portRects[l.aNode];
+        const bRects = portRects[l.bNode];
+        if(!aRects || !bRects) return;
+        const aPRect = aRects[l.aPort];
+        const bPRect = bRects[l.bPort];
+        if(!aPRect || !bPRect) return;
+        const x1 = aPRect.left - topoRect.left + aPRect.width/2;
+        const y1 = aPRect.top - topoRect.top + aPRect.height/2;
+        const x2 = bPRect.left - topoRect.left + bPRect.width/2;
+        const y2 = bPRect.top - topoRect.top + bPRect.height/2;
+        const cx1 = x1 + (x2 - x1) * 0.25;
+        const cx2 = x1 + (x2 - x1) * 0.75;
+        const d = `M ${x1} ${y1} C ${cx1} ${y1} ${cx2} ${y2} ${x2} ${y2}`;
+        const g = document.createElementNS('http://www.w3.org/2000/svg','g');
+        g.classList.add('link');
+        g.dataset.linkId = l.id;
+        g.style.cursor = 'pointer';
+        const base = document.createElementNS('http://www.w3.org/2000/svg','path');
+        base.setAttribute('d', d);
+        base.setAttribute('stroke', l.type === 'fiber' ? 'rgba(139,92,246,0.12)' : (l.type === 'wifi' ? 'rgba(255,195,0,0.12)' : 'rgba(0,168,255,0.08)'));
+        base.setAttribute('stroke-width', 10);
+        base.setAttribute('fill','none');
+        base.setAttribute('stroke-linecap','round');
+        g.appendChild(base);
+        const top = document.createElementNS('http://www.w3.org/2000/svg','path');
+        top.setAttribute('d', d);
+        top.setAttribute('stroke', l.type === 'fiber' ? '#8b5cf6' : (l.type === 'wifi' ? '#ffcf33' : '#06b6d4'));
+        top.setAttribute('stroke-width', 3);
+        top.setAttribute('fill','none');
+        top.setAttribute('stroke-linecap','round');
+        top.setAttribute('stroke-dasharray', l.type === 'wifi' ? '4 8' : '0');
+        g.appendChild(top);
+        const traffic = document.createElementNS('http://www.w3.org/2000/svg','path');
+        traffic.setAttribute('d', d);
+        traffic.setAttribute('stroke', '#7fffd4');
+        traffic.setAttribute('stroke-width', 2);
+        traffic.setAttribute('fill','none');
+        traffic.setAttribute('stroke-linecap','round');
+        traffic.setAttribute('stroke-dasharray','6 200');
+        traffic.style.transition = 'stroke-dashoffset .2s linear';
+        g.appendChild(traffic);
+        const midLabel = document.createElementNS('http://www.w3.org/2000/svg','text');
+        midLabel.setAttribute('class','link-label');
+        midLabel.setAttribute('x', (x1+x2)/2 + 8);
+        midLabel.setAttribute('y', (y1+y2)/2 - 8);
+        midLabel.textContent = `${l.label} • ${l.speed} Mbps`;
+        g.appendChild(midLabel);
+        g.addEventListener('click', (ev)=>{
+          ev.stopPropagation();
+          if(confirm('Remover conexão?')) {
+            links = links.filter(x => x.id !== l.id);
+            scheduleDrawLinks();
+            updatePortOutlines();
+            updateNetworkStatus();
+            saveStateToLocalStorage();
+            log('Conexão removida');
+          }
+        });
+        frag.appendChild(g);
+      });
+      svg.appendChild(frag);
+      updatePortOutlines();
+    }
+    function updatePortOutlines(){
+      document.querySelectorAll('.port').forEach(p=>{ p.classList.remove('connected'); p.style.boxShadow=''; const led = p.querySelector('.led'); if(led) led.className='led down' });
+      links.forEach(l=>{
+        const aEl = document.querySelector(`[data-id="${l.aNode}"]`);
+        const bEl = document.querySelector(`[data-id="${l.bNode}"]`);
+        if(!aEl || !bEl) return;
+        const aPorts = aEl.querySelectorAll('.port');
+        const bPorts = bEl.querySelectorAll('.port');
+        if(l.aPort < aPorts.length){
+          const aPortEl = aPorts[l.aPort];
+          aPortEl.classList.add('connected');
+          aPortEl.style.boxShadow = 'inset 0 0 0 3px rgba(123,93,255,0.12)';
+          const led = aPortEl.querySelector('.led'); if(led){ led.classList.remove('down'); led.classList.add('up') }
+        }
+        if(l.bPort < bPorts.length){
+          const bPortEl = bPorts[l.bPort];
+          bPortEl.classList.add('connected');
+          bPortEl.style.boxShadow = 'inset 0 0 0 3px rgba(123,93,255,0.12)';
+          const led = bPortEl.querySelector('.led'); if(led){ led.classList.remove('down'); led.classList.add('up') }
+        }
+      });
+    }
+
+    /* --- Panning --- */
+    topo.addEventListener('pointerdown', (e) => {
+      const deviceEl = e.target.closest('.device');
+      const portEl = e.target.closest('.port');
+      if (deviceEl || portEl) return;  // Don't pan if interacting with device/port
+
+      isPanning = true;
+      panStartX = e.clientX - panX;
+      panStartY = e.clientY - panY;
+      topo.classList.add('panning');
+      topo.setPointerCapture(e.pointerId);
+    });
+
+    document.addEventListener('pointermove', (e) => {
+      if (!isPanning) return;
+
+      panX = e.clientX - panStartX;
+      panY = e.clientY - panStartY;
+      topo.style.transform = `translate(${panX}px, ${panY}px)`;
+
+      // Redraw devices to apply pan
+      Object.values(nodes).forEach(node => {
+        if (node.el) {
+          node.el.style.left = (node.x + panX) + 'px';
+          node.el.style.top = (node.y + panY) + 'px';
+        }
+      });
+
+      scheduleDrawLinks();
+    }, { passive: true });
+
+    document.addEventListener('pointerup', (e) => {
+      if (!isPanning) return;
+
+      isPanning = false;
+      topo.classList.remove('panning');
+      topo.releasePointerCapture(e.pointerId);
+
+      // Save pan state to node positions (adjust logical positions)
+      Object.values(nodes).forEach(node => {
+        node.x -= (e.clientX - panStartX - panX);  // Update logical pos inversely
+        node.y -= (e.clientY - panStartY - panY);
+      });
+
+      // Reset pan to 0 and redraw with updated positions
+      panX = 0;
+      panY = 0;
+      topo.style.transform = 'translate(0px, 0px)';
+      Object.values(nodes).forEach(drawNode);
+      scheduleDrawLinks();
+
+      saveStateToLocalStorage();
+    });
+
+    /* --- Dragging (Devices) --- */
+    let currentDrag = null;
+    topo.addEventListener('pointerdown', (e)=>{
+      const deviceEl = e.target.closest('.device');
+      if(!deviceEl || e.target.closest('.port')) return;
+      const nodeId = deviceEl.dataset.id;
+      const node = nodes[nodeId];
+      if(!node) return;
+      e.preventDefault();
+      currentDrag = { node, el: deviceEl, startX:e.clientX, startY:e.clientY, ox:node.x, oy:node.y };
+      deviceEl.setPointerCapture(e.pointerId);
+      deviceEl.style.zIndex = 999;
+    });
+    document.addEventListener('pointermove', (e)=>{
+      if(!currentDrag) return;
+      const {node, el, startX, startY, ox, oy} = currentDrag;
+      const dx = e.clientX - startX, dy = e.clientY - startY;
+      node.x = ox + dx; node.y = oy + dy;
+      el.style.left = (node.x + panX) + 'px'; el.style.top = (node.y + panY) + 'px';
+      scheduleDrawLinks();
+    }, {passive:true});
+    document.addEventListener('pointerup', (e)=>{
+      if(!currentDrag) return;
+      try{ currentDrag.el.releasePointerCapture && currentDrag.el.releasePointerCapture(e.pointerId); }catch(_){}
+      currentDrag.el.style.zIndex = '';
+      currentDrag = null;
+      saveStateToLocalStorage();
+    });
+
+    /* --- Remove Node --- */
+    function removeNode(id){
+      links = links.filter(l=> l.aNode !== id && l.bNode !== id);
+      if(nodes[id].el) nodes[id].el.remove();
+      delete nodes[id];
+      scheduleDrawLinks();
+      updateDeviceCounts();
+      updateNetworkStatus();
+      saveStateToLocalStorage();
+      checkStepCompletion(currentStep);
+      log(`Dispositivo removido: ${nodes[id]?.name || id}`);
+      clearInspector();
+    }
+
+    deleteDeviceBtn.addEventListener('click', () => {
+      if (!currentInspector) return;
+      if (confirm(`Excluir dispositivo "${currentInspector.name}"? Isso removerá também suas conexões.`)) {
+        removeNode(currentInspector.id);
+      }
+    });
+
+    /* --- Simulation --- */
+    function buildAdj(){
+      const g = {};
+      Object.keys(nodes).forEach(id => g[id]=new Set());
+      links.forEach(l => { if(g[l.aNode]) g[l.aNode].add(l.bNode); if(g[l.bNode]) g[l.bNode].add(l.aNode); });
+      return g;
+    }
+    function findPath(src, dst){
+      const g = buildAdj();
+      const q=[src], prev={}; prev[src]=null; let qi=0;
+      while(qi<q.length){
+        const u = q[qi++]; if(u===dst) break;
+        for(const v of g[u]) if(!(v in prev)){ prev[v]=u; q.push(v); }
+      }
+      if(!(dst in prev)) return null;
+      const path=[]; let cur=dst; while(cur!==null){ path.push(cur); cur=prev[cur]; } return path.reverse();
+    }
+    function computeLatencyForPath(path){
+      if(!path || path.length<1) return null;
+      let total = 0;
+      for(let i=0;i<path.length-1;i++){
+        const a = path[i], b = path[i+1];
+        const l = links.find(L => (L.aNode===a && L.bNode===b) || (L.aNode===b && L.bNode===a));
+        if(!l) total += 40; else {
+          const speed = l.speed;
+          if(speed >= 5000) total += 1;
+          else if(speed >= 1000) total += 5;
+          else if(speed >= 100) total += 12;
+          else total += 30;
+          total += Math.random() * 6;
+        }
+      }
+      if(path.length === 1) total = 0.5 + Math.random()*0.5;
+      return Math.round(total*10)/10;
+    }
+    function simulatePingBetween(a,b){
+      const path = findPath(a,b);
+      if(!path) { log('Ping: destino inacessível'); return; }
+      const latency = computeLatencyForPath(path);
+      log(`Ping de ${nodes[a].name} → ${nodes[b].name}: ${latency} ms (${path.length-1} hops)`);
+      animatePacketAlongPath(path);
+    }
+    function animatePacketAlongPath(path){
+      scheduleDrawLinks();
+      const topoRect = topo.getBoundingClientRect();
+      const pathElements = [];
+      for(let i=0;i<path.length-1;i++){
+        const a = path[i], b = path[i+1];
+        const l = links.find(L => (L.aNode===a && L.bNode===b) || (L.aNode===b && L.bNode===a));
+        if(!l) continue;
+        const g = svg.querySelector(`g.link[data-link-id="${l.id}"]`);
+        if(!g) continue;
+        const actualPath = g.querySelector('path');
+        if(actualPath) pathElements.push({path:actualPath, link:l});
+      }
+      if(pathElements.length===0) return;
+      const circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      circle.setAttribute('r',6);
+      circle.setAttribute('fill','#7fffd4');
+      svg.appendChild(circle);
+      const segs = pathElements.map(p => ({ path: p.path, len: p.path.getTotalLength(), link: p.link }));
+      const totalLen = segs.reduce((s,x)=>s+x.len,0);
+      const speedPxPerSec = 300;
+      const duration = Math.max(400, totalLen / speedPxPerSec * 1000);
+      const start = performance.now();
+      const trafficPaths = pathElements.map(p=>{
+        const g = p.path.parentNode;
+        const t = g.querySelectorAll('path')[2];
+        if(t) t.setAttribute('stroke-dasharray','6 200');
+        return t;
+      }).filter(Boolean);
+      let animId;
+      const anim = (now)=>{
+        const t = (now-start)/duration;
+        if(t>=1){ circle.remove(); trafficPaths.forEach(tp=>tp.setAttribute('stroke-dasharray','0 200')); cancelAnimationFrame(animId); return; }
+        const pos = t * totalLen;
+        let acc=0, idx=0;
+        while(idx<segs.length && acc+segs[idx].len < pos){ acc += segs[idx].len; idx++; }
+        if(idx>=segs.length) idx = segs.length-1;
+        const seg = segs[idx];
+        const local = Math.max(0, pos-acc);
+        const pt = seg.path.getPointAtLength(local);
+        circle.setAttribute('cx', pt.x);
+        circle.setAttribute('cy', pt.y);
+        trafficPaths.forEach(tp => {
+          const offset = (now/10) % 400;
+          tp.setAttribute('stroke-dashoffset', -offset);
+        });
+        animId = requestAnimationFrame(anim);
+      };
+      animId = requestAnimationFrame(anim);
+    }
+
+    /* --- Inspector --- */
+    function selectInspector(nodeId){
+      currentInspector = nodes[nodeId];
+      if(!currentInspector) return;
+      inspector.style.display = 'block';
+      inspectorEmpty.style.display = 'none';
+      updateInspectorValues(currentInspector);
+    }
+    function updateInspectorValues(node){
+      inspHostname.value = node.name;
+      inspMac.value = node.mac;
+      inspIp.value = node.ip || '';
+      inspIpMode.value = node.ipMode || 'dhcp';
+      inspRole.value = node.role || 'edge';
+      inspConns.textContent = links.filter(l=> l.aNode===node.id || l.bNode===node.id).length;
+      inspThroughput.textContent = Math.round(node.throughput) + ' kb/s';
+      inspLastSeen.textContent = node.lastSeen ? new Date(node.lastSeen).toLocaleTimeString() : '—';
+      if(node.el){
+        node.el.querySelector('.dev-name').textContent = node.name;
+        node.el.querySelector('.dev-type').textContent = `${node.type.toUpperCase()} • ${node.ip || '—'}`;
+      }
+    }
+    function clearInspector(){
+      currentInspector = null;
+      inspector.style.display = 'none';
+      inspectorEmpty.style.display = 'block';
+    }
+    document.getElementById('applyConfig').addEventListener('click', ()=>{
+      if(!currentInspector) return;
+      currentInspector.name = inspHostname.value.trim() || currentInspector.name;
+      currentInspector.mac = inspMac.value.trim() || currentInspector.mac;
+      currentInspector.ipMode = inspIpMode.value;
+      currentInspector.ip = inspIp.value.trim() || (currentInspector.ipMode === 'dhcp' ? allocateIp() : currentInspector.ip);
+      currentInspector.role = inspRole.value;
+      updateInspectorValues(currentInspector);
+      drawNode(currentInspector);
+      saveStateToLocalStorage();
+      log('Config aplicada: ' + currentInspector.name);
+    });
+    document.getElementById('resetMac').addEventListener('click', ()=>{
+      if(!currentInspector) return;
+      currentInspector.mac = generateMac();
+      inspMac.value = currentInspector.mac;
+    });
+    document.getElementById('inspectPing').addEventListener('click', ()=>{
+      if(!currentInspector) return;
+      log(`Ping local ${currentInspector.name}: 0.3 ms`);
+    });
+
+    /* --- Network Status --- */
+    function updateNetworkStatus(){
+      const connected = {};
+      Object.keys(nodes).forEach(id => connected[id] = []);
+      links.forEach(l=>{
+        if(connected[l.aNode]) connected[l.aNode].push(l);
+        if(connected[l.bNode]) connected[l.bNode].push(l);
+      });
+      Object.entries(nodes).forEach(([id,node])=>{
+        const el = node.el;
+        if(!el) return;
+        const dots = el.querySelectorAll('.network-dot');
+        const conns = connected[id] || [];
+        dots.forEach((d,i)=> { if(i < conns.length) d.classList.add('active'); else d.classList.remove('active') });
+        const throughput = conns.reduce((s,c)=> s + (c.speed/8) * (Math.random()*0.6 + 0.2), 0);
+        node.throughput = throughput;
+        node.lastSeen = Date.now();
+        if(currentInspector && currentInspector.id === id) updateInspectorValues(node);
+      });
+      if(links.length) log(`Rede ativa — ${Object.keys(nodes).length} nós • ${links.length} links`);
+      else log('Nenhuma conexão ativa');
+      if(!networkStatusInterval){
+        networkStatusInterval = setInterval(()=>{
+          Object.values(nodes).forEach(node=>{
+            const el = node.el;
+            if(!el) return;
+            const dots = el.querySelectorAll('.network-dot.active');
+            if(dots.length && Math.random()>0.9) {
+              const d = dots[Math.floor(Math.random()*dots.length)];
+              d.style.opacity = Math.random()>0.5 ? '0.3' : '1';
+            }
+          });
+        },3000);
       }
     }
 
-    // Render all (helper) - now rarely used
-    function renderAll() {
-      Object.values(nodes).forEach(drawNode);
-      drawLinks();
+    /* --- UI Controls --- */
+    const pingBtn = document.createElement('button');
+    pingBtn.textContent = 'Simular Ping';
+    pingBtn.className = 'ghost';
+    pingBtn.style.marginLeft = '8px';
+    pingBtn.addEventListener('click', ()=>{
+      if(selectedForSim.length !== 2){ alert('Selecione exatamente 2 dispositivos (Shift+Clique).'); return; }
+      simulatePingBetween(selectedForSim[0], selectedForSim[1]);
+    });
+    document.querySelector('.controls').appendChild(pingBtn);
+
+    const pathBtn = document.createElement('button');
+    pathBtn.textContent = 'Mostrar caminho';
+    pathBtn.className = 'ghost';
+    pathBtn.style.marginLeft = '8px';
+    pathBtn.addEventListener('click', ()=>{
+      if(selectedForSim.length !== 2){ alert('Selecione exatamente 2 dispositivos (Shift+Clique).'); return; }
+      const path = findPath(selectedForSim[0], selectedForSim[1]);
+      if(!path) { log('Sem caminho'); return; }
+      highlightPath(path);
+    });
+    document.querySelector('.controls').appendChild(pathBtn);
+
+    function highlightPath(path){
+      scheduleDrawLinks();
+      for(let i=0;i<path.length-1;i++){
+        const a = path[i], b = path[i+1];
+        const l = links.find(L => (L.aNode===a && L.bNode===b) || (L.aNode===b && L.bNode===a));
+        if(!l) continue;
+        const g = svg.querySelector(`g.link[data-link-id="${l.id}"]`);
+        if(!g) continue;
+        const paths = g.querySelectorAll('path');
+        paths.forEach(p => p.setAttribute('stroke', '#7fffd4'));
+        setTimeout(()=> scheduleDrawLinks(), 2000);
+      }
     }
 
-    // Initialize application
-    function initApp() {
-      // Check if first time user
+    function toggleSelectForSim(id, el){
+      const idx = selectedForSim.indexOf(id);
+      if(idx > -1){
+        selectedForSim.splice(idx,1);
+        el.style.boxShadow = '';
+        log('Removido da seleção: ' + nodes[id].name);
+      } else {
+        if(selectedForSim.length >= 2){
+          showError('Já há 2 dispositivos selecionados');
+          return;
+        }
+        selectedForSim.push(id);
+        el.style.boxShadow = '0 0 0 4px rgba(0,168,255,0.12)';
+        log('Selecionado para simulação: ' + nodes[id].name);
+      }
+    }
+
+    /* --- Export/Import --- */
+    document.getElementById('exportState').addEventListener('click', ()=>{
+      const s = localStorage.getItem('packetLiteRealState');
+      if(!s) { alert('Nada para exportar'); return; }
+      const blob = new Blob([s], {type:'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'packetlite-state.json'; a.click(); URL.revokeObjectURL(url);
+    });
+    document.getElementById('importState').addEventListener('click', ()=>{
+      const inp = document.createElement('input'); inp.type='file'; inp.accept='application/json';
+      inp.addEventListener('change',(e)=>{
+        const f = e.target.files[0]; if(!f) return;
+        const r = new FileReader(); r.onload = ()=> { localStorage.setItem('packetLiteRealState', r.result); loadStateFromLocalStorage(); saveStateToLocalStorage(); };
+        r.readAsText(f);
+      });
+      inp.click();
+    });
+
+    /* --- Auto Layout & Clear --- */
+    document.getElementById('autoLayout').addEventListener('click', ()=>{
+      const ids = Object.keys(nodes);
+      let x = 40, y = 40, col = 0;
+      ids.forEach((id,i)=>{
+        nodes[id].x = x + (col*200);
+        nodes[id].y = y + (Math.floor(i/6)*140);
+        drawNode(nodes[id]);
+        col = (col+1)%3;
+      });
+      scheduleDrawLinks();
+      saveStateToLocalStorage();
+    });
+    document.getElementById('clear').addEventListener('click', ()=>{
+      if(!confirm('Reiniciar o canvas e o progresso?')) return;
+      Object.keys(nodes).forEach(k=> { if(nodes[k] && nodes[k].el) nodes[k].el.remove(); });
+      nodes = {}; links = []; nextId = 1; connStart=null;
+      buildProcess.forEach(step => step.completed = false);
+      currentStep = 0;
+      panX = 0; panY = 0;
+      topo.style.transform = 'translate(0px, 0px)';
+      while(svg.firstChild) svg.removeChild(svg.firstChild);
+      initBuildSteps();
+      updateBuildProgress();
+      log('Canvas e progresso reiniciados');
+      saveStateToLocalStorage();
+    });
+
+    /* --- Save/Load --- */
+    function saveStateToLocalStorage(){
+      try{
+        const nodesForSave = {};
+        Object.values(nodes).forEach(n=> nodesForSave[n.id] = { id:n.id,type:n.type,x:n.x,y:n.y,name:n.name,ports:n.ports,mac:n.mac,ip:n.ip,ipMode:n.ipMode,role:n.role,throughput:n.throughput,lastSeen:n.lastSeen });
+        const state = { nodes: nodesForSave, links, currentStep, buildProcess: buildProcess.map(s => ({ ...s, completed: s.completed })), timestamp:Date.now() };
+        localStorage.setItem('packetLiteRealState', JSON.stringify(state));
+      }catch(e){ console.warn('save error',e) }
+    }
+    function loadStateFromLocalStorage(){
+      try{
+        const s = localStorage.getItem('packetLiteRealState');
+        if(!s) return false;
+        const state = JSON.parse(s);
+        Object.keys(nodes).forEach(k=> { if(nodes[k] && nodes[k].el) nodes[k].el.remove(); });
+        nodes = {}; links = []; nextId = 1;
+        for(const id in state.nodes){
+          const n = state.nodes[id];
+          nodes[id] = { ...n, el:null, ports: n.ports || Array.from({length: deviceDefs[n.type].ports}, ()=>({})) };
+        }
+        links = (state.links || []).map(x=>({...x}));
+        if(state.buildProcess){
+          for(let i=0;i<state.buildProcess.length && i < buildProcess.length; i++){
+            buildProcess[i].completed = state.buildProcess[i].completed;
+          }
+          currentStep = state.currentStep || 0;
+        }
+        const nodeMax = Object.keys(nodes).length ? Math.max(...Object.keys(nodes).map(k=>parseInt(k.slice(1)||0))) : 0;
+        nextId = Math.max(nextId, nodeMax+1);
+        Object.values(nodes).forEach(drawNode);
+        scheduleDrawLinks();
+        updateDeviceCounts();
+        initBuildSteps();
+        updateNetworkStatus();
+        return true;
+      }catch(e){ console.warn('load error',e); return false; }
+    }
+
+    /* --- First Time Check --- */
+    function checkFirstTimeUser() {
+      const firstTime = localStorage.getItem('packetLiteFirstTime');
+      if(firstTime === 'false') {
+        firstTimeUser = false;
+        return false;
+      }
+      return true;
+    }
+
+    /* --- Init --- */
+    function initApp(){
       firstTimeUser = checkFirstTimeUser();
-      
-      // Initialize UI
       initDevicePalette();
       initBuildSteps();
-      
-      // Try to load saved state
       const loaded = loadStateFromLocalStorage();
-      if(!loaded) {
-        setStatus('Iniciando construção da rede...', 'status-active');
-        log('Bem vindo ao Packet-Lite Pro — siga os passos para construir sua rede completa.');
+      if(!loaded){
+        log('Bem vindo ao Packet-Lite Pro (modo realista)');
       }
-      
-      // Initialize network status
+      requestAnimationFrame(()=> scheduleDrawLinks());
       updateNetworkStatus();
+      setInterval(()=>{ updateNetworkStatus(); saveStateToLocalStorage(); }, 5000);
     }
-
-    // Start the application
     document.addEventListener('DOMContentLoaded', initApp);
-    
-    // End of script
   </script>
 </body>
 </html>
