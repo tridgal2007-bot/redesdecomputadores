@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mensagem com Imagem — Modal</title>
+  <style>
+    :root{--bg:#0f2940;--modal-bg:#0e2a44;--panel:#0f2b4a;--white:#ffffff}
+    html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background:linear-gradient(180deg,#072033 0%, #072b46 100%);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+
+    #particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    .page {
+      width:100%;max-width:1024px;padding:24px;box-sizing:border-box;color:var(--white);
+      display:flex;flex-direction:column;gap:16px;align-items:center
+    }
+
+    .controls{display:flex;gap:12px}
+    button{background:#1fb6ff;border:0;padding:10px 14px;border-radius:8px;color:#012;cursor:pointer;font-weight:600}
+    button.secondary{background:transparent;color:var(--white);border:1px solid rgba(255,255,255,0.08)}
+
+    .overlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(4,10,20,0.6);backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:opacity .18s ease}
+    .overlay.show{opacity:1;pointer-events:auto}
+
+    .modal{
+      width:92%;max-width:560px;background:var(--panel);border-radius:12px;padding:18px;box-shadow:0 10px 30px rgba(2,6,12,0.6);position:relative;transform:translateY(10px) scale(.99);transition:transform .18s ease,opacity .18s ease;opacity:0
+    }
+    .overlay.show .modal{opacity:1;transform:none}
+
+    .image-box{background:linear-gradient(180deg,#0b2a44,#08293e);border-radius:8px;padding:12px;display:flex;flex-direction:column;align-items:center;gap:10px}
+    .image-box img{max-width:100%;height:auto;border-radius:4px;image-rendering:pixelated;display:block}
+
+    .caption{background:#fff;padding:10px 12px;border-radius:8px;color:#072033;font-weight:700;text-align:center;cursor:pointer;border:0;font-size: inherit}
+
+    @media(min-width:720px){button{padding:12px 16px}}
+  </style>
+</head>
+<body>
+  <canvas id="particles"></canvas>
+
+  <div class="page">
+
+    <div id="overlay" class="overlay show" role="dialog" aria-modal="true" aria-hidden="false">
+      <div class="modal" role="document">
+
+        <div class="image-box" id="imageBox">
+          <img id="modalImage" src="mensagem.png" alt="Mensagem" />
+
+          <button class="caption" id="retryBtn">
+            Tentar novamente
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('particles');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.vx = (Math.random() - 0.5) * 0.5;
+        this.vy = (Math.random() - 0.5) * 0.5;
+        this.size = Math.random() * 2 + 1;
+      }
+
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+      }
+
+      draw() {
+        ctx.fillStyle = 'rgba(31, 182, 255, 0.5)';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    const particles = [];
+    for (let i = 0; i < 100; i++) {
+      particles.push(new Particle());
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    document.getElementById('retryBtn').addEventListener('click', () => {
+      location.reload();
+    });
+
+    const overlay = document.getElementById('overlay');
+
+    overlay.addEventListener('click', (e)=>{
+      if(e.target === overlay) {
+        // Optionally close, but since no close button, perhaps do nothing or reload
+      }
+    });
+
+    document.addEventListener('keydown', (e)=>{
+      if(e.key === 'Escape' && overlay.classList.contains('show')) {
+        // Optionally close
+      }
+    });
+  </script>
+</body>
+</html>
