@@ -1,0 +1,718 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0d1525" />
+  <title>Protocolos de Redes</title>
+
+  <!-- Fontes premium -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Ícones premium -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    /* ---------- PALETA AZUL PREMIUM (PADRÃO) - CORES MAIS SUAVES ---------- */
+    :root {
+      --bg-1: #0a0e17;
+      --bg-2: #0d1525;
+      --card-bg: rgba(18, 28, 51, 0.75);
+      --card-border: rgba(173, 216, 230, 0.12);
+      --accent: #4fc3f7;
+      --accent-light: #b3e5fc;
+      --accent-hover: #4fc3f7;
+      --text-primary: #f8f9fa;
+      --text-secondary: #d1e8e2;
+      --success: #4ade80;
+      --warning: #fbbf24;
+      --error: #f87171;
+      --timeline-bg: rgba(79, 195, 247, 0.06);
+      --timeline-progress: linear-gradient(90deg, var(--accent-light), var(--accent));
+      --glow: 0 0 20px rgba(79, 195, 247, 0.25);
+      --transition: all 0.28s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      --shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.6);
+      --rounded: 16px;
+      --focus-ring: 0 0 0 4px rgba(59, 130, 246, 0.3);
+      --bg-gradient: linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 35%, #121c33 70%, #1a2540 100%);
+      --accent-rgb: 79, 195, 247;
+    }
+
+    /* Reduced motion preference */
+    @media (prefers-reduced-motion: reduce) {
+      :root { --transition: none; }
+      * { transition: none !important; animation: none !important; }
+    }
+
+    /* Tema Vermelho Suavizado */
+    :root.theme-red {
+      --bg-1: #1a0d0d;
+      --bg-2: #2c1818;
+      --card-bg: rgba(26, 13, 13, 0.75);
+      --card-border: rgba(244, 143, 143, 0.12);
+      --accent: #ef9a9a;
+      --accent-light: #ffcdd2;
+      --accent-hover: #ef9a9a;
+      --text-primary: #fff8f8;
+      --text-secondary: #f8bbd9;
+      --success: #4ade80;
+      --warning: #fbbf24;
+      --error: #f87171;
+      --timeline-bg: rgba(239, 154, 154, 0.06);
+      --timeline-progress: linear-gradient(90deg, var(--accent-light), var(--accent));
+      --glow: 0 0 20px rgba(239, 154, 154, 0.25);
+      --shadow: 0 10px 30px rgba(127, 29, 29, 0.4);
+      --shadow-hover: 0 12px 40px rgba(153, 27, 27, 0.5);
+      --focus-ring: 0 0 0 4px rgba(239, 68, 68, 0.3);
+      --bg-gradient: linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 35%, #3d2222 70%, #501616 100%);
+      --accent-rgb: 239, 154, 154;
+    }
+
+    /* Tema Verde Suavizado */
+    :root.theme-green {
+      --bg-1: #0f1a0f;
+      --bg-2: #1a281a;
+      --card-bg: rgba(15, 26, 15, 0.75);
+      --card-border: rgba(144, 238, 144, 0.12);
+      --accent: #a5d6a7;
+      --accent-light: #e8f5e8;
+      --accent-hover: #a5d6a7;
+      --text-primary: #f1f8e9;
+      --text-secondary: #c8e6c9;
+      --success: #4ade80;
+      --warning: #fbbf24;
+      --error: #f87171;
+      --timeline-bg: rgba(165, 214, 167, 0.06);
+      --timeline-progress: linear-gradient(90deg, var(--accent-light), var(--accent));
+      --glow: 0 0 20px rgba(165, 214, 167, 0.25);
+      --shadow: 0 10px 30px rgba(20, 83, 45, 0.4);
+      --shadow-hover: 0 12px 40px rgba(22, 101, 52, 0.5);
+      --focus-ring: 0 0 0 4px rgba(34, 197, 94, 0.3);
+      --bg-gradient: linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 35%, #254a25 70%, #306d30 100%);
+      --accent-rgb: 165, 214, 167;
+    }
+
+    /* Tema Roxo Suavizado */
+    :root.theme-purple {
+      --bg-1: #1a0f1f;
+      --bg-2: #2a1a2f;
+      --card-bg: rgba(26, 15, 31, 0.75);
+      --card-border: rgba(221, 160, 221, 0.12);
+      --accent: #ce93d8;
+      --accent-light: #f3e5f5;
+      --accent-hover: #ce93d8;
+      --text-primary: #fafafa;
+      --text-secondary: #e1bee7;
+      --success: #4ade80;
+      --warning: #fbbf24;
+      --error: #f87171;
+      --timeline-bg: rgba(206, 147, 216, 0.06);
+      --timeline-progress: linear-gradient(90deg, var(--accent-light), var(--accent));
+      --glow: 0 0 20px rgba(206, 147, 216, 0.25);
+      --shadow: 0 10px 30px rgba(79, 70, 229, 0.4);
+      --shadow-hover: 0 12px 40px rgba(99, 102, 241, 0.5);
+      --focus-ring: 0 0 0 4px rgba(168, 85, 247, 0.3);
+      --bg-gradient: linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 35%, #3d2744 70%, #501659 100%);
+      --accent-rgb: 206, 147, 216;
+    }
+
+    /* Tema Laranja Suavizado */
+    :root.theme-orange {
+      --bg-1: #2c1608;
+      --bg-2: #3d1f0e;
+      --card-bg: rgba(44, 22, 8, 0.75);
+      --card-border: rgba(255, 218, 185, 0.12);
+      --accent: #ffb74d;
+      --accent-light: #fff8e1;
+      --accent-hover: #ffb74d;
+      --text-primary: #fffde7;
+      --text-secondary: #ffe0b2;
+      --success: #4ade80;
+      --warning: #fbbf24;
+      --error: #f87171;
+      --timeline-bg: rgba(255, 183, 77, 0.06);
+      --timeline-progress: linear-gradient(90deg, var(--accent-light), var(--accent));
+      --glow: 0 0 20px rgba(255, 183, 77, 0.25);
+      --shadow: 0 10px 30px rgba(146, 64, 14, 0.4);
+      --shadow-hover: 0 12px 40px rgba(180, 83, 9, 0.5);
+      --focus-ring: 0 0 0 4px rgba(251, 146, 60, 0.3);
+      --bg-gradient: linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 35%, #582919 70%, #723424 100%);
+      --accent-rgb: 255, 183, 77;
+    }
+
+    /* Tema Rosa Suavizado */
+    :root.theme-pink {
+      --bg-1: #1f0a1a;
+      --bg-2: #2f0f25;
+      --card-bg: rgba(31, 10, 26, 0.75);
+      --card-border: rgba(255, 182, 193, 0.12);
+      --accent: #f8bbd9;
+      --accent-light: #fce4ec;
+      --accent-hover: #f8bbd9;
+      --text-primary: #fdf2f8;
+      --text-secondary: #f8bbd9;
+      --success: #4ade80;
+      --warning: #fbbf24;
+      --error: #f87171;
+      --timeline-bg: rgba(248, 187, 217, 0.06);
+      --timeline-progress: linear-gradient(90deg, var(--accent-light), var(--accent));
+      --glow: 0 0 20px rgba(248, 187, 217, 0.25);
+      --shadow: 0 10px 30px rgba(136, 19, 55, 0.4);
+      --shadow-hover: 0 12px 40px rgba(190, 24, 93, 0.5);
+      --focus-ring: 0 0 0 4px rgba(244, 114, 182, 0.3);
+      --bg-gradient: linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 35%, #42153a 70%, #541b4f 100%);
+      --accent-rgb: 248, 187, 217;
+    }
+
+    /* Tema Ciano Suavizado */
+    :root.theme-teal {
+      --bg-1: #0a1f1f;
+      --bg-2: #0f2a2a;
+      --card-bg: rgba(10, 31, 31, 0.75);
+      --card-border: rgba(175, 238, 238, 0.12);
+      --accent: #80deea;
+      --accent-light: #e0f2f1;
+      --accent-hover: #80deea;
+      --text-primary: #f0f9ff;
+      --text-secondary: #b2dfdb;
+      --success: #4ade80;
+      --warning: #fbbf24;
+      --error: #f87171;
+      --timeline-bg: rgba(128, 222, 234, 0.06);
+      --timeline-progress: linear-gradient(90deg, var(--accent-light), var(--accent));
+      --glow: 0 0 20px rgba(128, 222, 234, 0.25);
+      --shadow: 0 10px 30px rgba(6, 78, 59, 0.4);
+      --shadow-hover: 0 12px 40px rgba(15, 118, 110, 0.5);
+      --focus-ring: 0 0 0 4px rgba(45, 212, 191, 0.3);
+      --bg-gradient: linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 35%, #144040 70%, #195555 100%);
+      --accent-rgb: 128, 222, 234;
+    }
+
+    /* Tema Preto e Branco (Cinza Escala) Suavizado */
+    :root.theme-grayscale {
+      --bg-1: #000000;
+      --bg-2: #111111;
+      --card-bg: rgba(0, 0, 0, 0.75);
+      --card-border: rgba(211, 211, 211, 0.06);
+      --accent: #e0e0e0;
+      --accent-light: #f5f5f5;
+      --accent-hover: #e0e0e0;
+      --text-primary: #ffffff;
+      --text-secondary: #d3d3d3;
+      --success: #4ade80;
+      --warning: #fbbf24;
+      --error: #f87171;
+      --timeline-bg: rgba(224, 224, 224, 0.03);
+      --timeline-progress: linear-gradient(90deg, var(--accent-light), var(--accent));
+      --glow: 0 0 20px rgba(224, 224, 224, 0.15);
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      --shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.8);
+      --focus-ring: 0 0 0 4px rgba(255, 255, 255, 0.2);
+      --bg-gradient: linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 35%, #222222 70%, #333333 100%);
+      --accent-rgb: 224, 224, 224;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body { height: 100%; margin: 0; background: var(--bg-gradient); color: var(--text-secondary); font-family: 'Space Grotesk', 'Montserrat', system-ui, -apple-system, 'Segoe UI', Roboto, Arial; overflow-x: hidden; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; transition: var(--transition); }
+
+    /* Container central */
+    .container { width: 100%; max-width: 1400px; margin: 0 auto; padding: 18px; min-height: 100vh; display: flex; flex-direction: column; }
+
+    header { display: flex; align-items: center; gap: 16px; padding: 12px 0; position: relative; z-index: 10; flex-wrap: wrap; }
+
+    .logo { width: 70px; height: 70px; border-radius: 16px; background: linear-gradient(135deg, var(--text-primary), var(--accent)); display: grid; place-items: center; color: var(--bg-1); font-weight: 800; font-size: 20px; box-shadow: var(--glow); transition: var(--transition); flex-shrink: 0; }
+    .logo:hover { transform: scale(1.04); }
+
+    .header-content { flex: 1; min-width: 0; }
+    h1 { margin: 0; color: var(--text-primary); font-size: 22px; font-weight: 800; letter-spacing: -0.4px; background: linear-gradient(to right, var(--text-primary), var(--accent-light)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    .subtitle { margin-top: 6px; color: var(--text-secondary); font-size: 13px; line-height: 1.4; max-width: 64ch; }
+
+    .controls { display: flex; gap: 10px; align-items: center; margin-left: auto; flex-wrap: wrap; justify-content: flex-end; }
+
+    .btn { background: linear-gradient(90deg, var(--accent-light), var(--accent)); color: var(--bg-1); border: 0; padding: 9px 14px; border-radius: 10px; cursor: pointer; font-weight: 700; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; box-shadow: var(--glow); transition: var(--transition); white-space: nowrap; }
+    .btn:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(var(--accent-rgb), 0.28); }
+
+    .ghost { background: transparent; border: 1px solid var(--card-border); color: var(--text-primary); padding: 8px 12px; border-radius: 10px; cursor: pointer; font-weight: 600; transition: var(--transition); white-space: nowrap; }
+    .ghost:hover { background: rgba(var(--accent-rgb), 0.06); transform: translateY(-1px); }
+
+    /* Main layout */
+    .main-content { display: flex; flex-direction: column; gap: 20px; margin-top: 18px; }
+    @media (min-width: 992px) { .main-content { flex-direction: row; } }
+
+    .content-section, .quiz-section { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 18px; padding: 20px; box-shadow: var(--shadow); backdrop-filter: blur(8px); position: relative; overflow: hidden; width: 100%; }
+
+    /* Protocols Explorer - Adapted from cards */
+    .protocols-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
+    .protocols-title { color: var(--text-primary); font-size: 18px; font-weight: 700; }
+    .protocols-list { display: grid; gap: 12px; margin-top: 12px; }
+    .protocol-item { background: rgba(255,255,255,0.03); border: 1px solid var(--card-border); border-radius: 12px; padding: 16px; cursor: pointer; transition: var(--transition); position: relative; overflow: hidden; }
+    .protocol-item:hover { background: rgba(var(--accent-rgb), 0.06); transform: translateY(-2px); box-shadow: var(--glow); }
+    .protocol-item.active { background: rgba(var(--accent-rgb), 0.08); border-color: var(--accent); }
+    .protocol-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+    .protocol-icon { font-size: 20px; color: var(--accent-light); }
+    .protocol-title { font-size: 16px; font-weight: 700; color: var(--text-primary); flex: 1; }
+    .protocol-description { line-height: 1.5; color: var(--text-secondary); font-size: 14px; display: none; }
+    .protocol-item.active .protocol-description { display: block; }
+    .protocol-toggle { background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 16px; transition: var(--transition); }
+    .protocol-item.active .protocol-toggle { transform: rotate(180deg); color: var(--accent); }
+
+    /* Subsections like h3 */
+    .protocol-subheader { margin: 18px 0 10px 0; color: var(--accent); font-size: 1.25rem; font-weight: 600; }
+    .highlight { background: rgba(var(--accent-rgb), 0.18); padding: 2px 6px; border-radius: 4px; font-weight: 600; color: var(--accent-light); }
+
+    /* Concepts (integrated) */
+    .concepts-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+    .concepts-title { color: var(--text-primary); font-size: 18px; font-weight: 700; }
+    .concepts-list { display: grid; gap: 8px; }
+    .concept-item { padding: 10px; background: rgba(255,255,255,0.02); border-radius: 8px; border-left: 3px solid var(--accent); display: flex; align-items: center; gap: 8px; }
+    .concept-icon { color: var(--accent-light); font-size: 14px; }
+
+    /* Quiz like previous */
+    .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
+    .quiz-title { color: var(--text-primary); font-size: 18px; font-weight: 700; }
+    .progress-container { height: 8px; background: rgba(255,255,255,0.06); border-radius: 6px; margin: 12px 0; overflow: hidden; }
+    .progress-bar { height: 100%; background: var(--timeline-progress); border-radius: 6px; width: 0%; transition: width 0.45s ease; }
+
+    .question-container { margin: 10px 0; }
+    .question-number { color: var(--accent); font-weight: 700; margin-bottom: 6px; }
+    .question-text { color: var(--text-primary); font-size: 15px; margin-bottom: 12px; line-height: 1.4; }
+
+    .options-container { display: grid; gap: 10px; }
+    .option { padding: 12px 14px; border-radius: 10px; background: rgba(255,255,255,0.03); border: 1px solid var(--card-border); color: var(--text-secondary); font-weight: 600; cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: 10px; }
+    .option:hover { background: rgba(var(--accent-rgb), 0.06); transform: translateX(4px); color: var(--text-primary); }
+    .option.selected { background: rgba(var(--accent-rgb), 0.12); border-color: var(--accent); color: var(--text-primary); box-shadow: 0 0 10px rgba(var(--accent-rgb), 0.12); }
+    .option.correct { background: rgba(74, 222, 128, 0.12); border-color: var(--success); color: #d1fae5; }
+    .option.wrong { background: rgba(248, 113, 113, 0.12); border-color: var(--error); color: #fee2e2; }
+
+    .option-letter { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,0.06); font-weight: 800; font-size: 12px; }
+
+    .quiz-controls { display: flex; justify-content: space-between; margin-top: 14px; flex-wrap: wrap; gap: 10px; }
+    .nav-buttons { display: flex; gap: 8px; }
+    .score-display { font-weight: 800; font-size: 15px; color: var(--accent); display: flex; align-items: center; gap: 8px; }
+
+    footer { margin-top: 22px; padding: 14px; text-align: center; color: var(--text-secondary); font-size: 12px; border-top: 1px solid var(--card-border); }
+
+    /* Responsive tweaks */
+    @media (max-width: 768px) {
+      .logo { width: 60px; height: 60px; font-size: 18px; }
+      h1 { font-size: 20px; }
+      .subtitle { font-size: 13px; }
+      .quiz-controls { width: 100%; flex-direction: column; align-items: center; }
+      .nav-buttons, .score-display { width: 100%; justify-content: center; }
+      .btn, .ghost { width: auto; padding: 8px 12px; font-size: 12px; }
+      .protocols-list { gap: 10px; }
+      .protocol-item { padding: 14px; }
+      .protocol-title { font-size: 15px; }
+    }
+    @media (max-width: 480px) {
+      .container { padding: 12px; }
+      .logo { width: 50px; height: 50px; font-size: 16px; }
+      h1 { font-size: 18px; }
+      .subtitle { font-size: 12px; }
+      .btn, .ghost { padding: 6px 10px; font-size: 11px; }
+      .protocol-item { padding: 12px; }
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header role="banner">
+      <div class="logo" aria-hidden="true">P→Proto</div>
+
+      <div class="header-content">
+        <h1>Protocolos de Redes</h1>
+        <p class="subtitle">Aprenda os fundamentos dos protocolos de rede, desde HTTP até DHCP, e teste seu conhecimento com um quiz interativo.</p>
+      </div>
+
+      <div class="controls" aria-hidden="false">
+      </div>
+    </header>
+
+    <main class="main-content" role="main">
+      <section class="content-section" aria-labelledby="content-title">
+        <div class="protocols-header">
+          <h2 class="protocols-title" id="content-title">Explorador de Protocolos</h2>
+          <div class="event-year-display">Protocolo: <span id="current-protocol">HTTP</span></div>
+        </div>
+
+        <div class="protocols-list" id="protocols-list">
+          <!-- Protocols will be inserted by JS -->
+        </div>
+
+        <div class="concepts-section">
+          <div class="concepts-header">
+            <h3 class="concepts-title">Conceitos rápidos</h3>
+          </div>
+          <ul class="concepts-list">
+            <li class="concept-item"><i class="fas fa-layer-group concept-icon" aria-hidden="true"></i><strong>Camadas OSI:</strong> Aplicação (HTTP, DNS), Transporte (TCP/UDP), Rede (IP).</li>
+            <li class="concept-item"><i class="fas fa-lock concept-icon" aria-hidden="true"></i><strong>Segurança:</strong> HTTPS/TLS para criptografia, DNSSEC para autenticação.</li>
+            <li class="concept-item"><i class="fas fa-server concept-icon" aria-hidden="true"></i><strong>Portas:</strong> 80/443 (HTTP/S), 53 (DNS), 21/20 (FTP).</li>
+            <li class="concept-item"><i class="fas fa-exchange-alt concept-icon" aria-hidden="true"></i><strong>Automação:</strong> DHCP para IPs dinâmicos em LANs.</li>
+          </ul>
+        </div>
+      </section>
+
+      <aside class="quiz-section" aria-labelledby="quiz-title">
+        <div class="quiz-header">
+          <h2 class="quiz-title" id="quiz-title">Quiz Interativo</h2>
+          <div class="score-display" id="score-display"><i class="fas fa-graduation-cap" aria-hidden="true"></i> <span id="score">0/10</span></div>
+        </div>
+
+        <div class="progress-container" aria-hidden="false">
+          <div class="progress-bar" id="progress-bar"></div>
+        </div>
+
+        <div class="question-container" id="question-container"></div>
+
+        <div class="quiz-controls">
+          <div class="nav-buttons">
+            <button id="prev" class="ghost" aria-label="Pergunta anterior"><i class="fas fa-arrow-left" aria-hidden="true"></i></button>
+            <button id="next" class="btn" aria-label="Próxima pergunta"><i class="fas fa-arrow-right" aria-hidden="true"></i></button>
+          </div>
+          <button id="submit" class="btn" aria-label="Enviar respostas"><i class="fas fa-paper-plane" aria-hidden="true"></i> Enviar</button>
+        </div>
+      </aside>
+    </main>
+
+    <footer role="contentinfo">
+      <p>Resumo: Protocolos como HTTP para web, TCP para confiabilidade, IP para roteamento e DNS para resolução de nomes. Clique nos protocolos para expandir detalhes.</p>
+      <p>Atalhos: ← / → — Navegar perguntas. Enter — Selecionar opção.</p>
+      <p>Dica: Explore os protocolos antes do quiz para melhor compreensão! • Atualizado em Novembro de 2025</p>
+    </footer>
+  </div>
+
+  <script>
+    // --- Função para aplicar tema ---
+    function applyTheme(theme) {
+      const root = document.documentElement;
+      root.className = theme === 'blue' ? '' : `theme-${theme}`;
+    }
+
+    // Carregar tema salvo do localStorage
+    const savedTheme = localStorage.getItem('theme') || 'blue';
+    applyTheme(savedTheme);
+
+    // --- Dados ---
+    const protocolsData = [
+      { 
+        id: 'http', 
+        title: 'HTTP e HTTPS', 
+        icon: 'fas fa-link', 
+        text: `
+          <p>O <span class="highlight">HTTP (HyperText Transfer Protocol)</span> é o protocolo fundamental da web, responsável por permitir a transferência de páginas HTML, imagens, vídeos e outros recursos entre navegadores (clientes) e servidores web. Ele opera na <strong>camada de aplicação</strong> do modelo OSI.</p>
+          <p>O HTTP é um protocolo <strong>sem estado</strong>, o que significa que cada requisição é independente — o servidor não "lembra" interações anteriores. Para contornar isso, usam-se cookies ou sessões.</p>
+          <p>Já o <span class="highlight">HTTPS (HTTP Secure)</span> é a versão criptografada do HTTP, que utiliza os protocolos <strong>SSL (Secure Sockets Layer)</strong> ou <strong>TLS (Transport Layer Security)</strong> para proteger os dados em trânsito. Isso impede que terceiros interceptem, leiam ou modifiquem as informações trocadas — essencial para login, pagamentos e privacidade.</p>
+          <p><strong>Portas padrão:</strong> HTTP → 80 | HTTPS → 443.</p>
+          <p>Hoje, a maioria dos sites exige HTTPS por padrão, e navegadores modernos marcam sites HTTP como "não seguros".</p>
+        `,
+        tts: 'HTTP e HTTPS: Protocolos para transferência segura de dados na web, com portas 80 e 443.'
+      },
+      { 
+        id: 'tcpudp', 
+        title: 'TCP e UDP', 
+        icon: 'fas fa-box', 
+        text: `
+          <p>O <span class="highlight">TCP (Transmission Control Protocol)</span> e o <span class="highlight">UDP (User Datagram Protocol)</span> são os dois principais protocolos de transporte da internet. Ambos operam na <strong>camada de transporte</strong> (camada 4) do modelo OSI, mas com abordagens muito diferentes.</p>
+          <h3 class="protocol-subheader">TCP – Confiável, mas mais lento</h3>
+          <p>O TCP estabelece uma <strong>conexão confiável</strong> entre origem e destino antes de enviar dados. Ele garante que todos os pacotes cheguem na ordem correta, retransmitindo os perdidos. Isso o torna ideal para aplicações onde a integridade dos dados é crítica, como navegação web (HTTP), e-mail (SMTP), transferência de arquivos (FTP) e bancos de dados.</p>
+          <p>No entanto, essa confiabilidade tem um custo: maior latência e uso de recursos.</p>
+          <h3 class="protocol-subheader">UDP – Rápido, mas não confiável</h3>
+          <p>O UDP, por outro lado, <strong>não estabelece conexão</strong> e não garante entrega, ordem ou correção de erros. Ele simplesmente envia os dados ("datagramas") e espera que cheguem. Isso o torna extremamente rápido e leve, perfeito para aplicações em tempo real como chamadas de voz (VoIP), videoconferências, jogos online e streaming de vídeo, onde perder alguns pacotes é preferível a atrasos.</p>
+          <p>Em resumo: use TCP quando a precisão importa; use UDP quando a velocidade é essencial.</p>
+        `,
+        tts: 'TCP e UDP: TCP para conexões confiáveis, UDP para velocidade em tempo real.'
+      },
+      { 
+        id: 'ip', 
+        title: 'IP – Internet Protocol', 
+        icon: 'fas fa-satellite', 
+        text: `
+          <p>O <span class="highlight">IP (Internet Protocol)</span> é o protocolo central da internet, responsável por <strong>endereçar e rotear pacotes de dados</strong> entre dispositivos em uma rede. Ele opera na <strong>camada de rede</strong> (camada 3) do modelo OSI.</p>
+          <p>Cada dispositivo conectado à internet (ou a uma rede IP) recebe um <strong>endereço IP</strong> único, que funciona como um "CEP digital" para identificar origem e destino dos pacotes.</p>
+          <p>Existem duas versões principais:</p>
+          <ul style="margin-left: 24px; margin-bottom: 16px; list-style-type: disc;">
+            <li><strong>IPv4</strong>: usa 32 bits, permitindo cerca de 4,3 bilhões de endereços (ex: <code>192.168.1.10</code>). Devido ao crescimento explosivo da internet, esses endereços estão esgotados.</li>
+            <li><strong>IPv6</strong>: usa 128 bits, oferecendo um número quase infinito de endereços (ex: <code>2001:0db8:85a3::8a2e:0370:7334</code>). É a solução de longo prazo e já está em uso crescente.</li>
+          </ul>
+          <p>O IP não garante entrega nem confiabilidade — isso é tarefa do TCP. O IP apenas "entrega a carta no correio"; cabe a outros protocolos garantir que ela seja lida corretamente.</p>
+        `,
+        tts: 'IP: Protocolo para endereçamento e roteamento, com IPv4 e IPv6 para bilhões de dispositivos.'
+      },
+      { 
+        id: 'dns', 
+        title: 'DNS – Domain Name System', 
+        icon: 'fas fa-search', 
+        text: `
+          <p>O <span class="highlight">DNS (Domain Name System)</span> é o "catálogo telefônico da internet". Ele traduz nomes de domínio fáceis de lembrar (como <code>www.google.com</code>) em endereços IP numéricos (como <code>142.250.185.206</code>) que os computadores usam para se comunicar.</p>
+          <p>Sem o DNS, você teria que digitar números IP longos toda vez que quisesse acessar um site — algo impraticável para humanos.</p>
+          <p>O processo de resolução DNS envolve várias etapas: seu computador consulta primeiro um <strong>resolvedor DNS</strong> (geralmente fornecido pelo seu provedor de internet), que pode consultar servidores raiz, servidores TLD (.com, .org) e, finalmente, o servidor autoritativo do domínio.</p>
+          <p>O DNS opera principalmente sobre <strong>UDP na porta 53</strong>, mas usa TCP quando a resposta é muito grande (mais de 512 bytes) ou durante transferências de zona entre servidores.</p>
+          <p>Além disso, o DNS moderno suporta recursos como <strong>DNSSEC</strong> (para autenticação e prevenção de ataques) e <strong>DoH (DNS over HTTPS)</strong>, que criptografa as consultas para maior privacidade.</p>
+        `,
+        tts: 'DNS: Sistema para traduzir domínios em IPs, usando porta 53 via UDP.'
+      },
+      { 
+        id: 'ftp', 
+        title: 'FTP – File Transfer Protocol', 
+        icon: 'fas fa-folder', 
+        text: `
+          <p>O <span class="highlight">FTP (File Transfer Protocol)</span> é um protocolo antigo, mas ainda usado, projetado especificamente para <strong>transferir arquivos entre um cliente e um servidor</strong>. Ele opera na <strong>camada de aplicação</strong> e utiliza <strong>duas conexões simultâneas</strong>:</p>
+          <ul style="margin-left: 24px; margin-bottom: 16px; list-style-type: disc;">
+            <li><strong>Conexão de controle</strong> (porta 21): usada para enviar comandos (como "listar arquivos" ou "enviar arquivo").</li>
+            <li><strong>Conexão de dados</strong> (porta 20 em modo ativo, ou porta efêmera em modo passivo): usada para transferir os arquivos em si.</li>
+          </ul>
+          <p>O FTP clássico transmite <strong>usuário e senha em texto claro</strong>, o que o torna inseguro em redes públicas. Por isso, surgiram alternativas seguras:</p>
+          <ul style="margin-left: 24px; margin-bottom: 16px; list-style-type: disc;">
+            <li><strong>FTPS</strong>: FTP com criptografia SSL/TLS (semelhante ao HTTPS).</li>
+            <li><strong>SFTP</strong>: não é FTP! É o "SSH File Transfer Protocol", que roda sobre o protocolo SSH (porta 22) e é totalmente seguro.</li>
+          </ul>
+          <p>Apesar de sua idade, o FTP ainda é usado em ambientes internos ou com autenticação adicional, mas recomenda-se fortemente migrar para SFTP ou protocolos modernos como WebDAV ou APIs REST.</p>
+        `,
+        tts: 'FTP: Para transferência de arquivos, com conexões em portas 21 e 20, mas prefira SFTP para segurança.'
+      },
+      { 
+        id: 'dhcp', 
+        title: 'DHCP – Dynamic Host Configuration Protocol', 
+        icon: 'fas fa-cog', 
+        text: `
+          <p>O <span class="highlight">DHCP (Dynamic Host Configuration Protocol)</span> automatiza a configuração de dispositivos em uma rede local (LAN). Sem ele, cada novo computador, smartphone ou impressora precisaria de um endereço IP, máscara de rede, gateway e servidores DNS configurados manualmente — um processo lento e propenso a erros.</p>
+          <p>O DHCP opera na <strong>camada de aplicação</strong>, mas usa <strong>UDP nas portas 67 (servidor) e 68 (cliente)</strong>. Quando um dispositivo se conecta à rede, ele envia uma mensagem de broadcast chamada <strong>DHCPDISCOVER</strong>. Um servidor DHCP responde com uma oferta (<strong>DHCPOFFER</strong>), e após negociação, o cliente recebe uma configuração de rede válida por um tempo determinado (lease).</p>
+          <p>Esse sistema é essencial em redes domésticas, corporativas e públicas (como cafés e aeroportos), permitindo que centenas de dispositivos se conectem sem intervenção humana.</p>
+          <p>Vale notar que o DHCP não atribui IPs permanentes por padrão — mas é possível "reservar" um IP para um dispositivo específico com base em seu endereço MAC.</p>
+        `,
+        tts: 'DHCP: Automatiza atribuição de IPs via UDP nas portas 67 e 68 em redes locais.'
+      }
+    ];
+
+    const quiz = [
+      { q: 'Qual protocolo é responsável por traduzir nomes de domínio (ex: google.com) em endereços IP?', opts: ['HTTP', 'DNS', 'FTP'], a: 1, explain: 'DNS é o sistema que resolve domínios em IPs numéricos.' },
+      { q: 'Qual protocolo garante entrega confiável e ordenada de dados?', opts: ['UDP', 'IP', 'TCP'], a: 2, explain: 'TCP estabelece conexões confiáveis com retransmissão de pacotes.' },
+      { q: 'Qual porta é usada por padrão pelo HTTPS?', opts: ['80', '443', '53'], a: 1, explain: 'HTTPS usa a porta 443 para conexões seguras.' },
+      { q: 'Qual protocolo atribui automaticamente endereços IP em uma rede local?', opts: ['DHCP', 'DNS', 'ICMP'], a: 0, explain: 'DHCP automatiza a configuração de IPs via broadcast.' },
+      { q: 'O FTP clássico transmite senhas de forma:', opts: ['Criptografada com SSL', 'Em texto claro', 'Usando chaves públicas'], a: 1, explain: 'FTP envia credenciais em texto plano, por isso use FTPS ou SFTP.' },
+      { q: 'Qual protocolo é mais adequado para jogos online em tempo real?', opts: ['TCP', 'UDP', 'HTTP'], a: 1, explain: 'UDP prioriza velocidade sobre confiabilidade em aplicações em tempo real.' },
+      { q: 'O IPv6 foi criado principalmente para resolver:', opts: ['A lentidão do IPv4', 'A escassez de endereços IP', 'Problemas de segurança no DNS'], a: 1, explain: 'IPv6 expande o espaço de endereços para além dos 4,3 bilhões do IPv4.' },
+      { q: 'Qual protocolo opera na camada de transporte e NÃO garante entrega?', opts: ['TCP', 'UDP', 'IP'], a: 1, explain: 'UDP envia datagramas sem confirmação de entrega ou ordem.' },
+      { q: 'O SFTP é baseado em qual protocolo de segurança?', opts: ['SSL', 'SSH', 'TLS'], a: 1, explain: 'SFTP usa SSH para transferências seguras de arquivos.' },
+      { q: 'Qual protocolo é usado para enviar e-mails de um cliente para um servidor?', opts: ['POP3', 'IMAP', 'SMTP'], a: 2, explain: 'SMTP é o padrão para envio de e-mails entre servidores e clientes.' }
+    ];
+
+    // --- DOM ---
+    const currentProtocol = document.getElementById('current-protocol');
+    const protocolsList = document.getElementById('protocols-list');
+    const questionContainer = document.getElementById('question-container');
+    const prevBtn = document.getElementById('prev');
+    const nextBtn = document.getElementById('next');
+    const submitBtn = document.getElementById('submit');
+    const scoreEl = document.getElementById('score');
+    const progressBar = document.getElementById('progress-bar');
+
+    // --- Estado ---
+    let currentProtocolId = 'http';
+    let currentQuestion = 0;
+    const answers = new Array(quiz.length).fill(null);
+    let utterance = null;
+
+    // --- Inicialização ---
+    document.addEventListener('DOMContentLoaded', () => {
+      renderProtocols();
+      renderQuestion();
+      setupEventListeners();
+      updateProgress();
+    });
+
+    // Render protocols as expandable cards
+    function renderProtocols() {
+      protocolsList.innerHTML = '';
+      protocolsData.forEach(protocol => {
+        const item = document.createElement('div');
+        item.className = `protocol-item ${protocol.id === currentProtocolId ? 'active' : ''}`;
+        item.dataset.id = protocol.id;
+        item.innerHTML = `
+          <div class="protocol-header">
+            <i class="${protocol.icon} protocol-icon" aria-hidden="true"></i>
+            <span class="protocol-title">${protocol.title}</span>
+            <button class="protocol-toggle" aria-label="Expandir/Contrair"><i class="fas fa-chevron-down" aria-hidden="true"></i></button>
+          </div>
+          <div class="protocol-description">${protocol.text}</div>
+        `;
+        item.addEventListener('click', (e) => {
+          if (e.target.closest('.protocol-toggle')) return;
+          item.classList.toggle('active');
+        });
+        item.querySelector('.protocol-toggle').addEventListener('click', (e) => {
+          e.stopPropagation();
+          item.classList.toggle('active');
+        });
+        protocolsList.appendChild(item);
+      });
+      updateCurrentProtocol();
+    }
+
+    function updateCurrentProtocol() {
+      const activeItem = document.querySelector('.protocol-item.active') || protocolsList.firstElementChild;
+      if (activeItem) {
+        currentProtocolId = activeItem.dataset.id;
+        currentProtocol.textContent = protocolsData.find(p => p.id === currentProtocolId).title;
+      }
+    }
+
+    // Quiz like previous
+    function renderQuestion() {
+      const q = quiz[currentQuestion];
+      questionContainer.innerHTML = `
+        <div class="question-number">Pergunta ${currentQuestion + 1} de ${quiz.length}</div>
+        <div class="question-text">${q.q}</div>
+        <div class="options-container" id="options-container"></div>
+      `;
+
+      const optionsContainer = document.getElementById('options-container');
+      q.opts.forEach((opt, idx) => {
+        const option = document.createElement('div');
+        option.className = 'option';
+        option.setAttribute('role','button');
+        option.setAttribute('tabindex','0');
+        option.setAttribute('aria-pressed', String(answers[currentQuestion] === idx));
+        if (answers[currentQuestion] === idx) option.classList.add('selected');
+        option.innerHTML = `<div class="option-letter">${String.fromCharCode(65 + idx)}</div><div>${opt}</div>`;
+        option.dataset.index = idx;
+        optionsContainer.appendChild(option);
+      });
+
+      prevBtn.disabled = currentQuestion === 0;
+      nextBtn.disabled = currentQuestion === quiz.length - 1;
+
+      // Atualiza pontuação (respostas dadas)
+      const answered = answers.filter(a => a !== null).length;
+      scoreEl.textContent = `${answered}/${quiz.length}`;
+    }
+
+    function updateProgress() {
+      const answered = answers.filter(a => a !== null).length;
+      const percentage = (answered / quiz.length) * 100;
+      progressBar.style.width = `${percentage}%`;
+    }
+
+    // Listeners
+    function setupEventListeners() {
+      // Protocols: Click to update current
+      protocolsList.addEventListener('click', (e) => {
+        const item = e.target.closest('.protocol-item');
+        if (item) {
+          document.querySelectorAll('.protocol-item').forEach(i => i.classList.remove('active'));
+          item.classList.add('active');
+          updateCurrentProtocol();
+        }
+      });
+
+      // Quiz options
+      document.addEventListener('click', (e) => {
+        const option = e.target.closest('.option');
+        if (!option) return;
+        const idx = parseInt(option.dataset.index, 10);
+        answers[currentQuestion] = idx;
+        renderQuestion();
+        updateProgress();
+      });
+
+      document.addEventListener('keydown', (e) => {
+        const option = e.target.closest('.option');
+        if (!option) return;
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); option.click(); }
+      });
+
+      prevBtn.addEventListener('click', () => { if (currentQuestion > 0) { currentQuestion--; renderQuestion(); } });
+      nextBtn.addEventListener('click', () => { if (currentQuestion < quiz.length - 1) { currentQuestion++; renderQuestion(); } });
+
+      submitBtn.addEventListener('click', () => {
+        if (answers.some(a => a === null)) { alert('Por favor, responda todas as perguntas antes de enviar.'); return; }
+        let correct = 0;
+        for (let i = 0; i < quiz.length; i++) if (answers[i] === quiz[i].a) correct++;
+
+        document.getElementById('score-display').innerHTML = `<i class="fas fa-trophy" aria-hidden="true"></i> ${correct}/${quiz.length}`;
+
+        const reviewRoot = document.createElement('div');
+        quiz.forEach((item, qIndex) => {
+          const block = document.createElement('div');
+          const h = document.createElement('div'); 
+          h.style.fontWeight = '700'; 
+          h.style.marginBottom = '12px'; 
+          h.style.color = 'var(--text-primary)'; 
+          h.textContent = `${qIndex+1}. ${item.q}`;
+          block.appendChild(h);
+          const opts = document.createElement('div');
+          opts.style.display = 'grid';
+          opts.style.gap = '8px';
+          opts.style.marginBottom = '12px';
+          item.opts.forEach((op, optIndex) => {
+            const o = document.createElement('div'); 
+            o.className = 'option'; 
+            o.style.cursor = 'default'; 
+            o.style.pointerEvents = 'none';
+            o.innerHTML = `<div class="option-letter">${String.fromCharCode(65 + optIndex)}</div><div>${op}</div>`;
+            if (optIndex === item.a) o.classList.add('correct');
+            else if (answers[qIndex] === optIndex) o.classList.add('wrong');
+            opts.appendChild(o);
+          });
+          block.appendChild(opts);
+          const explain = document.createElement('div'); 
+          explain.style.fontSize = '14px'; 
+          explain.style.color = 'var(--success)'; 
+          explain.style.fontStyle = 'italic'; 
+          explain.style.marginTop = '8px';
+          explain.textContent = item.explain;
+          block.appendChild(explain);
+          reviewRoot.appendChild(block);
+        });
+
+        questionContainer.innerHTML = '';
+        questionContainer.appendChild(reviewRoot);
+
+        let message = '';
+        if (correct === quiz.length) { 
+          message = '🌟 Parabéns! Você é um expert em protocolos!'; 
+          showSuccessToast(message);
+        } else if (correct >= 7) {
+          message = '👍 Bom trabalho!';
+        } else {
+          message = '📚 Continue estudando — você vai melhorar!';
+        }
+        if (message && correct !== quiz.length) {
+          const resultDiv = document.createElement('div');
+          resultDiv.style.textAlign = 'center';
+          resultDiv.style.fontSize = '1.4rem';
+          resultDiv.style.marginTop = '20px';
+          resultDiv.style.fontWeight = 'bold';
+          resultDiv.innerHTML = `Você acertou <strong>${correct}</strong> de <strong>${quiz.length}</strong> questões! ${message}`;
+          questionContainer.appendChild(resultDiv);
+        }
+      });
+    }
+
+    // Toast
+    function showSuccessToast(message) {
+      const toast = document.createElement('div'); 
+      toast.style.position = 'fixed'; 
+      toast.style.top = '16px'; 
+      toast.style.left = '50%'; 
+      toast.style.transform = 'translateX(-50%)'; 
+      toast.style.padding = '12px 18px'; 
+      toast.style.borderRadius = '12px'; 
+      toast.style.background = 'linear-gradient(90deg, var(--success), #34d399)'; 
+      toast.style.color = 'var(--bg-1)'; 
+      toast.style.fontWeight = '800'; 
+      toast.style.zIndex = 1000; 
+      toast.innerHTML = `<i class="fas fa-star" aria-hidden="true"></i> ${message}`; 
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+  </script>
+</body>
+</html>
