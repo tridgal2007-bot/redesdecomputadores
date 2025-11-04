@@ -508,7 +508,6 @@
         <p class="subtitle">Conectando o mundo, um pacote de dados por vez.</p>
       </div>
       <div class="controls">
-        <button id="themeBtn" class="ghost" title="Selecionar Tema"><i class="fas fa-palette" aria-hidden="true"></i></button>
       </div>
     </header>
 
@@ -812,7 +811,6 @@
     });
 
     // ---------- Modal de Temas ----------
-    const themeBtn = document.getElementById('themeBtn');
     const themeModal = document.getElementById('themeModal');
     const closeThemeModal = document.getElementById('closeThemeModal');
 
@@ -845,11 +843,6 @@
       const currentTheme = localStorage.getItem('theme') || 'blue';
       document.querySelector(`.theme-option[data-theme="${currentTheme}"]`)?.classList.add('selected');
     }
-
-    themeBtn.addEventListener('click', () => {
-      themeModal.style.display = 'flex';
-      renderThemePreview();
-    });
 
     closeThemeModal.addEventListener('click', () => {
       themeModal.style.display = 'none';
