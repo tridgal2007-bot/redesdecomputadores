@@ -13,30 +13,143 @@
 
   <meta name="color-scheme" content="light dark">
   <style>
-    /* ---------- PALETA AZUL PREMIUM (REVISADA) ---------- */
+    /* ---------- PALETA AZUL PREMIUM (PADRÃO) - CORES MAIS AGRADÁVEIS ---------- */
     :root {
-      --bg-1: #0a192f;          /* Deep space blue */
-      --bg-2: #112240;          /* Slightly lighter navy */
-      --card-bg: rgba(10, 25, 47, 0.6);
-      --card-border: rgba(56, 139, 253, 0.15);
-      --accent: #64b5f6;        /* Soft sky blue */
-      --accent-hover: #42a5f5;  /* Slightly deeper on hover */
-      --text: #e6f4ff;
-      --muted: #8ab4f8;
-      --shadow: 0 10px 30px rgba(0, 30, 60, 0.4);
-      --shadow-hover: 0 12px 40px rgba(0, 40, 80, 0.5);
+      --bg-1: #0f172a;          /* Slate-900: Mais suave que deep space blue */
+      --bg-2: #1e293b;          /* Slate-800: Navy mais equilibrado */
+      --card-bg: rgba(15, 23, 42, 0.8);
+      --card-border: rgba(59, 130, 246, 0.2); /* Blue-500 suavizado */
+      --accent: #60a5fa;        /* Blue-400: Céu azul mais gentil */
+      --accent-hover: #3b82f6;  /* Blue-500: Hover mais profundo mas agradável */
+      --text: #f8fafc;          /* Slate-50: Branco puro suave */
+      --muted: #cbd5e1;         /* Slate-200: Cinza claro para texto secundário */
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      --shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.6);
       --rounded: 16px;
-      --focus-ring: 0 0 0 4px rgba(66, 165, 245, 0.25);
+      --focus-ring: 0 0 0 4px rgba(59, 130, 246, 0.3);
+      --accent-rgb: 96, 165, 250;
     }
 
-    /* Light mode (opcional, mas mantido) */
+    /* Tema Vermelho Completo - Suavizado */
+    :root.theme-red {
+      --bg-1: #1e1b18;          /* Stone-900 com tom quente */
+      --bg-2: #2d1a18;          /* Tom marrom-avermelhado suave */
+      --card-bg: rgba(30, 27, 24, 0.8);
+      --card-border: rgba(239, 68, 68, 0.2); /* Red-500 suavizado */
+      --accent: #f87171;        /* Rose-400: Vermelho mais rosado e gentil */
+      --accent-hover: #ef4444;  /* Red-500: Hover equilibrado */
+      --text: #fdf4f4;          /* Rose-50 */
+      --muted: #fca5a5;         /* Rose-200 */
+      --shadow: 0 10px 30px rgba(127, 29, 29, 0.4); /* Red-800 alpha */
+      --shadow-hover: 0 12px 40px rgba(153, 27, 27, 0.5);
+      --focus-ring: 0 0 0 4px rgba(239, 68, 68, 0.3);
+      --accent-rgb: 248, 113, 113;
+    }
+
+    /* Tema Verde Completo - Suavizado */
+    :root.theme-green {
+      --bg-1: #111827;          /* Gray-900 neutro com toque verde */
+      --bg-2: #1f2937;          /* Gray-800 */
+      --card-bg: rgba(17, 24, 39, 0.8);
+      --card-border: rgba(34, 197, 94, 0.2); /* Green-500 suavizado */
+      --accent: #4ade80;        /* Green-400: Verde menta agradável */
+      --accent-hover: #22c55e;  /* Green-500 */
+      --text: #f0fdf4;          /* Green-50 */
+      --muted: #bbf7d0;         /* Green-200 */
+      --shadow: 0 10px 30px rgba(20, 83, 45, 0.4); /* Green-800 alpha */
+      --shadow-hover: 0 12px 40px rgba(22, 101, 52, 0.5);
+      --focus-ring: 0 0 0 4px rgba(34, 197, 94, 0.3);
+      --accent-rgb: 74, 222, 128;
+    }
+
+    /* Tema Roxo Completo - Suavizado */
+    :root.theme-purple {
+      --bg-1: #1e1a2e;          /* Slate-900 com violeta */
+      --bg-2: #2d1b69;          /* Violeta escuro suave */
+      --card-bg: rgba(30, 26, 46, 0.8);
+      --card-border: rgba(168, 85, 247, 0.2); /* Violet-500 */
+      --accent: #a78bfa;        /* Violet-400: Roxo lavanda gentil */
+      --accent-hover: #8b5cf6;  /* Violet-500 */
+      --text: #faf5ff;          /* Violet-50 */
+      --muted: #e9d5ff;         /* Violet-200 */
+      --shadow: 0 10px 30px rgba(79, 70, 229, 0.4); /* Indigo-800 alpha */
+      --shadow-hover: 0 12px 40px rgba(99, 102, 241, 0.5);
+      --focus-ring: 0 0 0 4px rgba(168, 85, 247, 0.3);
+      --accent-rgb: 167, 139, 250;
+    }
+
+    /* Tema Laranja Completo - Suavizado */
+    :root.theme-orange {
+      --bg-1: #1f1a14;          /* Amber-900 escuro */
+      --bg-2: #2d2613;          /* Amber-800 */
+      --card-bg: rgba(31, 26, 20, 0.8);
+      --card-border: rgba(251, 146, 60, 0.2); /* Amber-500 */
+      --accent: #fb923c;        /* Amber-400: Laranja suave */
+      --accent-hover: #f59e0b;  /* Amber-500 */
+      --text: #fff7ed;          /* Amber-50 */
+      --muted: #fed7aa;         /* Amber-200 */
+      --shadow: 0 10px 30px rgba(146, 64, 14, 0.4); /* Amber-800 alpha */
+      --shadow-hover: 0 12px 40px rgba(180, 83, 9, 0.5);
+      --focus-ring: 0 0 0 4px rgba(251, 146, 60, 0.3);
+      --accent-rgb: 251, 146, 60;
+    }
+
+    /* Tema Rosa Completo - Suavizado */
+    :root.theme-pink {
+      --bg-1: #1e1623;          /* Rose-900 suave */
+      --bg-2: #2d1b2a;          /* Rose-800 */
+      --card-bg: rgba(30, 22, 35, 0.8);
+      --card-border: rgba(244, 114, 182, 0.2); /* Pink-500 */
+      --accent: #f472b6;        /* Pink-400: Rosa doce */
+      --accent-hover: #ec4899;  /* Pink-500 */
+      --text: #fdf2f8;          /* Pink-50 */
+      --muted: #fbcfe8;         /* Pink-200 */
+      --shadow: 0 10px 30px rgba(136, 19, 55, 0.4); /* Pink-800 alpha */
+      --shadow-hover: 0 12px 40px rgba(190, 24, 93, 0.5);
+      --focus-ring: 0 0 0 4px rgba(244, 114, 182, 0.3);
+      --accent-rgb: 244, 114, 182;
+    }
+
+    /* Tema Ciano Completo - Suavizado */
+    :root.theme-teal {
+      --bg-1: #0f1f23;          /* Teal-900 */
+      --bg-2: #0f2a2a;          /* Mantido, mas suave */
+      --card-bg: rgba(15, 31, 35, 0.8);
+      --card-border: rgba(45, 212, 191, 0.2); /* Teal-500 */
+      --accent: #2dd4bf;        /* Teal-400: Ciano fresco */
+      --accent-hover: #14b8a6;  /* Teal-500 */
+      --text: #f0fdfa;          /* Teal-50 */
+      --muted: #ccfbf1;         /* Teal-200 */
+      --shadow: 0 10px 30px rgba(6, 78, 59, 0.4); /* Teal-800 alpha */
+      --shadow-hover: 0 12px 40px rgba(15, 118, 110, 0.5);
+      --focus-ring: 0 0 0 4px rgba(45, 212, 191, 0.3);
+      --accent-rgb: 45, 212, 191;
+    }
+
+    /* Tema Preto e Branco (Cinza Escala) Completo - Suavizado */
+    :root.theme-grayscale {
+      --bg-1: #000000;          /* Mantido */
+      --bg-2: #111111;          /* Mantido */
+      --card-bg: rgba(0, 0, 0, 0.8);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent: #ffffff;        /* Mantido */
+      --accent-hover: #eeeeee;  /* Mantido */
+      --text: #ffffff;
+      --muted: #cccccc;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      --shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.8);
+      --focus-ring: 0 0 0 4px rgba(255, 255, 255, 0.2);
+      --accent-rgb: 255, 255, 255;
+    }
+
+    /* Light mode (opcional, mas mantido e suavizado) */
     :root.light {
-      --bg-1: #eef7ff;
-      --bg-2: #dbebff;
+      --bg-1: #f8fafc;          /* Slate-50 */
+      --bg-2: #e2e8f0;          /* Slate-200 */
       --card-bg: #ffffff;
-      --card-border: rgba(100, 181, 246, 0.2);
-      --text: #0a2e5c;
-      --muted: #5a8fd9;
+      --card-border: rgba(59, 130, 246, 0.2);
+      --text: #0f172a;          /* Slate-900 */
+      --muted: #64748b;         /* Slate-500 */
     }
 
     * { box-sizing: border-box; }
@@ -48,6 +161,7 @@
       color: var(--text);
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
+      transition: background 0.3s ease, color 0.3s ease;
     }
 
     .wrap {
@@ -71,6 +185,7 @@
       box-shadow: var(--shadow);
       backdrop-filter: blur(12px);
       position: relative;
+      transition: background 0.3s ease, border 0.3s ease, box-shadow 0.3s ease;
     }
 
     /* Left Column */
@@ -86,8 +201,9 @@
       height: 160px;
       border-radius: 50%;
       padding: 4px;
-      background: linear-gradient(135deg, var(--accent), #2196f3);
-      box-shadow: 0 8px 24px rgba(0, 30, 60, 0.5);
+      background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+      box-shadow: var(--shadow);
+      transition: background 0.3s ease, box-shadow 0.3s ease;
     }
 
     .avatar {
@@ -127,6 +243,7 @@
       color: var(--accent);
       background: rgba(100, 181, 246, 0.1);
       border: 1px solid rgba(100, 181, 246, 0.2);
+      transition: background 0.3s ease, border 0.3s ease;
     }
 
     /* Right Column */
@@ -188,14 +305,15 @@
     }
 
     .btn.primary {
-      background: linear-gradient(135deg, var(--accent), #42a5f5);
+      background: linear-gradient(135deg, var(--accent), var(--accent-hover));
       color: #0a192f;
       border: none;
-      box-shadow: 0 6px 20px rgba(66, 165, 245, 0.3);
+      box-shadow: 0 6px 20px rgba(var(--accent-rgb), 0.3);
+      transition: background 0.3s ease;
     }
 
     .btn.primary:hover {
-      background: linear-gradient(135deg, #42a5f5, #1e88e5);
+      background: linear-gradient(135deg, var(--accent-hover), var(--accent));
     }
 
     .stats {
@@ -210,6 +328,7 @@
       background: rgba(255, 255, 255, 0.03);
       border-radius: 12px;
       border: 1px solid rgba(255, 255, 255, 0.05);
+      transition: background 0.3s ease, border 0.3s ease;
     }
 
     .stat h3 {
@@ -258,6 +377,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      transition: color 0.3s ease;
     }
 
     .topic strong {
@@ -277,13 +397,13 @@
       justify-content: center;
       gap: 12px;
       padding: 16px 24px;
-      background: linear-gradient(135deg, #42a5f5, #1e88e5);
+      background: linear-gradient(135deg, var(--accent-hover), var(--accent));
       color: #0a192f;
       font-weight: 800;
       font-size: 1.1rem;
       text-decoration: none;
       border-radius: 16px;
-      box-shadow: 0 8px 24px rgba(66, 165, 245, 0.4);
+      box-shadow: 0 8px 24px rgba(var(--accent-rgb), 0.4);
       transition: all 0.3s ease;
       margin: 20px 0;
       border: 2px solid rgba(255, 255, 255, 0.2);
@@ -304,8 +424,8 @@
 
     .cta-button:hover {
       transform: translateY(-4px) scale(1.02);
-      box-shadow: 0 12px 32px rgba(66, 165, 245, 0.6);
-      background: linear-gradient(135deg, #2196f3, #1976d2);
+      box-shadow: 0 12px 32px rgba(var(--accent-rgb), 0.6);
+      background: linear-gradient(135deg, var(--accent), var(--accent-hover));
     }
 
     .cta-button:hover::before {
@@ -316,11 +436,61 @@
       width: 22px;
       height: 22px;
       animation: pulse 2s infinite;
+      transition: stroke 0.3s ease;
     }
 
     @keyframes pulse {
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.1); }
+    }
+
+    /* BOTÃO ESPECIAL PARA PROVA - DIFERENTE DA MAIORIA */
+    .quiz-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 16px 24px;
+      background: linear-gradient(135deg, var(--accent-hover), var(--accent));
+      color: #0a192f;
+      font-weight: 800;
+      font-size: 1.1rem;
+      text-decoration: none;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(var(--accent-rgb), 0.4);
+      transition: all 0.3s ease;
+      margin: 10px 0;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .quiz-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: left 0.6s;
+    }
+
+    .quiz-button:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 12px 32px rgba(var(--accent-rgb), 0.6);
+      background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+    }
+
+    .quiz-button:hover::before {
+      left: 100%;
+    }
+
+    .quiz-button svg {
+      width: 22px;
+      height: 22px;
+      animation: pulse 2s infinite;
+      transition: stroke 0.3s ease;
     }
 
     /* Modal de Edição */
@@ -334,6 +504,7 @@
       backdrop-filter: blur(8px);
       z-index: 100;
       padding: 20px;
+      transition: background 0.3s ease;
     }
 
     .modal-card {
@@ -344,6 +515,7 @@
       border-radius: var(--rounded);
       padding: 24px;
       box-shadow: var(--shadow);
+      transition: background 0.3s ease, border 0.3s ease, box-shadow 0.3s ease;
     }
 
     .modal-card h3 {
@@ -351,7 +523,8 @@
       font-weight: 700;
     }
 
-    .modal-card input {
+    .modal-card input,
+    .modal-card select {
       width: 100%;
       padding: 12px;
       margin: 6px 0 16px;
@@ -360,6 +533,7 @@
       background: rgba(0, 0, 0, 0.2);
       color: var(--text);
       font-family: inherit;
+      transition: border 0.3s ease, background 0.3s ease;
     }
 
     .modal-card input::placeholder {
@@ -377,6 +551,7 @@
       backdrop-filter: blur(6px) saturate(1.1);
       z-index: 200;
       padding: 20px;
+      transition: background 0.3s ease;
     }
 
     .welcome-card {
@@ -392,6 +567,7 @@
       box-shadow: 0 22px 60px rgba(0, 20, 40, 0.6);
       position: relative;
       overflow: hidden;
+      transition: background 0.3s ease, border 0.3s ease;
     }
 
     .welcome-left { 
@@ -416,6 +592,7 @@
     .welcome-left::-webkit-scrollbar-thumb {
       background: rgba(100, 181, 246, 0.5);
       border-radius: 3px;
+      transition: background 0.3s ease;
     }
 
     .welcome-right { 
@@ -443,16 +620,18 @@
     .welcome-right::-webkit-scrollbar-thumb {
       background: rgba(100, 181, 246, 0.5);
       border-radius: 3px;
+      transition: background 0.3s ease;
     }
 
     .welcome-badge {
       padding: 8px 14px;
       border-radius: 12px;
-      background: linear-gradient(135deg, var(--accent), #42a5f5);
+      background: linear-gradient(135deg, var(--accent), var(--accent-hover));
       color: #0a192f;
       font-weight: 800;
       font-size: 0.88rem;
       display:inline-block;
+      transition: background 0.3s ease;
     }
 
     .welcome-title {
@@ -487,7 +666,7 @@
       text-align: center;
       box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03);
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.2s ease, background 0.3s ease, border 0.3s ease;
     }
 
     .hero-plate:hover {
@@ -508,6 +687,7 @@
       justify-content: flex-start;
       gap: 20px;
       box-shadow: none;
+      transition: background 0.3s ease;
     }
 
     .hero-plate.expanded .hero-title {
@@ -543,7 +723,7 @@
       border-radius: 12px;
       background: rgba(0, 0, 0, 0.1);
       backdrop-filter: blur(2px);
-      transition: background 0.2s ease;
+      transition: background 0.2s ease, color 0.3s ease;
       text-align: left;
     }
 
@@ -552,15 +732,93 @@
       color: var(--accent);
     }
 
-    /* Light mode adjustments */
+    /* Ajustes para temas nos hover de topics e badge - ATUALIZADOS PARA NOVAS CORES */
+    :root.theme-red .topic:hover,
+    :root.theme-red .badge {
+      background: rgba(248, 113, 113, 0.1);
+      border-color: rgba(248, 113, 113, 0.3);
+    }
+
+    :root.theme-red .dev-name:hover {
+      background: rgba(248, 113, 113, 0.15);
+      color: var(--accent);
+    }
+
+    :root.theme-green .topic:hover,
+    :root.theme-green .badge {
+      background: rgba(74, 222, 128, 0.1);
+      border-color: rgba(74, 222, 128, 0.3);
+    }
+
+    :root.theme-green .dev-name:hover {
+      background: rgba(74, 222, 128, 0.15);
+      color: var(--accent);
+    }
+
+    :root.theme-purple .topic:hover,
+    :root.theme-purple .badge {
+      background: rgba(167, 139, 250, 0.1);
+      border-color: rgba(167, 139, 250, 0.3);
+    }
+
+    :root.theme-purple .dev-name:hover {
+      background: rgba(167, 139, 250, 0.15);
+      color: var(--accent);
+    }
+
+    :root.theme-orange .topic:hover,
+    :root.theme-orange .badge {
+      background: rgba(251, 146, 60, 0.1);
+      border-color: rgba(251, 146, 60, 0.3);
+    }
+
+    :root.theme-orange .dev-name:hover {
+      background: rgba(251, 146, 60, 0.15);
+      color: var(--accent);
+    }
+
+    :root.theme-pink .topic:hover,
+    :root.theme-pink .badge {
+      background: rgba(244, 114, 182, 0.1);
+      border-color: rgba(244, 114, 182, 0.3);
+    }
+
+    :root.theme-pink .dev-name:hover {
+      background: rgba(244, 114, 182, 0.15);
+      color: var(--accent);
+    }
+
+    :root.theme-teal .topic:hover,
+    :root.theme-teal .badge {
+      background: rgba(45, 212, 191, 0.1);
+      border-color: rgba(45, 212, 191, 0.3);
+    }
+
+    :root.theme-teal .dev-name:hover {
+      background: rgba(45, 212, 191, 0.15);
+      color: var(--accent);
+    }
+
+    :root.theme-grayscale .topic:hover,
+    :root.theme-grayscale .badge {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    :root.theme-grayscale .dev-name:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--accent);
+    }
+
+    /* Light mode adjustments - SUAVIZADO */
     :root.light .hero-plate {
       background: linear-gradient(135deg, rgba(200, 230, 255, 0.3), rgba(220, 240, 255, 0.2));
-      border-color: rgba(100, 181, 246, 0.2);
+      border-color: rgba(59, 130, 246, 0.2);
     }
 
     :root.light .hero-plate.expanded {
       background: linear-gradient(135deg, rgba(200, 230, 255, 0.4), rgba(220, 240, 255, 0.3));
-      border-color: rgba(100, 181, 246, 0.3);
+      border-color: rgba(59, 130, 246, 0.3);
     }
 
     :root.light .dev-name {
@@ -569,7 +827,7 @@
     }
 
     :root.light .dev-name:hover {
-      background: rgba(100, 181, 246, 0.2);
+      background: rgba(59, 130, 246, 0.2);
       color: #0a2e5c;
     }
     /* --- FIM da melhoria --- */
@@ -633,6 +891,94 @@
       0% { transform: translate3d(0,-10px,0) rotate(0deg) scale(1); opacity: 1; }
       100% { transform: translate3d(var(--dx, 0px), 260px, 0) rotate(var(--rot, 360deg)) scale(0.95); opacity: 0; }
     }
+
+    /* NOVO: Visualização Aprimorada da Paleta de Cores no Modal de Configurações */
+    .theme-preview {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 12px;
+      margin: 16px 0;
+      padding: 16px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .theme-option {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .theme-option:hover,
+    .theme-option.selected {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+
+    .theme-swatch {
+      width: 100%;
+      height: 60px;
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .theme-swatch::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--bg-1), var(--bg-2));
+      opacity: 0.8;
+    }
+
+    .theme-swatch::after {
+      content: '';
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      width: 20px;
+      height: 20px;
+      background: var(--accent);
+      border-radius: 50%;
+      border: 2px solid var(--bg-1);
+    }
+
+    .theme-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-align: center;
+      color: var(--text);
+      white-space: nowrap;
+    }
+
+    /* Aplicar preview dinâmico para cada tema - ATUALIZADO */
+    .theme-option[data-theme="blue"] .theme-swatch::before { background: linear-gradient(135deg, #0f172a, #1e293b); }
+    .theme-option[data-theme="red"] .theme-swatch::before { background: linear-gradient(135deg, #1e1b18, #2d1a18); }
+    .theme-option[data-theme="green"] .theme-swatch::before { background: linear-gradient(135deg, #111827, #1f2937); }
+    .theme-option[data-theme="purple"] .theme-swatch::before { background: linear-gradient(135deg, #1e1a2e, #2d1b69); }
+    .theme-option[data-theme="orange"] .theme-swatch::before { background: linear-gradient(135deg, #1f1a14, #2d2613); }
+    .theme-option[data-theme="pink"] .theme-swatch::before { background: linear-gradient(135deg, #1e1623, #2d1b2a); }
+    .theme-option[data-theme="teal"] .theme-swatch::before { background: linear-gradient(135deg, #0f1f23, #0f2a2a); }
+    .theme-option[data-theme="grayscale"] .theme-swatch::before { background: linear-gradient(135deg, #000000, #111111); }
+
+    .theme-option[data-theme="blue"] .theme-swatch::after { background: #60a5fa; }
+    .theme-option[data-theme="red"] .theme-swatch::after { background: #f87171; }
+    .theme-option[data-theme="green"] .theme-swatch::after { background: #4ade80; }
+    .theme-option[data-theme="purple"] .theme-swatch::after { background: #a78bfa; }
+    .theme-option[data-theme="orange"] .theme-swatch::after { background: #fb923c; }
+    .theme-option[data-theme="pink"] .theme-swatch::after { background: #f472b6; }
+    .theme-option[data-theme="teal"] .theme-swatch::after { background: #2dd4bf; }
+    .theme-option[data-theme="grayscale"] .theme-swatch::after { background: #ffffff; }
 
     /* Responsive */
     @media (max-width: 900px) {
@@ -701,6 +1047,12 @@
       }
       .topbar { flex-direction: column; align-items: stretch; gap: 12px; }
       .controls { justify-content: center; }
+      .theme-preview {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 8px;
+        padding: 12px;
+      }
+      .theme-swatch { height: 50px; }
     }
 
     @media (max-width: 480px) {
@@ -784,11 +1136,36 @@
         width: 20px;
         height: 20px;
       }
+      .quiz-button {
+        font-size: 1rem;
+        padding: 14px 20px;
+        margin: 10px 0;
+      }
+      .quiz-button svg {
+        width: 20px;
+        height: 20px;
+      }
+      .theme-preview {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 6px;
+        padding: 8px;
+      }
+      .theme-swatch { height: 40px; }
+      .theme-label { font-size: 0.8rem; }
     }
 
     .muted { color: var(--muted); }
     .small { font-size: 0.85rem; }
     .center { display: flex; align-items: center; justify-content: center; }
+
+    /* Ajuste para confetti colors por tema - ATUALIZADO */
+    :root.theme-red .confetti-piece { --confetti-colors: '#f87171,#fca5a5,#fecaca'; }
+    :root.theme-green .confetti-piece { --confetti-colors: '#4ade80,#86efac,#dcfce7'; }
+    :root.theme-purple .confetti-piece { --confetti-colors: '#a78bfa,#c4b5fd,#ede9fe'; }
+    :root.theme-orange .confetti-piece { --confetti-colors: '#fb923c,#fed7aa,#ffedd5'; }
+    :root.theme-pink .confetti-piece { --confetti-colors: '#f472b6,#fbcfe8,#fdf2f8'; }
+    :root.theme-teal .confetti-piece { --confetti-colors: '#2dd4bf,#ccfbf1,#f0fdfa'; }
+    :root.theme-grayscale .confetti-piece { --confetti-colors: '#ffffff,#eeeeee,#cccccc'; }
   </style>
 </head>
 <body>
@@ -808,8 +1185,8 @@
         </div>
 
         <div style="width:100%;display:flex;gap:8px;justify-content:center;margin-top:12px">
-          <button class="btn ghost" id="editBtn" title="Editar perfil"><i class="lucide-edit-2"></i> Editar</button>
-          <button class="btn ghost" id="logoutBtn" title="Sair"><i class="lucide-log-out"></i> Sair</button>
+          <button class="btn ghost" id="editBtn" title="Editar perfil"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg> Editar</button>
+          <button class="btn ghost" id="settingsBtn" title="Configurações"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg> Config</button>
         </div>
       </section>
 
@@ -817,7 +1194,7 @@
       <section class="right" aria-hidden="false">
         <div class="topbar">
           <div class="email">
-            <i class="lucide-mail"></i>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
             <span id="userEmail" class="small muted">—@—</span>
           </div>
         </div>
@@ -840,8 +1217,17 @@
           <span>Montar Minha Rede</span>
         </a>
 
+        <!-- NOVO BOTÃO PARA PROVA - DIFERENTE DA MAIORIA -->
+        <a href="prova.html" class="quiz-button" aria-label="Fazer prova com 30 questões">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V11a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22,4 12,14.01 9,11.01"></polyline>
+          </svg>
+          <span>Prova (FINAL)</span>
+        </a>
+
         <div style="margin-top:8px;display:flex;justify-content:flex-end">
-          <button class="btn ghost" id="refreshBtn"><i class="lucide-refresh-cw"></i> Recarregar</button>
+          <button class="btn ghost" id="refreshBtn"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg> Recarregar</button>
         </div>
       </section>
     </main>
@@ -852,7 +1238,7 @@
     <div class="modal-card">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
         <h3>Editar perfil</h3>
-        <button class="btn" id="closeModal"><i class="lucide-x"></i></button>
+        <button class="btn" id="closeModal"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
       </div>
       <div style="display:flex;gap:12px;flex-direction:column">
         <label class="small">Nome</label>
@@ -869,10 +1255,32 @@
     </div>
   </div>
 
+  <!-- Modal de Configurações (AGORA COM VISUALIZAÇÃO APRIMORADA DA PALETA) -->
+  <div id="settingsModal" class="modal" style="display:none" role="dialog" aria-modal="true" aria-label="Configurações">
+    <div class="modal-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <h3>Configurações</h3>
+        <button class="btn" id="closeSettings"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+      </div>
+      <div style="display:flex;gap:12px;flex-direction:column">
+        <label class="small">Tema da Interface</label>
+        <div class="theme-preview" id="themePreview">
+          <!-- Preenchido por JS com opções clicáveis -->
+        </div>
+        <div style="margin-top:20px">
+          <button class="btn primary" id="logoutFromSettings">Sair</button>
+        </div>
+        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+          <button class="btn ghost" id="closeSettingsBtn">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- WELCOME MODAL (ATUALIZADO COM NOVA LISTA DE DESENVOLVEDORES) -->
   <div id="welcomeModal" class="welcome-modal" style="display:none" role="dialog" aria-modal="true" aria-label="Bem-vindo ao Perfil">
     <div class="welcome-card" role="document">
-      <button class="btn welcome-close" id="welcomeClose" title="Fechar"><i class="lucide-x"></i></button>
+      <button class="btn welcome-close" id="welcomeClose" title="Fechar"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
 
       <div class="welcome-left">
         <div class="welcome-badge">Seja bem-vindo(a)</div>
@@ -1008,6 +1416,65 @@ Nosso objetivo: mostrar a importância das redes na sociedade moderna e como ela
 
     function loadAvatar(url){ avatar.src = url || 'imagen/default.png'; }
 
+    // Configurações de Tema (AGORA COM PREVIEW CLICÁVEL)
+    function applyTheme(theme) {
+      const root = document.documentElement;
+      root.className = theme === 'blue' ? '' : `theme-${theme}`;
+      localStorage.setItem('theme', theme);
+      // Animação suave de transição
+      root.style.transition = 'all 0.5s ease';
+      // Atualizar seleção no preview
+      document.querySelectorAll('.theme-option').forEach(opt => opt.classList.remove('selected'));
+      document.querySelector(`.theme-option[data-theme="${theme}"]`)?.classList.add('selected');
+    }
+
+    // NOVO: Renderizar preview de temas no modal
+    const themeOptions = [
+      { value: 'blue', label: 'Azul (Padrão)' },
+      { value: 'red', label: 'Vermelho' },
+      { value: 'green', label: 'Verde' },
+      { value: 'purple', label: 'Roxo' },
+      { value: 'orange', label: 'Laranja' },
+      { value: 'pink', label: 'Rosa' },
+      { value: 'teal', label: 'Ciano' },
+      { value: 'grayscale', label: 'Preto e Branco' }
+    ];
+
+    function renderThemePreview() {
+      const preview = document.getElementById('themePreview');
+      preview.innerHTML = '';
+      themeOptions.forEach(opt => {
+        const el = document.createElement('div');
+        el.className = 'theme-option';
+        el.dataset.theme = opt.value;
+        el.innerHTML = `
+          <div class="theme-swatch"></div>
+          <span class="theme-label">${opt.label}</span>
+        `;
+        el.addEventListener('click', () => applyTheme(opt.value));
+        preview.appendChild(el);
+      });
+      // Marcar o tema atual
+      const currentTheme = localStorage.getItem('theme') || 'blue';
+      document.querySelector(`.theme-option[data-theme="${currentTheme}"]`)?.classList.add('selected');
+    }
+
+    // Carregar tema salvo
+    const savedTheme = localStorage.getItem('theme') || 'blue';
+    applyTheme(savedTheme);
+
+    // Renderizar preview ao abrir o modal de configurações
+    const settingsModal = document.getElementById('settingsModal');
+    const settingsBtn = document.getElementById('settingsBtn');
+    const closeSettings = document.getElementById('closeSettings');
+    const closeSettingsBtn = document.getElementById('closeSettingsBtn');
+
+    settingsBtn.addEventListener('click', () => { 
+      settingsModal.style.display = 'flex'; 
+      renderThemePreview();  // Renderizar preview ao abrir
+    });
+    [closeSettings, closeSettingsBtn].forEach(btn => { btn.addEventListener('click', () => settingsModal.style.display = 'none'); });
+
     async function carregarPerfil(){ let email = localStorage.getItem('userEmail'); if(!email){ const token = localStorage.getItem('googleToken'); const payload = parseJwt(token); email = payload?.email; }
       if(!email){ userName.textContent = 'Convidado'; userTag.textContent = 'Faça login para ver seu perfil'; userEmail.textContent = '—'; loadAvatar('imagen/default.png'); renderTopics(); return; }
 
@@ -1022,7 +1489,14 @@ Nosso objetivo: mostrar a importância das redes na sociedade moderna e como ela
     }
 
     document.getElementById('refreshBtn').addEventListener('click', carregarPerfil);
-    document.getElementById('logoutBtn').addEventListener('click', () => { localStorage.removeItem('userEmail'); localStorage.removeItem('googleToken'); location.href = 'index.html'; });
+
+    // Logout (agora no modal de configurações)
+    function handleLogout() {
+      localStorage.removeItem('userEmail');
+      localStorage.removeItem('googleToken');
+      location.href = 'index.html';
+    }
+    document.getElementById('logoutFromSettings').addEventListener('click', handleLogout);
 
     const welcomeModal = document.getElementById('welcomeModal');
     const welcomeClose = document.getElementById('welcomeClose');
@@ -1117,7 +1591,7 @@ Nosso objetivo: mostrar a importância das redes na sociedade moderna e como ela
       }
     });
 
-    document.addEventListener('keydown', (e) => { if(e.key === 'Escape' && welcomeModal.style.display === 'flex'){ hideWelcome(dontShow.checked); } });
+    document.addEventListener('keydown', (e) => { if(e.key === 'Escape' && (welcomeModal.style.display === 'flex' || settingsModal.style.display === 'flex' || modal.style.display === 'flex')){ if(welcomeModal.style.display === 'flex') hideWelcome(dontShow.checked); else { welcomeModal.style.display = 'none'; settingsModal.style.display = 'none'; modal.style.display = 'none'; } } });
 
     document.addEventListener('DOMContentLoaded', () => { try{ showWelcome(); }catch(e){ console.warn('Welcome failed:', e);} carregarPerfil(); });
   </script>
