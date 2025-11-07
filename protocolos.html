@@ -387,6 +387,8 @@
     </footer>
   </div>
 
+  <canvas id="confetti" style="position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:1200"></canvas>
+
   <script>
     // --- Função para aplicar tema ---
     function applyTheme(theme) {
@@ -503,6 +505,11 @@
       { q: 'Qual protocolo é usado para enviar e-mails de um cliente para um servidor?', opts: ['POP3', 'IMAP', 'SMTP'], a: 2, explain: 'SMTP é o padrão para envio de e-mails entre servidores e clientes.' }
     ];
 
+    const QUIZ_KEY = 'quiz_submitted_at';
+    let currentQuestion = 0;
+    let answers = JSON.parse(localStorage.getItem('quiz_answers')) || new Array(quiz.length).fill(null);
+    let quizSubmitted = localStorage.getItem(QUIZ_KEY) !== null;
+
     // --- DOM ---
     const currentProtocol = document.getElementById('current-protocol');
     const protocolsList = document.getElementById('protocols-list');
@@ -510,21 +517,20 @@
     const prevBtn = document.getElementById('prev');
     const nextBtn = document.getElementById('next');
     const submitBtn = document.getElementById('submit');
-    const scoreEl = document.getElementById('score');
+    const scoreSpan = document.getElementById('score');
     const progressBar = document.getElementById('progress-bar');
-
-    // --- Estado ---
-    let currentProtocolId = 'http';
-    let currentQuestion = 0;
-    const answers = new Array(quiz.length).fill(null);
-    let utterance = null;
 
     // --- Inicialização ---
     document.addEventListener('DOMContentLoaded', () => {
       renderProtocols();
-      renderQuestion();
+      if (quizSubmitted && !canRetake()) {
+        submitBtn.click();
+      } else {
+        renderQuestion();
+        updateProgress();
+      }
       setupEventListeners();
-      updateProgress();
+      updateRetakeButton();
     });
 
     // Render protocols as expandable cards
@@ -555,6 +561,7 @@
       updateCurrentProtocol();
     }
 
+    let currentProtocolId = 'http';
     function updateCurrentProtocol() {
       const activeItem = document.querySelector('.protocol-item.active') || protocolsList.firstElementChild;
       if (activeItem) {
@@ -563,8 +570,65 @@
       }
     }
 
-    // Quiz like previous
+    function canRetake() {
+      const submittedAt = localStorage.getItem(QUIZ_KEY);
+      if (!submittedAt) return true;
+      const now = Date.now();
+      const diffMinutes = (now - parseInt(submittedAt)) / (1000 * 60);
+      return diffMinutes >= 10;
+    }
+
+    function updateRetakeButton() {
+      const existing = document.getElementById('retake-btn');
+      if (existing) existing.remove();
+
+      if (quizSubmitted && !canRetake()) {
+        const retakeBtn = document.createElement('button');
+        retakeBtn.id = 'retake-btn';
+        retakeBtn.className = 'btn';
+        retakeBtn.disabled = true;
+        retakeBtn.innerHTML = '<i class="fas fa-clock" aria-hidden="true"></i> Aguarde...';
+        document.querySelector('.quiz-controls').appendChild(retakeBtn);
+
+        const countdown = setInterval(() => {
+          const submittedAt = localStorage.getItem(QUIZ_KEY);
+          const now = Date.now();
+          const remaining = 10 - Math.floor((now - parseInt(submittedAt)) / (1000 * 60));
+          if (remaining <= 0) {
+            clearInterval(countdown);
+            updateRetakeButton();
+          } else {
+            retakeBtn.innerHTML = `<i class="fas fa-clock" aria-hidden="true"></i> Refazer em ${remaining} min`;
+          }
+        }, 1000);
+      } else if (quizSubmitted && canRetake()) {
+        const retakeBtn = document.createElement('button');
+        retakeBtn.id = 'retake-btn';
+        retakeBtn.className = 'btn';
+        retakeBtn.innerHTML = '<i class="fas fa-redo" aria-hidden="true"></i> Refazer Quiz';
+        retakeBtn.addEventListener('click', resetQuiz);
+        document.querySelector('.quiz-controls').appendChild(retakeBtn);
+      }
+    }
+
+    function resetQuiz() {
+      localStorage.removeItem('quiz_answers');
+      localStorage.removeItem(QUIZ_KEY);
+      answers = new Array(quiz.length).fill(null);
+      currentQuestion = 0;
+      quizSubmitted = false;
+      renderQuestion();
+      updateProgress();
+      updateRetakeButton();
+
+      const scoreDisplay = document.getElementById('score-display');
+      scoreDisplay.innerHTML = `<i class="fas fa-graduation-cap" aria-hidden="true"></i> <span id="score">0/10</span>`;
+      document.getElementById('score').textContent = '0/10';
+    }
+
     function renderQuestion() {
+      if (quizSubmitted && !canRetake()) return;
+
       const q = quiz[currentQuestion];
       questionContainer.innerHTML = `
         <div class="question-number">Pergunta ${currentQuestion + 1} de ${quiz.length}</div>
@@ -588,9 +652,8 @@
       prevBtn.disabled = currentQuestion === 0;
       nextBtn.disabled = currentQuestion === quiz.length - 1;
 
-      // Atualiza pontuação (respostas dadas)
       const answered = answers.filter(a => a !== null).length;
-      scoreEl.textContent = `${answered}/${quiz.length}`;
+      scoreSpan.textContent = `${answered}/${quiz.length}`;
     }
 
     function updateProgress() {
@@ -613,10 +676,12 @@
 
       // Quiz options
       document.addEventListener('click', (e) => {
+        if (quizSubmitted && !canRetake()) return;
         const option = e.target.closest('.option');
         if (!option) return;
         const idx = parseInt(option.dataset.index, 10);
         answers[currentQuestion] = idx;
+        localStorage.setItem('quiz_answers', JSON.stringify(answers));
         renderQuestion();
         updateProgress();
       });
@@ -627,11 +692,31 @@
         if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); option.click(); }
       });
 
-      prevBtn.addEventListener('click', () => { if (currentQuestion > 0) { currentQuestion--; renderQuestion(); } });
-      nextBtn.addEventListener('click', () => { if (currentQuestion < quiz.length - 1) { currentQuestion++; renderQuestion(); } });
+      prevBtn.addEventListener('click', () => {
+        if (quizSubmitted && !canRetake()) return;
+        if (currentQuestion > 0) {
+          currentQuestion--;
+          renderQuestion();
+        }
+      });
+      nextBtn.addEventListener('click', () => {
+        if (quizSubmitted && !canRetake()) return;
+        if (currentQuestion < quiz.length - 1) {
+          currentQuestion++;
+          renderQuestion();
+        }
+      });
 
       submitBtn.addEventListener('click', () => {
-        if (answers.some(a => a === null)) { alert('Por favor, responda todas as perguntas antes de enviar.'); return; }
+        if (quizSubmitted && !canRetake()) return;
+        if (answers.some(a => a === null)) {
+          alert('Por favor, responda todas as perguntas antes de enviar.');
+          return;
+        }
+
+        localStorage.setItem(QUIZ_KEY, Date.now().toString());
+        quizSubmitted = true;
+
         let correct = 0;
         for (let i = 0; i < quiz.length; i++) if (answers[i] === quiz[i].a) correct++;
 
@@ -674,44 +759,65 @@
         questionContainer.innerHTML = '';
         questionContainer.appendChild(reviewRoot);
 
-        let message = '';
-        if (correct === quiz.length) { 
-          message = '🌟 Parabéns! Você é um expert em protocolos!'; 
-          showSuccessToast(message);
-        } else if (correct >= 7) {
-          message = '👍 Bom trabalho!';
-        } else {
-          message = '📚 Continue estudando — você vai melhorar!';
-        }
-        if (message && correct !== quiz.length) {
-          const resultDiv = document.createElement('div');
-          resultDiv.style.textAlign = 'center';
-          resultDiv.style.fontSize = '1.4rem';
-          resultDiv.style.marginTop = '20px';
-          resultDiv.style.fontWeight = 'bold';
-          resultDiv.innerHTML = `Você acertou <strong>${correct}</strong> de <strong>${quiz.length}</strong> questões! ${message}`;
-          questionContainer.appendChild(resultDiv);
+        updateRetakeButton();
+
+        if (correct === quiz.length) {
+          showSuccessToast();
+          launchConfetti();
         }
       });
     }
 
-    // Toast
-    function showSuccessToast(message) {
-      const toast = document.createElement('div'); 
-      toast.style.position = 'fixed'; 
-      toast.style.top = '16px'; 
-      toast.style.left = '50%'; 
-      toast.style.transform = 'translateX(-50%)'; 
-      toast.style.padding = '12px 18px'; 
-      toast.style.borderRadius = '12px'; 
-      toast.style.background = 'linear-gradient(90deg, var(--success), #34d399)'; 
-      toast.style.color = 'var(--bg-1)'; 
-      toast.style.fontWeight = '800'; 
-      toast.style.zIndex = 1000; 
-      toast.innerHTML = `<i class="fas fa-star" aria-hidden="true"></i> ${message}`; 
+    function showSuccessToast() {
+      const toast = document.createElement('div');
+      toast.style.position = 'fixed';
+      toast.style.top = '16px';
+      toast.style.left = '50%';
+      toast.style.transform = 'translateX(-50%)';
+      toast.style.padding = '12px 18px';
+      toast.style.borderRadius = '12px';
+      toast.style.background = 'linear-gradient(90deg, var(--success), #34d399)';
+      toast.style.color = 'var(--bg-1)';
+      toast.style.fontWeight = '800';
+      toast.style.zIndex = 1000;
+      toast.innerHTML = '<i class="fas fa-star" aria-hidden="true"></i> Parabéns! Você acertou todas as questões!';
       document.body.appendChild(toast);
       setTimeout(() => toast.remove(), 3000);
     }
+
+    const confettiCanvas = document.getElementById('confetti');
+    const confettiCtx = confettiCanvas.getContext('2d');
+    function resizeCanvas() { confettiCanvas.width = window.innerWidth; confettiCanvas.height = window.innerHeight; }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+    let confettiPieces = [];
+    function launchConfetti() {
+      confettiPieces = [];
+      for (let i = 0; i < 120; i++) {
+        confettiPieces.push({ x: Math.random() * confettiCanvas.width, y: -20, r: 3 + Math.random() * 8, vx: -3 + Math.random() * 6, vy: 2 + Math.random() * 6, rot: Math.random() * 360, vr: -0.1 + Math.random() * 0.2, color: `hsl(${Math.random() * 360}, 80%, 60%)` });
+      }
+      requestAnimationFrame(drawConfetti);
+      setTimeout(() => { confettiPieces = []; confettiCtx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height); }, 3200);
+    }
+    function drawConfetti() {
+      confettiCtx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
+      confettiPieces.forEach(p => {
+        p.x += p.vx; p.y += p.vy; p.vy += 0.12; p.rot += p.vr;
+        confettiCtx.save();
+        confettiCtx.translate(p.x,p.y);
+        confettiCtx.rotate((p.rot*Math.PI)/180);
+        confettiCtx.fillStyle = p.color;
+        confettiCtx.fillRect(-p.r/2,-p.r/2,p.r,p.r*0.6);
+        confettiCtx.restore();
+      });
+      if (confettiPieces.length) requestAnimationFrame(drawConfetti);
+    }
+
+    window.addEventListener('resize', () => {
+      if (!quizSubmitted || canRetake()) {
+        renderQuestion();
+      }
+    });
 
   </script>
 </body>

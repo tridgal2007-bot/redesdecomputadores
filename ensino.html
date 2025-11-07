@@ -2,132 +2,1877 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Mensagem com Imagem — Modal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0d1525" />
+  <title>Simulador de Rede Educacional — Construção Guiada (Baseado em Topologia Realista)</title>
+  <!-- Fontes premium -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Ícones premium -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    :root{--bg:#0f2940;--modal-bg:#0e2a44;--panel:#0f2b4a;--white:#ffffff}
-    html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background:linear-gradient(180deg,#072033 0%, #072b46 100%);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
-
-    #particles {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
+    :root{
+      --bg-900:#071428;
+      --bg-gradient: linear-gradient(160deg,#030416 0%,#071428 35%,#0a1730 70%,#112034 100%);
+      --panel: rgba(11,20,34,0.7);
+      --card-border: rgba(143,233,255,0.08);
+      --accent:#00a8ff;
+      --accent-light:#8fe9ff;
+      --text:#e6f6ff;
+      --muted:#9fbfda;
+      --success:#4ade80;
+      --warning:#fbbf24;
+      --error:#f87171;
+      --glass: rgba(255,255,255,0.03);
+      --glow: 0 10px 30px rgba(0,168,255,0.08);
+      --transition: all .22s cubic-bezier(.2,.9,.2,1);
+      --step-complete: #8b5cf6;
     }
-
-    .page {
-      width:100%;max-width:1024px;padding:24px;box-sizing:border-box;color:var(--white);
-      display:flex;flex-direction:column;gap:16px;align-items:center
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;background:var(--bg-gradient);font-family:'Space Grotesk','Montserrat',system-ui,-apple-system,'Segoe UI',Roboto,Arial;color:var(--muted);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
+    .container{max-width:1400px;margin:0 auto;padding:18px;min-height:100vh;display:flex;flex-direction:column;gap:12px}
+    header{display:flex;align-items:center;gap:16px;padding:8px 0}
+    .logo{width:72px;height:72px;border-radius:14px;background:linear-gradient(135deg,var(--text),var(--accent));display:grid;place-items:center;color:#041127;font-weight:900;font-size:20px;box-shadow:var(--glow)}
+    h1{margin:0;color:var(--text);font-size:22px;font-weight:800;letter-spacing:-0.4px;background:linear-gradient(to right,var(--text),var(--accent-light));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+    .subtitle{font-size:13px;color:var(--muted);margin-top:6px}
+    .controls{margin-left:auto;display:flex;gap:8px;align-items:center}
+    .main{display:flex;gap:18px;flex:1}
+    .panel{background:var(--panel);border:1px solid var(--card-border);border-radius:14px;padding:18px;box-shadow:0 6px 24px rgba(0,0,0,0.45);backdrop-filter:blur(6px);overflow:hidden}
+    .left{flex:0 0 320px}
+    .center{flex:1;min-height:560px;position:relative;display:flex;flex-direction:column}
+    .right{flex:0 0 360px;min-width:280px}
+    /* device palette */
+    .device-btn{display:flex;gap:10px;align-items:center;padding:10px;border-radius:10px;background:var(--glass);border:1px solid rgba(255,255,255,0.02);cursor:pointer;transition:var(--transition);user-select:none;width:100%}
+    .device-btn:hover{transform:translateY(-4px);box-shadow:var(--glow)}
+    .device-icon{width:44px;height:44px;border-radius:8px;background:linear-gradient(180deg,rgba(255,255,255,0.03),rgba(0,0,0,0.12));display:grid;place-items:center;font-size:20px;color:var(--accent-light)}
+    .muted{color:var(--muted);font-size:12px}
+    /* device groups */
+    .device-group{margin-bottom:12px}
+    .group-header{padding:8px;background:rgba(255,255,255,0.05);border-radius:6px;cursor:pointer;display:flex;align-items:center;gap:8px;color:var(--text);font-weight:600;font-size:14px}
+    .group-header:hover{background:rgba(0,168,255,0.1)}
+    .group-toggle{width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,0.1);display:grid;place-items:center;transition:var(--transition)}
+    .group-toggle.expanded::after{content:'−';color:var(--accent);font-weight:bold}
+    .group-toggle:not(.expanded)::after{content:'+';color:var(--muted)}
+    .group-devices{display:none;padding:8px;gap:8px;flex-direction:column}
+    .group-devices.expanded{display:flex}
+    /* canvas */
+    #topo{flex:1;border-radius:12px;overflow:hidden;position:relative;background:
+      radial-gradient(circle at 10% 20%, rgba(8,168,255,0.03) 0%, transparent 20%),
+      linear-gradient(180deg, rgba(255,255,255,0.01), transparent 20%);
+      cursor: grab;
+      transition: cursor 0.2s;
+      transform-origin: center center;
     }
-
-    .controls{display:flex;gap:12px}
-    button{background:#1fb6ff;border:0;padding:10px 14px;border-radius:8px;color:#012;cursor:pointer;font-weight:600}
-    button.secondary{background:transparent;color:var(--white);border:1px solid rgba(255,255,255,0.08)}
-
-    .overlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(4,10,20,0.6);backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:opacity .18s ease}
-    .overlay.show{opacity:1;pointer-events:auto}
-
-    .modal{
-      width:92%;max-width:560px;background:var(--panel);border-radius:12px;padding:18px;box-shadow:0 10px 30px rgba(2,6,12,0.6);position:relative;transform:translateY(10px) scale(.99);transition:transform .18s ease,opacity .18s ease;opacity:0
+    #topo.panning{cursor: grabbing;}
+    svg#links{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:2}
+    /* device element */
+    .device{position:absolute;width:160px;padding:10px;border-radius:10px;background:linear-gradient(180deg,#071623,#061422);box-shadow:0 8px 30px rgba(0,0,0,0.6);cursor:grab;user-select:none;z-index:5;border:1px solid rgba(255,255,255,0.02)}
+    .device:active{cursor:grabbing}
+    .dev-head{display:flex;gap:10px;align-items:center}
+    .dev-name{font-weight:700;font-size:13px;color:var(--text);outline:none}
+    .dev-type{font-size:11px;color:var(--muted)}
+    .ports{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;justify-content:center}
+    .port{width:20px;height:20px;border-radius:4px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.03);display:grid;place-items:center;font-size:11px;cursor:pointer;position:relative;transition:box-shadow .18s}
+    .port.wifi{border-radius:50%}
+    .port.connected::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(90deg,rgba(139,92,246,0.18),rgba(0,168,255,0.12));opacity:0.9}
+    .port .led{position:absolute;right:-6px;top:-6px;width:10px;height:10px;border-radius:50%;background:#333;border:1px solid rgba(255,255,255,0.06)}
+    .led.up{background:var(--success);box-shadow:0 0 8px rgba(74,222,128,0.25)}
+    .led.down{background:#333;opacity:0.35}
+    .port:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,0.6)}
+    .network-status{display:flex;gap:6px;margin-top:8px;justify-content:center}
+    .network-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.03)}
+    .network-dot.active{background:var(--success);box-shadow:0 0 6px rgba(74,222,128,0.18)}
+    /* link styles in svg via stroke colors (css vars used inline) */
+    /* inspector */
+    .inspector h3{margin:0 0 8px 0;color:var(--text)}
+    .inspector-row{display:flex;justify-content:space-between;align-items:center;padding:8px;background:rgba(255,255,255,0.02);border-radius:8px;margin-bottom:8px;font-size:13px}
+    .inspector-row input, .inspector-row select{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--text);padding:6px;border-radius:6px;width:100%}
+    .small{font-size:12px;padding:6px 10px;border-radius:8px;background:linear-gradient(90deg,var(--accent-light),var(--accent));color:#041127;border:none;cursor:pointer}
+    .ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted);padding:6px 10px;border-radius:8px}
+    .delete-btn{background:linear-gradient(90deg,var(--error),#ef4444);color:#fff;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px}
+    .delete-btn:hover{background:linear-gradient(90deg,#dc2626,#b91c1c)}
+    /* modals */
+    .modal-back{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:none;z-index:1200;align-items:center;justify-content:center}
+    .modal-back.active{display:flex}
+    .modal{background:var(--panel);padding:18px;border-radius:12px;border:1px solid var(--card-border);width:420px;max-width:96%}
+    .modal h3{margin:0 0 8px 0;color:var(--text)}
+    /* link label near curve */
+    .link-label{font-family:'Space Grotesk';font-size:11px;fill:#cfefff;pointer-events:none}
+    footer{font-size:12px;color:var(--muted);text-align:center;margin-top:12px}
+    /* === Build Steps (adaptado para topologia linear) === */
+    .build-steps { margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
+    .step {
+      padding: 12px; border-radius: 8px; background: rgba(255,255,255,0.02);
+      transition: var(--transition); cursor: pointer; position: relative; overflow: hidden;
     }
-    .overlay.show .modal{opacity:1;transform:none}
-
-    .image-box{background:linear-gradient(180deg,#0b2a44,#08293e);border-radius:8px;padding:12px;display:flex;flex-direction:column;align-items:center;gap:10px}
-    .image-box img{max-width:100%;height:auto;border-radius:4px;image-rendering:pixelated;display:block}
-
-    .caption{background:#fff;padding:10px 12px;border-radius:8px;color:#072033;font-weight:700;text-align:center;cursor:pointer;border:0;font-size: inherit}
-
-    @media(min-width:720px){button{padding:12px 16px}}
+    .step:hover { background: rgba(0,168,255,0.05); }
+    .step.completed {
+      background: rgba(139,92,246,0.12); border-left: 3px solid var(--step-complete);
+    }
+    .step.active {
+      background: rgba(0,168,255,0.08); border-left: 3px solid var(--accent);
+      box-shadow: 0 4px 12px rgba(0,168,255,0.15);
+    }
+    .step.collapsed .step-description { max-height: 0; opacity: 0; overflow: hidden; transition: max-height 0.3s ease, opacity 0.3s ease; }
+    .step:not(.collapsed) .step-description { max-height: 120px; opacity: 1; }
+    .step-title {
+      font-weight: 600; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; color: var(--text);
+    }
+    .step-icon {
+      width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center;
+      background: rgba(255,255,255,0.04); color: var(--accent); font-weight: 700;
+    }
+    .step-description {
+      font-size: 13px; color: var(--muted); margin-bottom: 8px;
+      transition: max-height 0.3s ease, opacity 0.3s ease;
+    }
+    .step-progress { height: 4px; background: rgba(255,255,255,0.08); border-radius: 2px; overflow: hidden; }
+    .step-progress-fill {
+      height: 100%; background: var(--accent); width: 0%; transition: width 0.5s ease;
+    }
+    .step.completed .step-progress-fill { background: var(--step-complete); width: 100%; }
+    /* Build progress container */
+    .build-progress-container {
+      margin-bottom: 16px;
+    }
+    .build-progress-title {
+      display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px; color: var(--muted);
+    }
+    .build-progress-bar {
+      height: 8px; background: rgba(255,255,255,0.04); border-radius: 4px; overflow: hidden;
+    }
+    .build-progress-fill {
+      height: 100%; background: linear-gradient(90deg,var(--accent-light),var(--accent));
+      width: 0%; transition: width 0.5s ease;
+    }
+    /* Error message */
+    .error-message {
+      margin-top: 12px; padding: 8px; background: rgba(248,113,113,0.08);
+      border-left: 3px solid var(--error); border-radius: 6px; color: var(--muted); display: none;
+    }
+    /* Tutorial overlay */
+    .tutorial-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.7); display: flex; justify-content: center;
+      align-items: center; z-index: 2000; opacity: 0; pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .tutorial-overlay.active {
+      opacity: 1; pointer-events: auto;
+    }
+    .tutorial-content {
+      background: var(--panel); padding: 24px; border-radius: 16px;
+      border: 1px solid var(--card-border); max-width: 600px; width: 90%;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative;
+    }
+    .tutorial-title {
+      font-size: 22px; font-weight: 700; margin-bottom: 16px; color: var(--accent);
+    }
+    .tutorial-text {
+      line-height: 1.6; margin-bottom: 20px; color: var(--muted);
+    }
+    .tutorial-actions {
+      display: flex; gap: 12px; justify-content: flex-end;
+    }
+    .close-tutorial {
+      position: absolute; top: 16px; right: 16px; background: rgba(255,255,255,0.06);
+      border: none; width: 30px; height: 30px; border-radius: 50%; color: var(--muted);
+      cursor: pointer; transition: var(--transition);
+    }
+    .close-tutorial:hover { background: rgba(143,233,255,0.1); }
+    /* Rotação do ícone de celular em dispositivos móveis */
+    @media (max-width: 768px) {
+      .device-icon i.fas.fa-mobile-alt {
+        transform: rotate(90deg);
+      }
+    }
+    @media(max-width:1000px){.right{display:none}.left{flex:0 0 280px}}
+    /* Checklist Section */
+    .checklist-section { margin-top: 12px; }
+    .checklist-item { display: flex; align-items: center; gap: 8px; padding: 6px; background: rgba(255,255,255,0.02); border-radius: 6px; margin-bottom: 4px; }
+    .checklist-checkbox { width: 16px; height: 16px; border: 1px solid var(--muted); border-radius: 3px; cursor: pointer; }
+    .checklist-checkbox.checked { background: var(--success); border-color: var(--success); }
+    .checklist-checkbox.checked::after { content: '✓'; color: white; font-size: 12px; display: grid; place-items: center; }
   </style>
 </head>
 <body>
-  <canvas id="particles"></canvas>
-
-  <div class="page">
-
-    <div id="overlay" class="overlay show" role="dialog" aria-modal="true" aria-hidden="false">
-      <div class="modal" role="document">
-
-        <div class="image-box" id="imageBox">
-          <img id="modalImage" src="mensagem.png" alt="Mensagem" />
-
-          <button class="caption" id="retryBtn">
-            Tentar novamente
-          </button>
+  <div class="container">
+    <header role="banner">
+      <div class="logo" aria-hidden="true">RedeSim</div>
+      <div style="min-width:0">
+        <h1>Simulador de Rede Educacional — Construção Guiada (Topologia Linear)</h1>
+        <div class="subtitle">Siga a ordem física típica: ONT → Router → Firewall → Switches → APs → Servidores → Endpoints. Inclui configs reais (SSID, VLAN, DHCP, segurança).</div>
+      </div>
+      <div class="controls" aria-hidden="false">
+        <button id="exportSVG" class="ghost">Export SVG</button>
+        <button id="zoomIn" class="ghost" title="Zoom In">+</button>
+        <button id="zoomOut" class="ghost" title="Zoom Out">-</button>
+        <button id="resetView" class="ghost" title="Reset View">Reset</button>
+      </div>
+    </header>
+    <main class="main">
+      <section class="panel left" aria-labelledby="build-title">
+        <h2 id="build-title" style="color:var(--text);margin:0 0 10px 0">Construção da Rede (Ordem Física)</h2>
+        <!-- Build Progress -->
+        <div class="build-progress-container">
+          <div class="build-progress-title">
+            <span>Progresso da Construção</span>
+            <span id="progress-percent">0%</span>
+          </div>
+          <div class="build-progress-bar">
+            <div class="build-progress-fill" id="build-progress-fill"></div>
+          </div>
         </div>
-
+        <!-- Build Steps (adaptados para topologia) -->
+        <div class="build-steps" id="buildSteps">
+          <!-- Steps populated by JS -->
+        </div>
+        <hr style="border:0;border-top:1px solid var(--card-border);margin:12px 0" />
+        <div style="margin-bottom:8px"><strong style="color:var(--text)">Dispositivos (por Ordem)</strong></div>
+        <div id="devicePalette" style="display:flex;flex-direction:column;gap:8px;max-height:300px;overflow-y:auto"></div>
+        <hr style="border:0;border-top:1px solid var(--card-border);margin:12px 0" />
+        <div style="margin-bottom:8px"><strong style="color:var(--text)">Ações</strong></div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <button id="clear" class="small">Reiniciar Canvas</button>
+          <button id="autoLayout" class="ghost">Auto-arranjar</button>
+          <button id="simulateTraffic" class="ghost">Gerar Tráfego Aleatório</button>
+          <button id="showChecklist" class="ghost">Mostrar Checklist</button>
+        </div>
+        <div style="margin-top:14px">
+          <div style="color:var(--muted);font-size:13px;margin-bottom:6px">Tipos de Cabos</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px">
+            <div style="padding:6px;background:rgba(0,168,255,0.06);border-radius:8px;color:var(--accent);font-size:12px">Ethernet UTP (Cat5e/6, RJ45)</div>
+            <div style="padding:6px;background:rgba(139,92,246,0.06);border-radius:8px;color:#8b5cf6;font-size:12px">Fibra Óptica (LC/SC, SFP)</div>
+            <div style="padding:6px;background:rgba(255,195,0,0.06);border-radius:8px;color:var(--warning);font-size:12px">Wi-Fi (2.4/5/6 GHz)</div>
+          </div>
+        </div>
+        <div style="color:var(--muted);font-size:13px;margin-top:12px">
+          <strong>Navegação:</strong> Arraste o canvas para mover. Clique em portas para conectar (escolha cabo). Shift+Clique para ping. Inspetor para configs (SSID, VLAN, DHCP).
+        </div>
+        <div id="errorMessage" class="error-message"></div>
+      </section>
+      <section class="panel center">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+          <div class="badge" style="padding:6px 10px;background:rgba(255,255,255,0.02);border-radius:8px;color:var(--muted)">Simulador Educacional</div>
+          <div style="color:var(--muted);font-size:13px">Canvas — Topologia Linear Lógica. Adicione na ordem: WAN → LAN → Wireless → Endpoints.</div>
+          <div style="flex:1"></div>
+          <div id="status" style="color:var(--muted);font-size:13px">Pronto</div>
+        </div>
+        <div id="topo" style="position:relative;flex:1">
+          <svg id="links"></svg>
+        </div>
+      </section>
+      <aside class="panel right inspector" aria-labelledby="sim-title">
+        <h3 id="sim-title">Inspetor de Equipamento</h3>
+        <div id="inspectorEmpty" style="color:var(--muted);margin-top:8px">Clique em um equipamento para ver/configurar (ex.: SSID em APs, VLAN em Switches).</div>
+        <div id="inspector" style="display:none;margin-top:8px">
+          <div class="inspector-row">
+            <div style="flex:1">
+              <div style="font-size:12px;color:var(--muted)">Hostname</div>
+              <input id="inspHostname" type="text" />
+            </div>
+            <div style="width:12px"></div>
+          </div>
+          <div class="inspector-row">
+            <div style="flex:1">
+              <div style="font-size:12px;color:var(--muted)">MAC</div>
+              <input id="inspMac" type="text" />
+            </div>
+            <div style="width:12px"></div>
+          </div>
+          <div class="inspector-row">
+            <div style="flex:1">
+              <div style="font-size:12px;color:var(--muted)">IP (Static/DHCP)</div>
+              <div style="display:flex;gap:8px">
+                <input id="inspIp" type="text" />
+                <select id="inspIpMode" style="width:110px">
+                  <option value="dhcp">DHCP</option>
+                  <option value="static">Static</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="inspector-row">
+            <div style="flex:1">
+              <div style="font-size:12px;color:var(--muted)">VLAN</div>
+              <input id="inspVlan" type="number" min="1" max="4094" />
+            </div>
+          </div>
+          <div id="wifiConfig" style="display:none">
+            <div class="inspector-row">
+              <div style="flex:1">
+                <div style="font-size:12px;color:var(--muted)">SSID</div>
+                <input id="inspSsid" type="text" placeholder="MinhaRede-5G" />
+              </div>
+            </div>
+            <div class="inspector-row">
+              <div style="flex:1">
+                <div style="font-size:12px;color:var(--muted)">Segurança Wi-Fi</div>
+                <select id="inspWifiSec">
+                  <option value="wpa2">WPA2-PSK</option>
+                  <option value="wpa3">WPA3-SAE</option>
+                  <option value="enterprise">802.1X (RADIUS)</option>
+                </select>
+              </div>
+            </div>
+            <div class="inspector-row">
+              <div style="flex:1">
+                <div style="font-size:12px;color:var(--muted)">Banda</div>
+                <select id="inspWifiBand">
+                  <option value="2.4">2.4 GHz</option>
+                  <option value="5">5 GHz</option>
+                  <option value="6">6 GHz</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div id="dhcpConfig" style="display:none">
+            <div class="inspector-row">
+              <div style="flex:1">
+                <div style="font-size:12px;color:var(--muted)">Faixa DHCP</div>
+                <input id="inspDhcpRange" type="text" placeholder="10.0.10.100-200" />
+              </div>
+            </div>
+            <div class="inspector-row">
+              <div style="flex:1">
+                <div style="font-size:12px;color:var(--muted)">Gateway</div>
+                <input id="inspGateway" type="text" placeholder="10.0.10.1" />
+              </div>
+            </div>
+          </div>
+          <div class="inspector-row">
+            <div style="flex:1">
+              <div style="font-size:12px;color:var(--muted)">Role</div>
+              <select id="inspRole">
+                <option value="wan">WAN (ONT/Modem)</option>
+                <option value="router">Router/Gateway</option>
+                <option value="firewall">Firewall</option>
+                <option value="switch">Switch</option>
+                <option value="ap">Access Point</option>
+                <option value="server">Server</option>
+                <option value="endpoint">Endpoint</option>
+              </select>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button id="applyConfig" class="small">Aplicar Config</button>
+            <button id="showCommands" class="ghost">Exibir Comandos</button>
+            <button id="resetMac" class="ghost">Gerar MAC</button>
+            <button id="inspectPing" class="ghost">Pingar</button>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button id="deleteDevice" class="delete-btn">Excluir</button>
+          </div>
+          <hr style="border:0;border-top:1px solid var(--card-border);margin:12px 0" />
+          <div style="color:var(--muted);font-size:13px;margin-bottom:6px">Status</div>
+          <div style="display:flex;gap:8px;flex-direction:column">
+            <div style="display:flex;justify-content:space-between">
+              <div style="color:var(--muted);font-size:12px">Conexões</div>
+              <div id="inspConns" style="font-weight:700;color:var(--text)">0</div>
+            </div>
+            <div style="display:flex;justify-content:space-between">
+              <div style="color:var(--muted);font-size:12px">Throughput</div>
+              <div id="inspThroughput" style="font-weight:700;color:var(--text)">0 kb/s</div>
+            </div>
+            <div style="display:flex;justify-content:space-between">
+              <div style="color:var(--muted);font-size:12px">Último Visto</div>
+              <div id="inspLastSeen" style="font-weight:700;color:var(--text)">—</div>
+            </div>
+          </div>
+          <div id="arpTable" style="display:none;margin-top:12px">
+            <h4 style="color:var(--text);font-size:12px;margin:0 0 4px 0">Tabela ARP</h4>
+            <div id="arpEntries" style="font-size:11px;color:var(--muted)"></div>
+          </div>
+        </div>
+      </aside>
+    </main>
+    <footer>Baseado em topologia linear: 1. ONT/Modem → 2. Router → 3. Firewall → 4. Switch Core → 5. Patch Panel → 6. APs → 7. Switches Acesso → 8. Servidores → 9. Load Balancers → 10. Storage → 11. Endpoints → 12. UPS. Use WPA3, VLANs, DHCP 10.0.x.0/24. Evite erros: senhas padrão, WEP.</footer>
+  </div>
+  <!-- Tutorial Overlay -->
+  <div class="tutorial-overlay" id="tutorialOverlay">
+    <div class="tutorial-content">
+      <button class="close-tutorial" id="closeTutorial">✕</button>
+      <h2 class="tutorial-title" id="tutorialTitle">Bem-vindo ao Simulador</h2>
+      <p class="tutorial-text" id="tutorialText">Construa uma rede seguindo a ordem física típica, com configs reais de cabos, Wi-Fi (WPA3, SSID), VLANs, DHCP (10.0.10.0/24) e segurança (firewall, RADIUS).</p>
+      <div class="tutorial-actions">
+        <button class="small" id="startTutorial">Iniciar Passo 1: WAN</button>
       </div>
     </div>
   </div>
-
+  <!-- Cable Modal -->
+  <div class="modal-back" id="cableModal">
+    <div class="modal">
+      <h3>Escolha o Tipo de Cabo/Conector</h3>
+      <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+        <button class="small" data-cable="copper">Ethernet UTP (RJ45, Cat5e/6/6A)</button>
+        <button class="small" data-cable="fiber">Fibra Óptica (LC/SC, SFP, MMF/SMF)</button>
+        <button class="small" data-cable="wifi">Wi-Fi (802.11ax, Canais 1/6/11)</button>
+        <button class="small" data-cable="coax">Coaxial (Cable Modem)</button>
+      </div>
+      <div style="margin-top:12px;text-align:right"><button id="cancelCable" class="ghost">Cancelar</button></div>
+    </div>
+  </div>
+  <!-- Commands Modal -->
+  <div class="modal-back" id="commandsModal">
+    <div class="modal" style="width:600px;height:400px;overflow-y:auto">
+      <h3>Exemplos de Comandos/Configurações</h3>
+      <div id="commandsContent" style="font-family:monospace;font-size:12px;color:var(--text);white-space:pre-wrap"></div>
+      <div style="margin-top:12px;text-align:right"><button id="closeCommands" class="ghost">Fechar</button></div>
+    </div>
+  </div>
+  <!-- Checklist Modal -->
+  <div class="modal-back" id="checklistModal">
+    <div class="modal" style="width:500px">
+      <h3>Checklist de Implementação</h3>
+      <div class="checklist-section" id="checklistItems"></div>
+      <div style="margin-top:12px;text-align:right"><button id="closeChecklist" class="ghost">Fechar</button></div>
+    </div>
+  </div>
   <script>
-    const canvas = document.getElementById('particles');
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    class Particle {
+    /***********************************************
+     * Simulador de Rede Educacional — Adaptado para Informações Específicas
+     * Integração: Topologia linear (12 passos), devices da info (ONT, Router, etc.),
+     * Configs: SSID/WPA3 em APs, VLAN/QoS em Switches, DHCP scopes (10.0.x.0/24),
+     * Cabos: UTP/Fibra/Coax/Wi-Fi com limites reais (Cat6 10Gbps/55m),
+     * Wi-Fi: Bandas 2.4/5/6GHz, segurança WPA2/3/Enterprise,
+     * IP: Privados 10.0.0.0/8, exemplos práticos,
+     * Segurança: RADIUS, ACLs, VPN (simulado em inspetor),
+     * Comandos: Exemplos VLAN/DHCP/SSID no modal,
+     * Checklist: 10 itens interativos,
+     * Erros: Validações (ex.: Wi-Fi só para APs/Endpoints),
+     * Escala: Build steps por tamanho (casa/empresa).
+     * Boas práticas: SSID neutro, senhas fortes, segmentação VLAN.
+     ***********************************************/
+    class NetworkSimulator {
       constructor() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
-        this.vx = (Math.random() - 0.5) * 0.5;
-        this.vy = (Math.random() - 0.5) * 0.5;
-        this.size = Math.random() * 2 + 1;
+        // DOM refs (guarded)
+        this.topo = document.getElementById('topo') || null;
+        this.svg = document.getElementById('links') || null;
+        this.devicePalette = document.getElementById('devicePalette') || null;
+        this.buildProgressFill = document.getElementById('build-progress-fill') || null;
+        this.progressPercent = document.getElementById('progress-percent') || null;
+        this.errorMessageEl = document.getElementById('errorMessage') || null;
+        this.statusEl = document.getElementById('status') || null;
+        this.inspector = document.getElementById('inspector') || null;
+        this.inspectorEmpty = document.getElementById('inspectorEmpty') || null;
+        this.inspHostname = document.getElementById('inspHostname') || null;
+        this.inspMac = document.getElementById('inspMac') || null;
+        this.inspIp = document.getElementById('inspIp') || null;
+        this.inspIpMode = document.getElementById('inspIpMode') || null;
+        this.inspVlan = document.getElementById('inspVlan') || null;
+        this.inspSsid = document.getElementById('inspSsid') || null;
+        this.inspWifiSec = document.getElementById('inspWifiSec') || null;
+        this.inspWifiBand = document.getElementById('inspWifiBand') || null;
+        this.inspDhcpRange = document.getElementById('inspDhcpRange') || null;
+        this.inspGateway = document.getElementById('inspGateway') || null;
+        this.inspRole = document.getElementById('inspRole') || null;
+        this.inspConns = document.getElementById('inspConns') || null;
+        this.inspThroughput = document.getElementById('inspThroughput') || null;
+        this.inspLastSeen = document.getElementById('inspLastSeen') || null;
+        this.arpTable = document.getElementById('arpTable') || null;
+        this.arpEntries = document.getElementById('arpEntries') || null;
+        this.cableModal = document.getElementById('cableModal') || null;
+        this.commandsModal = document.getElementById('commandsModal') || null;
+        this.checklistModal = document.getElementById('checklistModal') || null;
+        this.tutorialOverlay = document.getElementById('tutorialOverlay') || null;
+        this.tutorialTitle = document.getElementById('tutorialTitle') || null;
+        this.tutorialText = document.getElementById('tutorialText') || null;
+        this.buildStepsContainer = document.getElementById('buildSteps') || null;
+        this.deleteDeviceBtn = document.getElementById('deleteDevice') || null;
+        this.wifiConfig = document.getElementById('wifiConfig') || null;
+        this.dhcpConfig = document.getElementById('dhcpConfig') || null;
+        // State
+        this.nodes = {};
+        this.links = [];
+        this.nextId = 1;
+        this.connStart = null;
+        this.connStartPortEl = null;
+        this.selectedForSim = [];
+        this.deviceCounts = {};
+        this.currentInspector = null;
+        this.dhcpScopes = { admin: { range: '10.0.10.100-200', gateway: '10.0.10.1' }, guest: { range: '10.0.20.100-200', gateway: '10.0.20.1' } }; // Exemplos IP
+        this.drawScheduled = false;
+        this.networkStatusInterval = null;
+        this.currentStep = 0;
+        this.buildSteps = [];
+        this.tutorialCompleted = localStorage.getItem('redeSimTutorialDone') === 'true';
+        this.firstTimeUser = localStorage.getItem('redeSimFirstTime') !== 'false';
+        // View state
+        this.panX = 0;
+        this.panY = 0;
+        this.scale = 1;
+        this.isPanning = false;
+        this.panStartX = 0;
+        this.panStartY = 0;
+        this.currentDrag = null;
+        this.arpCache = new Map();
+        // Device defs (adaptados para info: funções, cabos, velocidades reais)
+        this.deviceDefs = {
+          ont: {label:'ONT/Modem',ports:1,icon:'fas fa-plug',role:'wan', maxSpeed: 1000, desc: 'Converte sinal provedor (fibra/coax) em Ethernet. Modo bridge/NAT.'},
+          router: {label:'Router/Gateway',ports:4,icon:'fas fa-route',role:'router', maxSpeed: 1000, desc: 'NAT, DHCP (10.0.10.0/24), SSID se combo, firewall básico.'},
+          firewall: {label:'Firewall Dedicado',ports:2,icon:'fas fa-shield-alt',role:'firewall', maxSpeed: 1000, desc: 'Regras avançadas, VPN, IDS/IPS, ACLs.'},
+          switchcore: {label:'Switch Core',ports:8,icon:'fas fa-sitemap',role:'switch', maxSpeed: 10000, desc: 'VLANs, QoS, PoE. Segmenta tráfego (VLAN 10=Admin).'},
+          ap: {label:'Access Point',ports:1,icon:'fas fa-wifi',note:'wifi',role:'ap', maxSpeed: 1300, desc: 'SSID, WPA3, bandas 2.4/5/6GHz, captive portal.'},
+          switchaccess: {label:'Switch Acesso (PoE)',ports:8,icon:'fas fa-network-wired',role:'switch', maxSpeed: 1000, desc: 'Alimenta APs/telefones, VLANs, QoS.'},
+          server: {label:'Servidor (DNS/DHCP/RADIUS)',ports:4,icon:'fas fa-server',role:'server', maxSpeed: 10000, desc: 'DNS interno, RADIUS 802.1X, AD, VPN.'},
+          loadbalancer: {label:'Load Balancer/WAF',ports:2,icon:'fas fa-balance-scale',role:'server', maxSpeed: 10000, desc: 'Distribui tráfego, protege apps, IDS/IPS.'},
+          storage: {label:'Storage/NAS',ports:2,icon:'fas fa-hdd',role:'server', maxSpeed: 10000, desc: 'SMB/NFS, backups, quotas.'},
+          endpoint: {label:'Endpoint (PC/IoT)',ports:1,icon:'fas fa-desktop',role:'endpoint', maxSpeed: 1000, desc: 'Consumidores de serviços, IPs fixos/reservas.'},
+          ups: {label:'UPS/Monitoramento',ports:1,icon:'fas fa-battery-full',role:'infra', maxSpeed: 0, desc: 'Disponibilidade elétrica, SNMP.'}
+        };
+        this.deviceGroups = {
+          '1. WAN (Entrada)': ['ont'],
+          '2-3. Roteamento/Segurança': ['router', 'firewall'],
+          '4-7. Switches e Wireless': ['switchcore', 'switchaccess', 'ap'],
+          '8-10. Infra/Servidores': ['server', 'loadbalancer', 'storage'],
+          '11-12. Finais/Suporte': ['endpoint', 'ups']
+        };
+        // Build steps (adaptados para 12 itens da topologia + extras)
+        this.buildProcess = [
+          {title: "1. Ponto de Entrada (ONT/Modem)", description: "Adicione ONT/Modem para WAN (fibra/coax → Ethernet, IP público).", devices: ['ont'], required: 1, connections: 0, completed: false},
+          {title: "2. Router/Gateway", description: "Adicione Router para NAT/DHCP (faixa 10.0.10.0/24), SSID se Wi-Fi.", devices: ['router'], required: 1, connections: 1, completed: false},
+          {title: "3. Firewall Dedicado (Opcional)", description: "Adicione Firewall para regras/VPN/IDS (empresas).", devices: ['firewall'], required: 1, connections: 1, completed: false},
+          {title: "4. Switch Core/Distribuição", description: "Adicione Switch Core gerenciável (VLANs, QoS, PoE, Cat6).", devices: ['switchcore'], required: 1, connections: 2, completed: false},
+          {title: "5. Patch Panel/Racks", description: "Adicione Patch Panel para cabeamento estruturado (Cat5e/6, T568A/B).", devices: [], required: 0, connections: 1, completed: false, note: 'Físico, sem device interativo'},
+          {title: "6. Access Points (APs)", description: "Adicione APs para Wi-Fi (SSID neutro, WPA3, bandas 5GHz).", devices: ['ap'], required: 2, connections: 2, completed: false},
+          {title: "7. Switches de Acesso (PoE)", description: "Adicione Switches PoE para alimentar APs/telefones.", devices: ['switchaccess'], required: 1, connections: 3, completed: false},
+          {title: "8. Servidores de Infra", description: "Adicione Servidores (DNS interno, DHCP, RADIUS/AD).", devices: ['server'], required: 2, connections: 2, completed: false},
+          {title: "9. Load Balancers/Proxy/WAF", description: "Adicione para balanceamento e proteção apps (opcional).", devices: ['loadbalancer'], required: 1, connections: 1, completed: false},
+          {title: "10. Storage/NAS/Backup", description: "Adicione NAS para arquivos/backups (SMB/NFS).", devices: ['storage'], required: 1, connections: 1, completed: false},
+          {title: "11. Dispositivos Finais", description: "Adicione PCs/IoT/impressoras (IPs reservas DHCP).", devices: ['endpoint'], required: 4, connections: 4, completed: false},
+          {title: "12. UPS/PDU/Monitoramento", description: "Adicione UPS para disponibilidade (SNMP).", devices: ['ups'], required: 1, connections: 0, completed: false},
+          {title: "Verificação Final", description: "Conecte tudo, teste ping, verifique VLANs/SSID/WPA3. Aplique boas práticas: senhas fortes, segmentação.", devices: [], required: 0, connections: 15, completed: false}
+        ];
+        // Regras (adaptadas: Wi-Fi só APs/endpoints, fibra para WAN/core)
+        this.networkRules = {
+          connectionRules: {
+            ont: { mustBeConnectedTo: ['router'], cableOnly: ['fiber', 'coax'] },
+            router: { cannotConnectTo: ['ont', 'router'], cableOnly: ['copper'] },
+            firewall: { mustBeConnectedTo: ['router'] },
+            ap: { mustBeConnectedTo: ['switchaccess', 'switchcore'] },
+            endpoint: { canOnlyConnectTo: ['switchaccess', 'ap'], cableOnly: ['copper', 'wifi'] }
+          },
+          maxDevices: { ont:1, router:1, firewall:1, switchcore:2, ap:3, server:3 }
+        };
+        // Checklist (10 itens)
+        this.checklistItems = [
+          '□ Trocar senhas padrão (admin roteador/switches/APs).',
+          '□ Atualizar firmware antes de produção.',
+          '□ Plano de IP (10.0.10.0/24 Admin, 10.0.20.0/24 Guest).',
+          '□ Usar PoE para APs/telefones.',
+          '□ Testar cabos com certificador (Cat6 para 10Gbps).',
+          '□ Labels e documentação rack/patch panel.',
+          '□ Backup de configs (roteadores/switches).',
+          '□ Testar failover/redundância.',
+          '□ Segmentar VLANs (10=Admin, 20=Guest, IoT separada).',
+          '□ Habilitar WPA3, desabilitar WPS/UPnP.'
+        ];
+        // Comandos exemplos (por device)
+        this.commandsExamples = {
+          router: `WAN IP: DHCP do ISP\nDHCP scope: 10.0.10.0/24 range 100-200\ngateway: 10.0.10.1\nSSID: MinhaCasa-5G, WPA3-SAE`,
+          switchcore: `vlan 10 name Admin\nvlan 20 name Guest\ninterface Gi0/1 switchport access vlan 10\ninterface Gi0/48 switchport trunk allowed vlan 10,20`,
+          ap: `SSID: Empresa-Staff\nEncryption: WPA3-SAE\nBand: 5GHz Channel 36\nRADIUS: 10.0.5.10:1812 secret=segredo123`,
+          server: `DHCP scope: 10.0.10.0/24\nDNS: split-DNS local 10.0.5.10\nRADIUS para 802.1X`
+        };
       }
-
-      update() {
-        this.x += this.vx;
-        this.y += this.vy;
-        if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
-        if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+      // Utilities (validações IP/MAC/VLAN)
+      log(text) {
+        if (!this.statusEl) return;
+        const d = new Date();
+        this.statusEl.textContent = `${d.toLocaleTimeString()} — ${text}`;
       }
-
-      draw() {
-        ctx.fillStyle = 'rgba(31, 182, 255, 0.5)';
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fill();
+      showError(msg) {
+        if (!this.errorMessageEl) return;
+        this.errorMessageEl.textContent = msg;
+        this.errorMessageEl.style.display = 'block';
+        setTimeout(() => { this.errorMessageEl.style.display = 'none'; }, 5000);
+      }
+      makeId(prefix) { return prefix + (this.nextId++); }
+      escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({'&':"&amp;",'<':"&lt;",'>':"&gt;",'"':"&quot;",'\'':"&#39;"}[c])); }
+      isValidMac(mac) { return /^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/.test(mac); }
+      isValidIPv4(ip) { return /^(?:(?:25[0-5]|2[4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[4][0-9]|[01]?[0-9][0-9]?)$/.test(ip); }
+      generateMac() {
+        const hex = '0123456789ABCDEF';
+        let mac = '02';
+        for(let i = 0; i < 5; i++) mac += ':' + hex[Math.floor(Math.random()*16)] + hex[Math.floor(Math.random()*16)];
+        while (Object.values(this.nodes).some(n => n.mac === mac)) mac = this.generateMac();
+        return mac;
+      }
+      allocateIp(scope = 'admin') {
+        const s = this.dhcpScopes[scope];
+        let ip = s.gateway.replace(/\.\d+$/, `.${Math.floor(Math.random() * (parseInt(s.range.split('-')[1]) - parseInt(s.range.split('-')[0])) + parseInt(s.range.split('-')[0]))}`);
+        while (Object.values(this.nodes).some(n => n.ip === ip)) ip = this.allocateIp(scope);
+        return ip;
+      }
+      // Build Steps (com conexões e notas topologia)
+      initBuildSteps() {
+        if (!this.buildStepsContainer) return;
+        this.buildStepsContainer.innerHTML = '';
+        this.buildSteps = [];
+        this.buildProcess.forEach((step, index) => {
+          const stepEl = document.createElement('div');
+          stepEl.className = 'step collapsed';
+          stepEl.dataset.step = index;
+          stepEl.innerHTML = `
+            <div class="step-title">
+              <div class="step-icon">${index + 1}</div>
+              <span>${step.title}</span>
+            </div>
+            <div class="step-description">${step.description}${step.note ? '<br><em>' + step.note + '</em>' : ''}</div>
+            <div class="step-progress">
+              <div class="step-progress-fill"></div>
+            </div>
+          `;
+          this.buildSteps.push(stepEl);
+          this.buildStepsContainer.appendChild(stepEl);
+          stepEl.addEventListener('click', () => { if (index <= this.currentStep) this.toggleStepCollapse(index); });
+          stepEl.setAttribute('role', 'button');
+          stepEl.setAttribute('tabindex', index <= this.currentStep ? '0' : '-1');
+          stepEl.setAttribute('aria-expanded', 'false');
+        });
+        this.activateStep(0);
+      }
+      toggleStepCollapse(stepIndex) {
+        const step = this.buildSteps[stepIndex];
+        if (!step) return;
+        const isCollapsed = step.classList.contains('collapsed');
+        step.classList.toggle('collapsed');
+        step.setAttribute('aria-expanded', isCollapsed ? 'true' : 'false');
+      }
+      activateStep(stepIndex) {
+        this.currentStep = stepIndex;
+        this.buildSteps?.forEach((stepEl, i) => {
+          stepEl.classList.remove('active');
+          stepEl.classList.remove('collapsed');
+          stepEl.setAttribute('tabindex', i <= stepIndex ? '0' : '-1');
+          if (i < stepIndex && this.buildProcess[i].completed) {
+            stepEl.classList.add('collapsed', 'completed');
+            stepEl.setAttribute('aria-expanded', 'false');
+          } else if (i === stepIndex) {
+            stepEl.classList.add('active');
+            stepEl.setAttribute('aria-expanded', 'true');
+          } else {
+            stepEl.classList.add('collapsed');
+            stepEl.setAttribute('aria-expanded', 'false');
+          }
+        });
+        this.updateBuildProgress();
+        if (this.firstTimeUser && !this.tutorialCompleted) this.showTutorial(stepIndex);
+      }
+      updateBuildProgress() {
+        let completedSteps = 0;
+        const totalSteps = this.buildProcess.length;
+        for (let i = 0; i < this.buildProcess.length; i++) {
+          if (this.buildProcess[i].completed) {
+            completedSteps++;
+            if (this.buildSteps[i]) this.buildSteps[i].classList.add('completed');
+          } else {
+            if (this.buildSteps[i]) this.buildSteps[i].classList.remove('completed');
+          }
+        }
+        const progress = Math.round((completedSteps / totalSteps) * 100);
+        if (this.buildProgressFill) this.buildProgressFill.style.width = `${progress}%`;
+        if (this.progressPercent) this.progressPercent.textContent = `${progress}%`;
+        this.checkStepCompletion(this.currentStep);
+      }
+      checkStepCompletion(stepIndex) {
+        const step = this.buildProcess[stepIndex];
+        if (step.completed) return;
+        let deviceCount = 0;
+        step.devices.forEach(type => { deviceCount += this.deviceCounts[type] || 0; });
+        let connectionCount = this.links.length;
+        if (stepIndex < this.buildProcess.length - 1) {
+          connectionCount = this.links.filter(l => step.devices.some(d => d === this.nodes[l.aNode]?.type || d === this.nodes[l.bNode]?.type)).length;
+        }
+        const deviceReqMet = step.required === 0 || deviceCount >= step.required;
+        const connReqMet = step.connections === 0 || connectionCount >= step.connections;
+        if (deviceReqMet && connReqMet) {
+          step.completed = true;
+          this.log(`Passo "${step.title}" concluído!`);
+          if (stepIndex < this.buildProcess.length - 1) {
+            setTimeout(() => {
+              this.activateStep(stepIndex + 1);
+              this.log(`Avançando: ${this.buildProcess[stepIndex + 1].title}`);
+            }, 1500);
+          } else {
+            this.log('Rede completa! Verifique segurança: WPA3, VLANs isoladas, backups.');
+            this.tutorialCompleted = true;
+            localStorage.setItem('redeSimTutorialDone', 'true');
+          }
+          this.updateBuildProgress();
+        } else {
+          const deviceProgress = step.required > 0 ? Math.min(100, Math.round((deviceCount / step.required) * 100)) : 0;
+          const connProgress = step.connections > 0 ? Math.min(100, Math.round((connectionCount / step.connections) * 100)) : 0;
+          const overall = Math.round((deviceProgress + connProgress) / 2);
+          if (this.buildSteps[stepIndex]) {
+            this.buildSteps[stepIndex].querySelector('.step-progress-fill').style.width = `${overall}%`;
+          }
+        }
+      }
+      // Tutorial (com instruções topologia)
+      showTutorial(stepIndex) {
+        if (!this.tutorialOverlay || this.tutorialCompleted) return;
+        const step = this.buildProcess[stepIndex];
+        if (this.tutorialTitle) this.tutorialTitle.textContent = step.title;
+        if (this.tutorialText) {
+          this.tutorialText.innerHTML = `
+            <strong>${step.title}</strong><br><br>
+            ${step.description}<br><br>
+            <strong>Instruções:</strong><br>
+            ${this.getStepInstructions(stepIndex)}
+          `;
+        }
+        this.tutorialOverlay.classList.add('active');
+      }
+      getStepInstructions(stepIndex) {
+        const instructions = {
+          0: "1. Clique 'ONT/Modem'<br>2. Posicione no início (WAN)<br>3. Conecte a Router com Fibra/Coax",
+          1: "1. Adicione Router<br>2. Configure DHCP 10.0.10.100-200 no inspetor<br>3. Conecte a ONT (Ethernet RJ45)",
+          2: "1. Adicione Firewall (opcional empresas)<br>2. Configure regras ACL/VPN<br>3. Conecte entre Router e Switch Core",
+          3: "1. Adicione Switch Core<br>2. Configure VLAN 10 (Admin) no inspetor<br>3. Conecte a Firewall (Cat6)",
+          4: "1. Adicione cabeamento horizontal (simulado)<br>2. Use T568B padrão<br>3. Conecte a Patch Panel virtual",
+          5: "1. Adicione 2 APs<br>2. Configure SSID 'MinhaRede-5G', WPA3 no inspetor<br>3. Conecte a Switch Acesso (PoE)",
+          6: "1. Adicione Switch Acesso PoE<br>2. Configure QoS para VoIP<br>3. Conecte APs e Servidores",
+          7: "1. Adicione 2 Servidores<br>2. Configure DNS/RADIUS (10.0.5.10)<br>3. Conecte a Switch Core (VLAN)",
+          8: "1. Adicione Load Balancer<br>2. Configure WAF/IPS<br>3. Conecte a Servidores",
+          9: "1. Adicione Storage/NAS<br>2. Configure SMB quotas<br>3. Conecte a Switch",
+          10: "1. Adicione 4 Endpoints (PCs/IoT)<br>2. Atribua IPs reservas DHCP<br>3. Conecte via Ethernet/Wi-Fi (VLAN 20 Guest)",
+          11: "1. Adicione UPS<br>2. Configure SNMP monitoramento<br>3. 'Conecte' energia (simulado)",
+          12: "1. Selecione 2 devices (Shift+Clique)<br>2. Simule Ping<br>3. Verifique erros: sem WEP, VLANs isoladas"
+        };
+        return instructions[stepIndex] || "Siga a topologia linear.";
+      }
+      // Device Palette (grupos por ordem topologia)
+      initDevicePalette() {
+        if (!this.devicePalette) return;
+        this.devicePalette.innerHTML = '';
+        Object.entries(this.deviceGroups).forEach(([groupName, types]) => {
+          const groupDiv = document.createElement('div');
+          groupDiv.className = 'device-group';
+          const header = document.createElement('div');
+          header.className = 'group-header';
+          header.innerHTML = `<div class="group-toggle"></div> ${groupName}`;
+          const devicesCont = document.createElement('div');
+          devicesCont.className = 'group-devices';
+          types.forEach(type => {
+            const def = this.deviceDefs[type];
+            if (!def) return;
+            const btn = document.createElement('div');
+            btn.className = 'device-btn';
+            btn.setAttribute('role', 'button');
+            btn.setAttribute('tabindex', '0');
+            btn.setAttribute('aria-label', `Adicionar ${def.label}: ${def.desc}`);
+            btn.innerHTML = `<div class="device-icon"><i class="${def.icon}"></i></div><div><div style="font-weight:700;color:var(--text)">${def.label}</div><div class="muted" style="font-size:12px">${def.ports} portas • ${def.note || ''} • ${def.maxSpeed} Mbps</div></div>`;
+            devicesCont.appendChild(btn);
+            btn.addEventListener('click', () => this.addDevice(type));
+            btn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.addDevice(type); } });
+          });
+          groupDiv.appendChild(header);
+          groupDiv.appendChild(devicesCont);
+          this.devicePalette.appendChild(groupDiv);
+          header.addEventListener('click', () => {
+            const expanded = devicesCont.classList.toggle('expanded');
+            header.querySelector('.group-toggle').classList.toggle('expanded', expanded);
+          });
+          devicesCont.classList.add('expanded');
+          header.querySelector('.group-toggle').classList.add('expanded');
+        });
+      }
+      // Add Device (valida max, desc)
+      updateDeviceCounts() {
+        this.deviceCounts = {};
+        Object.values(this.nodes).forEach(n => {
+          if (n && n.type) this.deviceCounts[n.type] = (this.deviceCounts[n.type] || 0) + 1;
+        });
+      }
+      addDevice(type) {
+        const def = this.deviceDefs[type];
+        if (!def) { this.showError('Tipo inválido.'); return; }
+        if (this.networkRules.maxDevices[type] && (this.deviceCounts[type] || 0) >= this.networkRules.maxDevices[type]) {
+          this.showError(`Máx. ${this.networkRules.maxDevices[type]} ${def.label}.`);
+          return;
+        }
+        const id = this.makeId('n');
+        const node = {
+          id, type,
+          x: 100 + Math.random() * 600,
+          y: 100 + Math.random() * 400,
+          name: def.label + '-' + id.slice(1),
+          ports: Array.from({length: def.ports || 1}, (_, i) => ({ index: i, connected: false })),
+          el: null,
+          mac: this.generateMac(),
+          ip: null,
+          ipMode: 'dhcp',
+          vlan: 1,
+          ssid: 'MinhaRede', // Default boas práticas
+          wifiSec: 'wpa3',
+          wifiBand: '5',
+          dhcpRange: null,
+          gateway: null,
+          role: def.role || 'endpoint',
+          throughput: 0,
+          lastSeen: null
+        };
+        if (node.ipMode === 'dhcp') node.ip = this.allocateIp();
+        if (type === 'router') node.dhcpRange = this.dhcpScopes.admin.range;
+        if (type === 'ap') node.ssid = 'RedeCasa-5G'; // Neutro
+        this.nodes[id] = node;
+        this.drawNode(node);
+        this.updateDeviceCounts();
+        this.log(`Adicionado: ${node.name} (${def.desc})`);
+        this.scheduleDrawLinks();
+        this.saveStateToLocalStorage();
+        this.checkStepCompletion(this.currentStep);
+      }
+      // Draw Node (com VLAN/IP no label)
+      drawNode(node) {
+        if (!this.topo || !node) return;
+        const existing = this.topo.querySelector(`[data-id="${node.id}"]`);
+        if (existing) existing.remove();
+        const def = this.deviceDefs[node.type] || {icon:'fas fa-question',label:node.type,ports:node.ports?.length || 1};
+        const el = document.createElement('div');
+        el.className = 'device';
+        el.style.left = `${node.x}px`;
+        el.style.top = `${node.y}px`;
+        el.dataset.id = node.id;
+        el.dataset.type = node.type;
+        el.setAttribute('role', 'img');
+        el.setAttribute('aria-label', `${node.name} - ${def.label} (${def.desc})`);
+        el.innerHTML = `
+          <div class="dev-head">
+            <div class="device-icon" style="width:42px;height:42px;border-radius:8px"><i class="${def.icon}" style="font-size:18px;color:var(--accent)"></i></div>
+            <div style="min-width:0">
+              <div class="dev-name" contenteditable="true" spellcheck="false" aria-label="Nome">${this.escapeHtml(node.name)}</div>
+              <div class="dev-type" aria-label="Tipo/IP/VLAN">${node.type.toUpperCase()} • ${node.ip || '—'} VLAN${node.vlan}</div>
+            </div>
+          </div>
+          <div class="ports" role="group" aria-label="Portas"></div>
+          <div class="network-status" aria-label="Status"></div>
+        `;
+        this.topo.appendChild(el);
+        node.el = el;
+        const portsWrap = el.querySelector('.ports');
+        if (portsWrap) {
+          portsWrap.innerHTML = '';
+          (node.ports || []).forEach((p, i) => {
+            const pEl = document.createElement('div');
+            pEl.className = 'port' + (def.note && def.note.includes('wifi') ? ' wifi' : '');
+            pEl.dataset.pinIndex = i;
+            pEl.title = `Porta ${i + 1} (${def.maxSpeed} Mbps)`;
+            pEl.setAttribute('role', 'button');
+            pEl.setAttribute('tabindex', '0');
+            pEl.setAttribute('aria-label', `Porta ${i + 1}`);
+            pEl.innerHTML = `<div class="led down" aria-hidden="true"></div>`;
+            portsWrap.appendChild(pEl);
+          });
+        }
+        const nameEl = el.querySelector('.dev-name');
+        if (nameEl) {
+          nameEl.addEventListener('blur', () => {
+            const v = nameEl.textContent.trim();
+            if (v) node.name = v;
+            nameEl.textContent = node.name;
+            this.saveStateToLocalStorage();
+          });
+        }
+        const statusWrap = el.querySelector('.network-status');
+        if (statusWrap) {
+          statusWrap.innerHTML = '';
+          const count = Math.min(3, (node.ports || []).length);
+          for (let i = 0; i < count; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'network-dot';
+            dot.setAttribute('aria-hidden', 'true');
+            statusWrap.appendChild(dot);
+          }
+        }
+      }
+      // Event Listeners (com guards, + checklist/commands)
+      bindEvents() {
+        if (!this.topo) return;
+        // ... (mesmo código de eventos do exemplo anterior, adaptado para novos fields)
+        this.topo.addEventListener('click', (e) => {
+          const portEl = e.target.closest('.port');
+          if (portEl) {
+            const deviceEl = portEl.closest('.device');
+            if (!deviceEl) return;
+            const nodeId = deviceEl.dataset.id;
+            const portIndex = parseInt(portEl.dataset.pinIndex, 10);
+            if (isNaN(portIndex)) return;
+            this.onPortClick(nodeId, portIndex, portEl);
+            return;
+          }
+          const dev = e.target.closest('.device');
+          if (dev) {
+            const nodeId = dev.dataset.id;
+            if (!nodeId) return;
+            if (e.shiftKey) {
+              this.toggleSelectForSim(nodeId, dev);
+            } else {
+              this.selectInspector(nodeId);
+            }
+          } else {
+            this.clearInspector();
+          }
+        });
+        // Context menu para quick config (ex.: toggle VLAN)
+        this.topo.addEventListener('contextmenu', (e) => {
+          const dev = e.target.closest('.device');
+          if (!dev) return;
+          e.preventDefault();
+          const nodeId = dev.dataset.id;
+          if (!nodeId || !this.nodes[nodeId]) return;
+          this.selectInspector(nodeId);
+          const node = this.nodes[nodeId];
+          if (node.type === 'switchcore') {
+            const newVlan = prompt('Nova VLAN (ex.: 20 para Guest)?', node.vlan);
+            if (newVlan && !isNaN(newVlan)) {
+              node.vlan = parseInt(newVlan);
+              this.updateInspectorValues(node);
+              this.drawNode(node);
+              this.log(`VLAN ${node.vlan} aplicada a ${node.name}`);
+            }
+          }
+        });
+        // Panning, dragging, zoom (código idêntico ao exemplo)
+        this.topo.addEventListener('pointerdown', (e) => {
+          const deviceEl = e.target.closest('.device');
+          const portEl = e.target.closest('.port');
+          if (deviceEl || portEl) return;
+          this.isPanning = true;
+          this.panStartX = e.clientX - this.panX;
+          this.panStartY = e.clientY - this.panY;
+          this.topo.classList.add('panning');
+          this.topo.setPointerCapture(e.pointerId);
+        });
+        document.addEventListener('pointermove', (e) => {
+          if (!this.isPanning) return;
+          this.panX = e.clientX - this.panStartX;
+          this.panY = e.clientY - this.panStartY;
+          this.updateViewTransform();
+        }, { passive: true });
+        document.addEventListener('pointerup', (e) => {
+          if (!this.isPanning) return;
+          this.isPanning = false;
+          this.topo.classList.remove('panning');
+          try { this.topo.releasePointerCapture(e.pointerId); } catch (err) { }
+        });
+        this.topo.addEventListener('pointerdown', (e) => {
+          const deviceEl = e.target.closest('.device');
+          if (!deviceEl || e.target.closest('.port')) return;
+          const nodeId = deviceEl.dataset.id;
+          const node = this.nodes[nodeId];
+          if (!node) return;
+          e.preventDefault();
+          this.currentDrag = { node, el: deviceEl, startX: e.clientX, startY: e.clientY, ox: node.x, oy: node.y };
+          deviceEl.setPointerCapture(e.pointerId);
+          deviceEl.style.zIndex = '999';
+        });
+        document.addEventListener('pointermove', (e) => {
+          if (!this.currentDrag) return;
+          const { node, el, startX, startY, ox, oy } = this.currentDrag;
+          const dx = e.clientX - startX;
+          const dy = e.clientY - startY;
+          node.x = ox + dx;
+          node.y = oy + dy;
+          el.style.left = `${node.x}px`;
+          el.style.top = `${node.y}px`;
+          this.scheduleDrawLinks();
+        }, { passive: true });
+        document.addEventListener('pointerup', (e) => {
+          if (!this.currentDrag) return;
+          try { this.currentDrag.el.releasePointerCapture(e.pointerId); } catch (err) { }
+          this.currentDrag.el.style.zIndex = '';
+          this.currentDrag = null;
+          this.saveStateToLocalStorage();
+        });
+        this.topo.addEventListener('wheel', (e) => {
+          e.preventDefault();
+          const delta = e.deltaY * -0.001;
+          const newScale = Math.exp(delta);
+          this.scale = Math.max(0.5, Math.min(3, this.scale * newScale));
+          this.updateViewTransform();
+        }, { passive: false });
+        // Modal events (cable + commands + checklist)
+        if (this.cableModal) {
+          this.cableModal.addEventListener('click', (e) => { if (e.target === this.cableModal) this.closeCableModal(); });
+          this.cableModal.querySelectorAll('[data-cable]').forEach(btn => {
+            btn.addEventListener('click', () => {
+              const t = btn.dataset.cable;
+              if (this.connStart) this.connStart.cable = t;
+              this.closeCableModal();
+              this.log(`Cabo: ${t.toUpperCase()} (ex.: Cat6 para 10Gbps)`);
+            });
+          });
+          const cancelBtn = document.getElementById('cancelCable');
+          if (cancelBtn) cancelBtn.addEventListener('click', () => { this.clearConnStart(); this.closeCableModal(); });
+        }
+        const showCommandsBtn = document.getElementById('showCommands');
+        if (showCommandsBtn) showCommandsBtn.addEventListener('click', () => this.showCommandsModal());
+        const closeCommandsBtn = document.getElementById('closeCommands');
+        if (closeCommandsBtn) closeCommandsBtn.addEventListener('click', () => this.commandsModal.classList.remove('active'));
+        const showChecklistBtn = document.getElementById('showChecklist');
+        if (showChecklistBtn) showChecklistBtn.addEventListener('click', () => this.showChecklistModal());
+        const closeChecklistBtn = document.getElementById('closeChecklist');
+        if (closeChecklistBtn) closeChecklistBtn.addEventListener('click', () => this.checklistModal.classList.remove('active'));
+        // Tutorial events
+        const startTutorialBtn = document.getElementById('startTutorial');
+        if (startTutorialBtn) startTutorialBtn.addEventListener('click', () => {
+          if (this.tutorialOverlay) this.tutorialOverlay.classList.remove('active');
+          this.log(`Iniciando: ${this.buildProcess[this.currentStep]?.title}`);
+        });
+        const closeTutorialBtn = document.getElementById('closeTutorial');
+        if (closeTutorialBtn) closeTutorialBtn.addEventListener('click', () => {
+          if (this.tutorialOverlay) this.tutorialOverlay.classList.remove('active');
+          this.firstTimeUser = false;
+          localStorage.setItem('redeSimFirstTime', 'false');
+        });
+        // Controls
+        const clearBtn = document.getElementById('clear');
+        if (clearBtn) clearBtn.addEventListener('click', () => {
+          if (!confirm('Reiniciar?')) return;
+          this.clearAll();
+        });
+        const autoLayoutBtn = document.getElementById('autoLayout');
+        if (autoLayoutBtn) autoLayoutBtn.addEventListener('click', () => this.autoLayout());
+        const exportSVGBtn = document.getElementById('exportSVG');
+        if (exportSVGBtn) exportSVGBtn.addEventListener('click', () => this.exportSVG());
+        const zoomInBtn = document.getElementById('zoomIn');
+        if (zoomInBtn) zoomInBtn.addEventListener('click', () => {
+          this.scale = Math.min(3, this.scale * 1.1);
+          this.updateViewTransform();
+        });
+        const zoomOutBtn = document.getElementById('zoomOut');
+        if (zoomOutBtn) zoomOutBtn.addEventListener('click', () => {
+          this.scale = Math.max(0.5, this.scale * 0.9);
+          this.updateViewTransform();
+        });
+        const resetViewBtn = document.getElementById('resetView');
+        if (resetViewBtn) resetViewBtn.addEventListener('click', () => {
+          this.panX = 0; this.panY = 0; this.scale = 1;
+          this.updateViewTransform();
+        });
+        // Inspector events
+        const applyConfigBtn = document.getElementById('applyConfig');
+        if (applyConfigBtn) applyConfigBtn.addEventListener('click', () => this.applyConfig());
+        const resetMacBtn = document.getElementById('resetMac');
+        if (resetMacBtn) resetMacBtn.addEventListener('click', () => this.resetMac());
+        const inspectPingBtn = document.getElementById('inspectPing');
+        if (inspectPingBtn) inspectPingBtn.addEventListener('click', () => this.inspectPing());
+        if (this.deleteDeviceBtn) this.deleteDeviceBtn.addEventListener('click', () => this.deleteDevice());
+      }
+      updateViewTransform() {
+        if (!this.topo) return;
+        this.topo.style.transform = `translate(${this.panX}px, ${this.panY}px) scale(${this.scale})`;
+        this.scheduleDrawLinks();
+      }
+      // Port Click (validações cabos reais)
+      onPortClick(nodeId, portIndex, portEl) {
+        const nodeA = this.nodes[nodeId];
+        if (!nodeA || nodeA.ports[portIndex]?.connected) {
+          this.showError('Porta conectada ou inválida.');
+          return;
+        }
+        if (!this.connStart) {
+          this.connStart = { nodeId, portIndex, cable: null };
+          this.connStartPortEl = portEl;
+          portEl.style.outline = '2px solid rgba(0,168,255,0.6)';
+          this.openCableModal();
+          return;
+        }
+        const nodeB = this.nodes[this.connStart.nodeId];
+        if (nodeB?.ports[this.connStart.portIndex]?.connected) {
+          this.showError('Porta origem conectada.');
+          this.clearConnStart();
+          return;
+        }
+        if (this.connStart.nodeId === nodeId && this.connStart.portIndex === portIndex) {
+          this.clearConnStart();
+          return;
+        }
+        if (!this.validateConnection(this.connStart.nodeId, nodeId)) {
+          this.clearConnStart();
+          return;
+        }
+        let cableType = this.connStart.cable || 'copper';
+        const aType = this.nodes[this.connStart.nodeId].type;
+        const bType = nodeA.type;
+        // Validações cabos: fibra para WAN/core, Wi-Fi só AP/endpoint
+        if (cableType === 'fiber' && !(['ont', 'switchcore'].includes(aType) || ['ont', 'switchcore'].includes(bType))) {
+          this.showError('Fibra para backbone/WAN (longas distâncias, SFP).');
+          this.clearConnStart();
+          return;
+        }
+        if (cableType === 'coax' && !(['ont'].includes(aType) || ['ont'].includes(bType))) {
+          this.showError('Coaxial só para Cable Modem/ISP.');
+          this.clearConnStart();
+          return;
+        }
+        if (cableType === 'wifi' && !((['ap'].includes(aType) && ['endpoint'].includes(bType)) || (['ap'].includes(bType) && ['endpoint'].includes(aType)))) {
+          this.showError('Wi-Fi só AP → Endpoints (WPA3, canais não-sobrepostos).');
+          this.clearConnStart();
+          return;
+        }
+        const speed = this.getLinkSpeed(cableType, aType, bType);
+        const label = this.getLinkLabel(cableType, speed);
+        const linkId = this.makeId('l');
+        this.links.push({
+          id: linkId,
+          aNode: this.connStart.nodeId,
+          aPort: this.connStart.portIndex,
+          bNode: nodeId,
+          bPort: portIndex,
+          type: cableType,
+          speed,
+          label,
+          timestamp: Date.now()
+        });
+        nodeB.ports[this.connStart.portIndex].connected = true;
+        nodeA.ports[portIndex].connected = true;
+        if (nodeA.role === 'endpoint' && nodeA.ipMode === 'dhcp' && !nodeA.ip) nodeA.ip = this.allocateIp();
+        if (nodeB.role === 'endpoint' && nodeB.ipMode === 'dhcp' && !nodeB.ip) nodeB.ip = this.allocateIp();
+        this.scheduleDrawLinks();
+        this.updatePortOutlines();
+        this.updateNetworkStatus();
+        this.clearConnStart();
+        this.log(`Conexão: ${label} (${speed} Mbps)`);
+        this.saveStateToLocalStorage();
+        this.checkStepCompletion(this.currentStep);
+      }
+      getLinkSpeed(cableType, aType, bType) {
+        const baseSpeeds = { copper: 1000, fiber: 10000, wifi: 433, coax: 100 }; // Reais: Cat6 10G/55m, Wi-Fi 433Mbps
+        const deviceLimits = Math.min(this.deviceDefs[aType]?.maxSpeed || 1000, this.deviceDefs[bType]?.maxSpeed || 1000);
+        return Math.min(baseSpeeds[cableType], deviceLimits);
+      }
+      getLinkLabel(cableType, speed) {
+        const labels = {
+          copper: `Ethernet Cat6 ${speed} Mbps (RJ45)`,
+          fiber: `Fibra SMF ${speed} Mbps (LC/SFP)`,
+          wifi: `Wi-Fi 802.11ax ${speed} Mbps (WPA3)`,
+          coax: `Coaxial ${speed} Mbps`
+        };
+        return labels[cableType] || 'Link';
+      }
+      openCableModal() { if (this.cableModal) this.cableModal.classList.add('active'); }
+      closeCableModal() { if (this.cableModal) this.cableModal.classList.remove('active'); }
+      clearConnStart() {
+        if (this.connStartPortEl) { this.connStartPortEl.style.outline = ''; this.connStartPortEl = null; }
+        this.connStart = null;
+      }
+      validateConnection(aNodeId, bNodeId) {
+        const a = this.nodes[aNodeId], b = this.nodes[bNodeId];
+        if (!a || !b) return false;
+        const aType = a.type, bType = b.type;
+        const rA = this.networkRules.connectionRules[aType];
+        if (rA) {
+          if (rA.cannotConnectTo && rA.cannotConnectTo.includes(bType)) {
+            this.showError(`${this.deviceDefs[aType].label} não conecta direto a ${this.deviceDefs[bType].label}.`);
+            return false;
+          }
+          if (rA.mustBeConnectedTo && !rA.mustBeConnectedTo.includes(bType)) {
+            this.showError(`${this.deviceDefs[aType].label} deve conectar a ${rA.mustBeConnectedTo.map(t => this.deviceDefs[t].label).join(', ')} (topologia linear).`);
+            return false;
+          }
+        }
+        const rB = this.networkRules.connectionRules[bType];
+        if (rB && rB.canOnlyConnectTo && !rB.canOnlyConnectTo.includes(aType)) {
+          this.showError(`${this.deviceDefs[bType].label} só conecta a ${rB.canOnlyConnectTo.map(t => this.deviceDefs[t].label).join(', ')}`);
+          return false;
+        }
+        if (a.ports.length === 1 && a.ports.some(p => p.connected) || b.ports.length === 1 && b.ports.some(p => p.connected)) {
+          this.showError('Sem portas livres.');
+          return false;
+        }
+        return true;
+      }
+      // SVG Links (com labels cabos reais)
+      scheduleDrawLinks() {
+        if (this.drawScheduled) return;
+        this.drawScheduled = true;
+        requestAnimationFrame(() => {
+          this._drawLinks();
+          this.drawScheduled = false;
+        });
+      }
+      _drawLinks() {
+        if (!this.svg) return;
+        while (this.svg.firstChild) this.svg.removeChild(this.svg.firstChild);
+        const topoRect = this.topo.getBoundingClientRect();
+        const deviceEls = Array.from(this.topo.querySelectorAll('.device') || []);
+        const portRects = {};
+        deviceEls.forEach(devEl => {
+          const devId = devEl.dataset.id;
+          const ports = Array.from(devEl.querySelectorAll('.port') || []);
+          portRects[devId] = ports.map(p => p.getBoundingClientRect());
+        });
+        const frag = document.createDocumentFragment();
+        this.links.forEach(l => {
+          const aRects = portRects[l.aNode];
+          const bRects = portRects[l.bNode];
+          if (!aRects || !bRects || l.aPort >= aRects.length || l.bPort >= bRects.length) return;
+          const aPRect = aRects[l.aPort];
+          const bPRect = bRects[l.bPort];
+          if (!aPRect || !bPRect) return;
+          const x1 = aPRect.left - topoRect.left + aPRect.width / 2;
+          const y1 = aPRect.top - topoRect.top + aPRect.height / 2;
+          const x2 = bPRect.left - topoRect.left + bPRect.width / 2;
+          const y2 = bPRect.top - topoRect.top + bPRect.height / 2;
+          const cx1 = x1 + (x2 - x1) * 0.25;
+          const cx2 = x1 + (x2 - x1) * 0.75;
+          const d = `M ${x1} ${y1} C ${cx1} ${y1} ${cx2} ${y2} ${x2} ${y2}`;
+          const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+          g.classList.add('link');
+          g.dataset.linkId = l.id;
+          g.style.cursor = 'pointer';
+          const base = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          base.setAttribute('d', d);
+          base.setAttribute('stroke', l.type === 'fiber' ? 'rgba(139,92,246,0.12)' : (l.type === 'wifi' ? 'rgba(255,195,0,0.12)' : (l.type === 'coax' ? 'rgba(255,0,0,0.12)' : 'rgba(0,168,255,0.08)')));
+          base.setAttribute('stroke-width', 10 / this.scale);
+          base.setAttribute('fill', 'none');
+          base.setAttribute('stroke-linecap', 'round');
+          g.appendChild(base);
+          const top = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          top.setAttribute('d', d);
+          top.setAttribute('stroke', l.type === 'fiber' ? '#8b5cf6' : (l.type === 'wifi' ? '#ffcf33' : (l.type === 'coax' ? '#ef4444' : '#06b6d4')));
+          top.setAttribute('stroke-width', 3 / this.scale);
+          top.setAttribute('fill', 'none');
+          top.setAttribute('stroke-linecap', 'round');
+          top.setAttribute('stroke-dasharray', l.type === 'wifi' ? '4 8' : '0');
+          g.appendChild(top);
+          const traffic = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          traffic.setAttribute('d', d);
+          traffic.setAttribute('stroke', '#7fffd4');
+          traffic.setAttribute('stroke-width', 2 / this.scale);
+          traffic.setAttribute('fill', 'none');
+          traffic.setAttribute('stroke-linecap', 'round');
+          traffic.setAttribute('stroke-dasharray', '6 200');
+          traffic.style.strokeDashoffset = '0';
+          traffic.style.transition = 'stroke-dashoffset .2s linear';
+          g.appendChild(traffic);
+          const midLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          midLabel.setAttribute('class', 'link-label');
+          midLabel.setAttribute('x', (x1 + x2) / 2 + 8);
+          midLabel.setAttribute('y', (y1 + y2) / 2 - 8);
+          midLabel.setAttribute('font-size', 11 / this.scale);
+          midLabel.textContent = `${l.label} • ${l.speed} Mbps`;
+          g.appendChild(midLabel);
+          g.addEventListener('click', (ev) => {
+            ev.stopPropagation();
+            if (confirm('Remover?')) this.removeLink(l.id);
+          });
+          frag.appendChild(g);
+        });
+        this.svg.appendChild(frag);
+        this.updatePortOutlines();
+        if (!this.trafficAnimId) this.trafficAnimId = requestAnimationFrame(this.animateTraffic.bind(this));
+      }
+      animateTraffic(now) {
+        const offset = (now / 50) % 200;
+        this.svg.querySelectorAll('path[stroke="#7fffd4"]').forEach(p => p.style.strokeDashoffset = -offset);
+        this.trafficAnimId = requestAnimationFrame(this.animateTraffic.bind(this));
+      }
+      updatePortOutlines() {
+        (this.topo?.querySelectorAll('.port') || []).forEach(p => {
+          p.classList.remove('connected');
+          p.style.boxShadow = '';
+          const led = p.querySelector('.led');
+          if (led) led.className = 'led down';
+        });
+        this.links.forEach(l => {
+          const aEl = this.topo?.querySelector(`[data-id="${l.aNode}"]`);
+          const bEl = this.topo?.querySelector(`[data-id="${l.bNode}"]`);
+          if (!aEl || !bEl) return;
+          const aPorts = aEl.querySelectorAll('.port');
+          const bPorts = bEl.querySelectorAll('.port');
+          if (l.aPort < aPorts.length) {
+            const aPortEl = aPorts[l.aPort];
+            aPortEl.classList.add('connected');
+            aPortEl.style.boxShadow = 'inset 0 0 0 3px rgba(123,93,255,0.12)';
+            const led = aPortEl.querySelector('.led');
+            if (led) led.className = 'led up';
+          }
+          if (l.bPort < bPorts.length) {
+            const bPortEl = bPorts[l.bPort];
+            bPortEl.classList.add('connected');
+            bPortEl.style.boxShadow = 'inset 0 0 0 3px rgba(123,93,255,0.12)';
+            const led = bPortEl.querySelector('.led');
+            if (led) led.className = 'led up';
+          }
+        });
+      }
+      removeLink(linkId) {
+        const linkIdx = this.links.findIndex(l => l.id === linkId);
+        if (linkIdx === -1) return;
+        const l = this.links[linkIdx];
+        const aNode = this.nodes[l.aNode];
+        const bNode = this.nodes[l.bNode];
+        if (aNode) aNode.ports[l.aPort].connected = false;
+        if (bNode) bNode.ports[l.bPort].connected = false;
+        this.links.splice(linkIdx, 1);
+        this.scheduleDrawLinks();
+        this.updatePortOutlines();
+        this.updateNetworkStatus();
+        this.saveStateToLocalStorage();
+        this.log('Conexão removida');
+        this.checkStepCompletion(this.currentStep);
+      }
+      removeNode(id) {
+        const node = this.nodes[id];
+        if (!node) return;
+        this.links = this.links.filter(l => {
+          if (l.aNode === id || l.bNode === id) {
+            const otherId = l.aNode === id ? l.bNode : l.aNode;
+            const otherNode = this.nodes[otherId];
+            if (otherNode) {
+              const otherPort = l.aNode === id ? l.bPort : l.aPort;
+              if (otherNode.ports[otherPort]) otherNode.ports[otherPort].connected = false;
+            }
+            return false;
+          }
+          return true;
+        });
+        if (node.el) node.el.remove();
+        delete this.nodes[id];
+        this.scheduleDrawLinks();
+        this.updateDeviceCounts();
+        this.updateNetworkStatus();
+        this.saveStateToLocalStorage();
+        this.checkStepCompletion(this.currentStep);
+        this.log(`Removido: ${node.name}`);
+        this.clearInspector();
+      }
+      // Simulation (com latência VLAN, perda 1%)
+      buildAdj() {
+        const g = {};
+        Object.keys(this.nodes).forEach(id => g[id] = new Set());
+        this.links.forEach(l => {
+          g[l.aNode]?.add(l.bNode);
+          g[l.bNode]?.add(l.aNode);
+        });
+        return g;
+      }
+      resolveArp(src, dst) {
+        const key = `${src}-${dst}`;
+        if (this.arpCache.has(key)) return this.arpCache.get(key);
+        const mac = this.nodes[dst]?.mac || 'ff:ff:ff:ff:ff:ff';
+        this.arpCache.set(key, mac);
+        setTimeout(() => this.arpCache.delete(key), 30000);
+        return mac;
+      }
+      findPath(src, dst) {
+        const g = this.buildAdj();
+        if (!g[src] || !g[dst]) return null;
+        const q = [src], prev = {}; prev[src] = null; let qi = 0;
+        while (qi < q.length) {
+          const u = q[qi++]; if (u === dst) break;
+          for (const v of (g[u] || [])) if (!(v in prev)) { prev[v] = u; q.push(v); }
+        }
+        if (!(dst in prev)) return null;
+        const path = []; let cur = dst; while (cur !== null) { path.push(cur); cur = prev[cur]; }
+        return path.reverse();
+      }
+      computeLatencyForPath(path, packetLoss = 0.01) {
+        if (!path || path.length < 1) return null;
+        let total = 0;
+        for (let i = 0; i < path.length - 1; i++) {
+          const a = path[i], b = path[i + 1];
+          const l = this.links.find(L => (L.aNode === a && L.bNode === b) || (L.aNode === b && L.bNode === a));
+          if (!l) total += 40;
+          else {
+            const baseLat = l.speed >= 5000 ? 1 : (l.speed >= 1000 ? 5 : 12);
+            total += baseLat + Math.random() * 6;
+            if (Math.random() < packetLoss) total += 50; // Perda
+          }
+        }
+        if (path.length === 1) total = 0.5 + Math.random() * 0.5;
+        return Math.round(total * 10) / 10;
+      }
+      simulatePingBetween(a, b) {
+        const firstHop = this.links.find(l => l.aNode === a || l.bNode === a)?.bNode || a;
+        const arpMac = this.resolveArp(a, firstHop);
+        this.log(`ARP: ${this.nodes[firstHop]?.ip} → ${arpMac}`);
+        const path = this.findPath(a, b);
+        if (!path) {
+          this.log('Ping: Inacessível (verifique VLAN/firewall).');
+          return;
+        }
+        const latency = this.computeLatencyForPath(path);
+        const hops = path.length - 1;
+        this.log(`Ping ${this.nodes[a].name} → ${this.nodes[b].name}: ${latency} ms (${hops} hops, rota: ${path.map(p => this.nodes[p]?.name.slice(0,3)).join(' → ')})`);
+        path.forEach(nId => {
+          const n = this.nodes[nId];
+          if (n) n.throughput = Math.max(n.throughput, 10 + Math.random() * 50);
+        });
+        this.animatePacketAlongPath(path);
+        this.updateNetworkStatus();
+      }
+      animatePacketAlongPath(path) {
+        // Código idêntico ao exemplo para animação
+        if (!this.svg) return;
+        this.scheduleDrawLinks();
+        const topoRect = this.topo.getBoundingClientRect();
+        const pathElements = [];
+        for (let i = 0; i < path.length - 1; i++) {
+          const a = path[i], b = path[i + 1];
+          const l = this.links.find(L => (L.aNode === a && L.bNode === b) || (L.aNode === b && L.bNode === a));
+          if (!l) continue;
+          const g = this.svg.querySelector(`g.link[data-link-id="${l.id}"]`);
+          if (!g) continue;
+          const actualPath = g.querySelector('path');
+          if (actualPath) pathElements.push({ path: actualPath, link: l });
+        }
+        if (pathElements.length === 0) return;
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttribute('r', 6 / this.scale);
+        circle.setAttribute('fill', '#7fffd4');
+        circle.setAttribute('opacity', '0.9');
+        this.svg.appendChild(circle);
+        const segs = pathElements.map(p => ({ path: p.path, len: p.path.getTotalLength(), link: p.link }));
+        const totalLen = segs.reduce((s, x) => s + x.len, 0);
+        const speedPxPerSec = 300;
+        const duration = Math.max(400, totalLen / speedPxPerSec * 1000);
+        const start = performance.now();
+        const trafficPaths = pathElements.map(p => {
+          const g = p.path.parentNode;
+          const t = g.querySelectorAll('path')[2];
+          if (t) t.setAttribute('stroke-dasharray', '6 6');
+          return t;
+        }).filter(Boolean);
+        let animId;
+        const anim = (now) => {
+          const t = (now - start) / duration;
+          if (t >= 1) {
+            circle.remove();
+            trafficPaths.forEach(tp => { if (tp) tp.setAttribute('stroke-dasharray', '6 200'); });
+            cancelAnimationFrame(animId);
+            return;
+          }
+          const pos = t * totalLen;
+          let acc = 0, idx = 0;
+          while (idx < segs.length && acc + segs[idx].len < pos) { acc += segs[idx].len; idx++; }
+          if (idx >= segs.length) idx = segs.length - 1;
+          const seg = segs[idx];
+          const local = Math.max(0, pos - acc);
+          const pt = seg.path.getPointAtLength(local);
+          circle.setAttribute('cx', pt.x);
+          circle.setAttribute('cy', pt.y);
+          trafficPaths.forEach(tp => {
+            if (tp) tp.setAttribute('stroke-dashoffset', -(now / 10) % 400);
+          });
+          animId = requestAnimationFrame(anim);
+        };
+        animId = requestAnimationFrame(anim);
+      }
+      // Inspector (campos dinâmicos por type: Wi-Fi para AP, DHCP para Router/Server)
+      selectInspector(nodeId) {
+        const node = this.nodes[nodeId];
+        if (!node) return;
+        this.currentInspector = node;
+        if (!this.inspector || !this.inspectorEmpty) return;
+        this.inspector.style.display = 'block';
+        this.inspectorEmpty.style.display = 'none';
+        this.updateInspectorValues(node);
+        // Mostrar seções específicas
+        if (this.wifiConfig) this.wifiConfig.style.display = node.type === 'ap' ? 'block' : 'none';
+        if (this.dhcpConfig) this.dhcpConfig.style.display = ['router', 'server'].includes(node.type) ? 'block' : 'none';
+      }
+      updateInspectorValues(node) {
+        if (!node || !this.inspHostname) return;
+        this.inspHostname.value = node.name || '';
+        this.inspMac.value = node.mac || '';
+        this.inspIp.value = node.ip || '';
+        if (this.inspIpMode) this.inspIpMode.value = node.ipMode || 'dhcp';
+        if (this.inspVlan) this.inspVlan.value = node.vlan || 1;
+        if (this.inspSsid) this.inspSsid.value = node.ssid || '';
+        if (this.inspWifiSec) this.inspWifiSec.value = node.wifiSec || 'wpa3';
+        if (this.inspWifiBand) this.inspWifiBand.value = node.wifiBand || '5';
+        if (this.inspDhcpRange) this.inspDhcpRange.value = node.dhcpRange || '';
+        if (this.inspGateway) this.inspGateway.value = node.gateway || '';
+        if (this.inspRole) this.inspRole.value = node.role || 'endpoint';
+        if (this.inspConns) this.inspConns.textContent = this.links.filter(l => l.aNode === node.id || l.bNode === node.id).length;
+        if (this.inspThroughput) this.inspThroughput.textContent = Math.round(node.throughput || 0) + ' kb/s';
+        if (this.inspLastSeen) this.inspLastSeen.textContent = node.lastSeen ? new Date(node.lastSeen).toLocaleTimeString() : '—';
+        if (node.el) {
+          const nameEl = node.el.querySelector('.dev-name');
+          const typeEl = node.el.querySelector('.dev-type');
+          if (nameEl) nameEl.textContent = node.name;
+          if (typeEl) typeEl.textContent = `${node.type.toUpperCase()} • ${node.ip || '—'} VLAN${node.vlan}`;
+        }
+        const directLinks = this.links.filter(l => (l.aNode === node.id || l.bNode === node.id) && !this.isWirelessLink(l));
+        if (this.arpEntries) this.arpEntries.innerHTML = '';
+        directLinks.forEach(l => {
+          const otherId = l.aNode === node.id ? l.bNode : l.aNode;
+          const other = this.nodes[otherId];
+          if (other && other.ip && other.mac) {
+            if (this.arpEntries) this.arpEntries.innerHTML += `<div style="font-size:11px;color:var(--muted);margin-bottom:2px">${other.ip} → ${other.mac}</div>`;
+          }
+        });
+        if (this.arpTable) this.arpTable.style.display = node.role === 'switch' && directLinks.length > 0 ? 'block' : 'none';
+      }
+      isWirelessLink(l) { return l.type === 'wifi'; }
+      clearInspector() {
+        this.currentInspector = null;
+        if (this.inspector && this.inspectorEmpty) {
+          this.inspector.style.display = 'none';
+          this.inspectorEmpty.style.display = 'block';
+        }
+      }
+      applyConfig() {
+        if (!this.currentInspector || !this.inspHostname) return;
+        const newName = this.inspHostname.value.trim();
+        const newMac = this.inspMac.value.trim();
+        const newIp = this.inspIp.value.trim();
+        const newMode = this.inspIpMode ? this.inspIpMode.value : 'dhcp';
+        const newVlan = this.inspVlan ? parseInt(this.inspVlan.value) : 1;
+        const newSsid = this.inspSsid ? this.inspSsid.value.trim() : '';
+        const newWifiSec = this.inspWifiSec ? this.inspWifiSec.value : 'wpa3';
+        const newWifiBand = this.inspWifiBand ? this.inspWifiBand.value : '5';
+        const newDhcpRange = this.inspDhcpRange ? this.inspDhcpRange.value.trim() : '';
+        const newGateway = this.inspGateway ? this.inspGateway.value.trim() : '';
+        const newRole = this.inspRole ? this.inspRole.value : 'endpoint';
+        if (newName) this.currentInspector.name = newName;
+        if (newMac && this.isValidMac(newMac)) {
+          if (Object.values(this.nodes).some(n => n.id !== this.currentInspector.id && n.mac === newMac)) {
+            this.showError('MAC duplicado.');
+            return;
+          }
+          this.currentInspector.mac = newMac;
+        } else if (newMac) {
+          this.showError('MAC inválido.');
+          return;
+        }
+        this.currentInspector.ipMode = newMode;
+        if (newMode === 'dhcp') this.currentInspector.ip = this.allocateIp();
+        else if (newIp && this.isValidIPv4(newIp)) {
+          if (Object.values(this.nodes).some(n => n.id !== this.currentInspector.id && n.ip === newIp)) {
+            this.showError('IP duplicado (use 10.0.x.0/24).');
+            return;
+          }
+          this.currentInspector.ip = newIp;
+        } else if (newIp) {
+          this.showError('IP inválido (ex.: 10.0.10.100).');
+          return;
+        }
+        this.currentInspector.vlan = newVlan;
+        if (newSsid) this.currentInspector.ssid = newSsid; // Boas práticas: neutro
+        this.currentInspector.wifiSec = newWifiSec;
+        this.currentInspector.wifiBand = newWifiBand;
+        if (newDhcpRange) this.currentInspector.dhcpRange = newDhcpRange;
+        if (newGateway) this.currentInspector.gateway = newGateway;
+        this.currentInspector.role = newRole;
+        this.updateInspectorValues(this.currentInspector);
+        this.drawNode(this.currentInspector);
+        this.saveStateToLocalStorage();
+        this.log(`Config aplicada: ${this.currentInspector.name} (SSID: ${newSsid || '—'}, VLAN: ${newVlan})`);
+      }
+      resetMac() {
+        if (!this.currentInspector) return;
+        this.currentInspector.mac = this.generateMac();
+        if (this.inspMac) this.inspMac.value = this.currentInspector.mac;
+        this.updateInspectorValues(this.currentInspector);
+      }
+      inspectPing() {
+        if (!this.currentInspector) return;
+        const latency = 0.3 + Math.random() * 0.2;
+        this.log(`Ping local ${this.currentInspector.name}: ${Math.round(latency * 10) / 10} ms`);
+      }
+      deleteDevice() {
+        if (!this.currentInspector) return;
+        if (confirm(`Excluir "${this.currentInspector.name}"? Remove conexões.`)) this.removeNode(this.currentInspector.id);
+      }
+      // Modals extras
+      showCommandsModal() {
+        if (!this.commandsModal || !this.currentInspector) return;
+        const type = this.currentInspector.type;
+        const content = this.commandsExamples[type] || 'Sem comandos específicos. Ex.: Para Router - NAT/port-forward; Switch - STP/LACP.';
+        document.getElementById('commandsContent').textContent = content;
+        this.commandsModal.classList.add('active');
+      }
+      showChecklistModal() {
+        if (!this.checklistModal) return;
+        const cont = document.getElementById('checklistItems');
+        cont.innerHTML = '';
+        this.checklistItems.forEach((item, i) => {
+          const div = document.createElement('div');
+          div.className = 'checklist-item';
+          div.innerHTML = `<div class="checklist-checkbox" data-index="${i}"></div><span>${item}</span>`;
+          cont.appendChild(div);
+          div.querySelector('.checklist-checkbox').addEventListener('click', (e) => {
+            e.target.classList.toggle('checked');
+          });
+        });
+        this.checklistModal.classList.add('active');
+      }
+      // Network Status (DHCP por VLAN, throughput com QoS)
+      updateNetworkStatus() {
+        const connected = {};
+        Object.keys(this.nodes).forEach(id => connected[id] = []);
+        this.links.forEach(l => {
+          connected[l.aNode]?.push(l);
+          connected[l.bNode]?.push(l);
+        });
+        Object.entries(this.nodes).forEach(([id, node]) => {
+          if (!node) return;
+          const conns = connected[id] || [];
+          if (node.role === 'endpoint' && node.ipMode === 'dhcp' && !node.ip && conns.length > 0) {
+            const isInfraConn = conns.some(c => {
+              const otherId = c.aNode === id ? c.bNode : c.aNode;
+              const other = this.nodes[otherId];
+              return other?.role === 'router' || other?.role === 'server';
+            });
+            if (isInfraConn) {
+              const scope = node.vlan === 20 ? 'guest' : 'admin';
+              node.ip = this.allocateIp(scope);
+              if (node.el) {
+                const typeEl = node.el.querySelector('.dev-type');
+                if (typeEl) typeEl.textContent = `${node.type.toUpperCase()} • ${node.ip} VLAN${node.vlan}`;
+              }
+              this.log(`DHCP VLAN${node.vlan}: ${node.ip} para ${node.name}`);
+            }
+          }
+          const el = node.el;
+          if (!el) return;
+          const dots = el.querySelectorAll('.network-dot');
+          dots.forEach((d, i) => d.classList.toggle('active', i < conns.length));
+          const throughput = conns.reduce((s, c) => s + ((c.speed / 8) * (Math.random() * 0.8 + 0.2)), 0); // QoS simulado
+          node.throughput = throughput;
+          node.lastSeen = Date.now();
+          if (this.currentInspector?.id === id) this.updateInspectorValues(node);
+        });
+        if (this.links.length) {
+          this.log(`Ativa: ${Object.keys(this.nodes).length} nós • ${this.links.length} links • Total: ${Math.round(Object.values(this.nodes).reduce((s, n) => s + n.throughput, 0))} kb/s`);
+        } else {
+          this.log('Sem conexões (início WAN)');
+        }
+        if (!this.networkStatusInterval) {
+          this.networkStatusInterval = setInterval(() => {
+            Object.values(this.nodes).forEach(node => {
+              const el = node.el;
+              if (!el) return;
+              const activeDots = el.querySelectorAll('.network-dot.active');
+              if (activeDots.length && Math.random() > 0.9) {
+                const d = activeDots[Math.floor(Math.random() * activeDots.length)];
+                if (d) d.style.opacity = Math.random() > 0.5 ? '0.3' : '1';
+              }
+            });
+          }, 3000);
+        }
+      }
+      toggleSelectForSim(id, el) {
+        const idx = this.selectedForSim.indexOf(id);
+        if (idx > -1) {
+          this.selectedForSim.splice(idx, 1);
+          if (el) el.style.boxShadow = '';
+          this.log('Removido: ' + this.nodes[id]?.name);
+        } else {
+          if (this.selectedForSim.length >= 2) {
+            this.showError('Selecione 2 (Shift+Clique).');
+            return;
+          }
+          this.selectedForSim.push(id);
+          if (el) el.style.boxShadow = '0 0 0 4px rgba(0,168,255,0.12)';
+          this.log('Selecionado: ' + this.nodes[id]?.name);
+        }
+      }
+      addSimButtons() {
+        const controls = document.querySelector('.controls');
+        if (!controls) return;
+        const pingBtn = document.createElement('button');
+        pingBtn.textContent = 'Simular Ping';
+        pingBtn.className = 'ghost';
+        pingBtn.style.marginLeft = '8px';
+        pingBtn.addEventListener('click', () => {
+          if (this.selectedForSim.length !== 2) {
+            alert('Selecione 2 devices.');
+            return;
+          }
+          this.simulatePingBetween(this.selectedForSim[0], this.selectedForSim[1]);
+          this.selectedForSim = [];
+          document.querySelectorAll('.device').forEach(d => d.style.boxShadow = '');
+        });
+        controls.appendChild(pingBtn);
+      }
+      highlightPath(path) {
+        this.scheduleDrawLinks();
+        for (let i = 0; i < path.length - 1; i++) {
+          const a = path[i], b = path[i + 1];
+          const l = this.links.find(L => (L.aNode === a && L.bNode === b) || (L.aNode === b && L.bNode === a));
+          if (!l) continue;
+          const g = this.svg.querySelector(`g.link[data-link-id="${l.id}"]`);
+          if (!g) continue;
+          const paths = g.querySelectorAll('path');
+          paths.forEach(p => p.setAttribute('stroke', '#7fffd4'));
+        }
+        setTimeout(() => this.scheduleDrawLinks(), 2000);
+      }
+      exportSVG() {
+        if (!this.svg) return;
+        const oldPanX = this.panX, oldPanY = this.panY, oldScale = this.scale;
+        this.panX = - (this.topo.clientWidth * (oldScale - 1) / 2);
+        this.panY = - (this.topo.clientHeight * (oldScale - 1) / 2);
+        this.scale = 1;
+        this.updateViewTransform();
+        const serializer = new XMLSerializer();
+        let source = serializer.serializeToString(this.svg);
+        const padding = 50;
+        const vbWidth = this.topo.clientWidth + padding * 2;
+        const vbHeight = this.topo.clientHeight + padding * 2;
+        source = source.replace('<svg', `<svg viewBox="${-padding} ${-padding} ${vbWidth} ${vbHeight}"`);
+        const blob = new Blob([source], { type: 'image/svg+xml;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `rede-${new Date().toISOString().slice(0,10)}.svg`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        this.panX = oldPanX;
+        this.panY = oldPanY;
+        this.scale = oldScale;
+        this.updateViewTransform();
+      }
+      autoLayout() {
+        const ids = Object.keys(this.nodes);
+        if (ids.length === 0) return;
+        const cols = 4, rowHeight = 160;
+        let col = 0, row = 0;
+        ids.forEach(id => {
+          const node = this.nodes[id];
+          if (!node) return;
+          node.x = 100 + col * 200;
+          node.y = 100 + row * rowHeight;
+          this.drawNode(node);
+          col = (col + 1) % cols;
+          if (col === 0) row++;
+        });
+        this.scheduleDrawLinks();
+        this.saveStateToLocalStorage();
+        this.log(`${ids.length} rearranjados (linear).`);
+      }
+      clearAll() {
+        Object.values(this.nodes).forEach(n => { if (n?.el) n.el.remove(); });
+        this.nodes = {};
+        this.links = [];
+        this.nextId = 1;
+        this.connStart = null;
+        this.selectedForSim = [];
+        this.arpCache.clear();
+        this.dhcpScopes.admin.next = 100; // Reset
+        this.buildProcess.forEach(step => { step.completed = false; });
+        this.currentStep = 0;
+        this.panX = 0;
+        this.panY = 0;
+        this.scale = 1;
+        if (this.svg) while (this.svg.firstChild) this.svg.removeChild(this.svg.firstChild);
+        if (this.networkStatusInterval) { clearInterval(this.networkStatusInterval); this.networkStatusInterval = null; }
+        if (this.trafficAnimId) { cancelAnimationFrame(this.trafficAnimId); this.trafficAnimId = null; }
+        this.updateViewTransform();
+        this.initBuildSteps();
+        this.updateBuildProgress();
+        this.log('Reiniciado (topologia limpa).');
+        localStorage.removeItem('redeSimState');
+      }
+      saveStateToLocalStorage() {
+        try {
+          const nodesForSave = {};
+          Object.values(this.nodes).forEach(n => {
+            if (!n) return;
+            nodesForSave[n.id] = {
+              id: n.id, type: n.type, x: n.x, y: n.y, name: n.name,
+              ports: n.ports.map(p => ({ ...p })),
+              mac: n.mac, ip: n.ip, ipMode: n.ipMode, vlan: n.vlan, ssid: n.ssid,
+              wifiSec: n.wifiSec, wifiBand: n.wifiBand, dhcpRange: n.dhcpRange,
+              gateway: n.gateway, role: n.role, throughput: n.throughput,
+              lastSeen: n.lastSeen
+            };
+          });
+          const state = {
+            nodes: nodesForSave,
+            links: this.links.map(l => ({ ...l })),
+            currentStep: this.currentStep,
+            buildProcess: this.buildProcess.map(s => ({ ...s, completed: s.completed })),
+            dhcpScopes: this.dhcpScopes,
+            timestamp: Date.now()
+          };
+          localStorage.setItem('redeSimState', JSON.stringify(state));
+        } catch (e) {
+          console.warn('Save error:', e);
+          this.showError('Erro salvar.');
+        }
+      }
+      loadStateFromLocalStorage() {
+        try {
+          const s = localStorage.getItem('redeSimState');
+          if (!s) return false;
+          const state = JSON.parse(s);
+          Object.values(this.nodes).forEach(n => { if (n?.el) n.el.remove(); });
+          if (this.svg) while (this.svg.firstChild) this.svg.removeChild(this.svg.firstChild);
+          this.nodes = {};
+          this.links = [];
+          this.nextId = 1;
+          this.dhcpScopes = state.dhcpScopes || { admin: { range: '10.0.10.100-200', gateway: '10.0.10.1' }, guest: { range: '10.0.20.100-200', gateway: '10.0.20.1' } };
+          for (const id in state.nodes) {
+            const n = state.nodes[id];
+            if (!n.type || !this.deviceDefs[n.type]) continue;
+            this.nodes[id] = { ...n, el: null, ports: n.ports || Array.from({ length: this.deviceDefs[n.type].ports || 1 }, (_, i) => ({ index: i, connected: false })) };
+          }
+          this.links = (state.links || []).filter(l => this.nodes[l.aNode] && this.nodes[l.bNode]);
+          if (state.buildProcess) {
+            for (let i = 0; i < Math.min(state.buildProcess.length, this.buildProcess.length); i++) {
+              this.buildProcess[i].completed = state.buildProcess[i].completed;
+            }
+            this.currentStep = state.currentStep || 0;
+          }
+          const nodeMaxId = Object.keys(this.nodes).length ? Math.max(...Object.keys(this.nodes).map(k => parseInt(k.slice(1) || 0))) : 0;
+          this.nextId = Math.max(this.nextId, nodeMaxId + 1);
+          Object.values(this.nodes).forEach(node => this.drawNode(node));
+          this.scheduleDrawLinks();
+          this.updateDeviceCounts();
+          this.initBuildSteps();
+          this.updateNetworkStatus();
+          this.log(`Carregado: ${Object.keys(this.nodes).length} devices.`);
+          return true;
+        } catch (e) {
+          console.warn('Load error:', e);
+          this.showError('Erro carregar.');
+          return false;
+        }
+      }
+      checkFirstTimeUser() {
+        return localStorage.getItem('redeSimFirstTime') !== 'false';
+      }
+      init() {
+        this.firstTimeUser = this.checkFirstTimeUser();
+        this.initDevicePalette();
+        this.initBuildSteps();
+        const loaded = this.loadStateFromLocalStorage();
+        if (!loaded) this.log('Bem-vindo! Construa WAN → LAN (topologia linear, boas práticas).');
+        this.addSimButtons();
+        this.bindEvents();
+        requestAnimationFrame(() => this.scheduleDrawLinks());
+        this.updateNetworkStatus();
+        setInterval(() => {
+          this.updateNetworkStatus();
+          this.saveStateToLocalStorage();
+        }, 5000);
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'z' && e.ctrlKey) {
+            e.preventDefault();
+            this.scale = Math.max(0.5, this.scale * 0.9);
+            this.updateViewTransform();
+          }
+          if (e.key === 'Delete' && this.currentInspector) this.deleteDevice();
+        });
       }
     }
-
-    const particles = [];
-    for (let i = 0; i < 100; i++) {
-      particles.push(new Particle());
-    }
-
-    function animate() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particles.forEach(p => {
-        p.update();
-        p.draw();
-      });
-      requestAnimationFrame(animate);
-    }
-
-    animate();
-
-    window.addEventListener('resize', () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    });
-
-    document.getElementById('retryBtn').addEventListener('click', () => {
-      location.reload();
-    });
-
-    const overlay = document.getElementById('overlay');
-
-    overlay.addEventListener('click', (e)=>{
-      if(e.target === overlay) {
-        // Optionally close, but since no close button, perhaps do nothing or reload
-      }
-    });
-
-    document.addEventListener('keydown', (e)=>{
-      if(e.key === 'Escape' && overlay.classList.contains('show')) {
-        // Optionally close
+    document.addEventListener('DOMContentLoaded', () => {
+      try {
+        new NetworkSimulator().init();
+      } catch (err) {
+        console.error('Init error:', err);
+        document.body.innerHTML += '<div style="color:red;padding:20px">Erro inicializar: ' + err.message + '</div>';
       }
     });
   </script>
