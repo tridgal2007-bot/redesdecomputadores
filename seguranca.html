@@ -1,221 +1,583 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Segurança de Rede — Sistema Educacional</title>
-<style>
-  body {
-    margin: 0;
-    font-family: "Poppins", sans-serif;
-    background: linear-gradient(135deg, #0f172a, #312e81);
-    color: #f1f5f9;
-    min-height: 100vh;
-  }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0d1525" />
+  <title>Segurança de Rede — Sistema Premium</title>
 
-  .container {
-    max-width: 900px;
-    margin: auto;
-    padding: 30px;
-  }
+  <!-- Fontes premium -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-  h1, h2 {
-    text-align: center;
-  }
+  <!-- Ícones premium -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-  .section {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 16px;
-    padding: 20px;
-    margin: 20px 0;
-    box-shadow: 0 0 15px rgba(0,0,0,0.3);
-    transition: transform 0.3s ease;
-  }
+  <style>
+    /* ---------- PALETA AZUL PREMIUM (PADRÃO) - CORES MAIS SUAVES ---------- */
+    :root {
+      --bg-900: #071428;
+      --bg-gradient: linear-gradient(160deg, #0a0e17 0%, #0d1525 35%, #121c33 70%, #1a2540 100%);
+      --card-bg: rgba(18, 28, 51, 0.7);
+      --card-border: rgba(143, 233, 255, 0.15);
+      --accent: #00a8ff;
+      --accent-light: #8fe9ff;
+      --text-primary: #ffffff;
+      --text-secondary: #b8d7ea;
+      --success: #4ade80;
+      --warning: #fbbf24;
+      --error: #f87171;
+      --timeline-bg: rgba(0, 168, 255, 0.08);
+      --timeline-progress: linear-gradient(90deg, var(--accent-light), var(--accent));
+      --glow: 0 0 20px rgba(0, 168, 255, 0.35);
+      --transition: all 0.28s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      --confetti-colors: '#00a8ff,#8fe9ff,#b8d7ea';
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; margin: 0; background: var(--bg-gradient); color: var(--text-secondary); font-family: 'Space Grotesk', 'Montserrat', system-ui, -apple-system, 'Segoe UI', Roboto, Arial; overflow-x: hidden; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; transition: var(--transition); }
 
-  .section:hover { transform: translateY(-3px); }
+    .container { width: 100%; max-width: 1400px; margin: 0 auto; padding: 18px; min-height: 100vh; display: flex; flex-direction: column; }
 
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 15px;
-  }
+    header { display: flex; align-items: center; gap: 16px; padding: 12px 0; position: relative; z-index: 10; flex-wrap: wrap; justify-content: center; }
+    .logo { width: 70px; height: 70px; border-radius: 16px; background: linear-gradient(135deg, var(--text-primary), var(--accent)); display: grid; place-items: center; color: var(--bg-900); font-weight: 800; font-size: 20px; box-shadow: var(--glow); transition: var(--transition); flex-shrink: 0; }
+    .header-content { flex: 1; min-width: 0; text-align: center; }
+    h1 { margin: 0; color: var(--text-primary); font-size: 28px; font-weight: 800; letter-spacing: -0.4px; background: linear-gradient(to right, var(--text-primary), var(--accent-light)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .subtitle { margin-top: 6px; color: var(--text-secondary); font-size: 16px; line-height: 1.4; max-width: 64ch; }
 
-  button {
-    background: #6366f1;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 10px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: background 0.3s;
-  }
+    .main-content { display: flex; flex-direction: column; gap: 20px; margin-top: 18px; }
+    @media (min-width: 992px) { .main-content { flex-direction: row; } }
 
-  button:hover { background: #818cf8; }
+    .content-section, .quiz-section { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 18px; padding: 20px; box-shadow: 0 6px 24px rgba(0, 10, 20, 0.5); backdrop-filter: blur(8px); position: relative; overflow: hidden; width: 100%; }
 
-  .quiz {
-    display: none;
-  }
+    /* Types/Tutorial explorer styling */
+    .types-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
+    .types-title { color: var(--text-primary); font-size: 22px; font-weight: 700; }
+    .types-list { display: grid; gap: 12px; margin-top: 12px; }
+    .type-item { background: rgba(255,255,255,0.03); border: 1px solid var(--card-border); border-radius: 12px; padding: 16px; cursor: pointer; transition: var(--transition); position: relative; overflow: hidden; }
+    .type-item:hover { background: rgba(143, 233, 255, 0.06); transform: translateY(-2px); box-shadow: var(--glow); }
+    .type-item.active { background: rgba(0, 168, 255, 0.08); border-color: var(--accent); }
+    .type-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+    .type-icon { font-size: 20px; color: var(--accent-light); }
+    .type-title { font-size: 18px; font-weight: 700; color: var(--text-primary); flex: 1; }
+    .type-description { line-height: 1.6; color: var(--text-secondary); font-size: 16px; display: none; margin-top: 6px; }
+    .type-item.active .type-description { display: block; }
+    .type-toggle { background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 16px; transition: var(--transition); }
+    .type-item.active .type-toggle { transform: rotate(180deg); color: var(--accent); }
 
-  .option {
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 10px;
-    padding: 12px;
-    margin: 10px 0;
-    cursor: pointer;
-    transition: all 0.3s;
-  }
+    /* Concepts (integrated) */
+    .concepts-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+    .concepts-title { color: var(--text-primary); font-size: 20px; font-weight: 700; }
+    .concepts-list { display: grid; gap: 8px; margin-top: 10px; }
+    .concept-item { padding: 12px; background: rgba(255,255,255,0.02); border-radius: 8px; border-left: 3px solid var(--accent); display: flex; align-items: center; gap: 8px; }
+    .concept-icon { color: var(--accent-light); font-size: 16px; }
+    .concept-item strong { color: var(--text-primary); }
 
-  .option:hover { background: rgba(255,255,255,0.15); }
-  .correct { background: rgba(16,185,129,0.3) !important; }
-  .wrong { background: rgba(239,68,68,0.3) !important; }
+    /* Quiz UI */
+    .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
+    .quiz-title { color: var(--text-primary); font-size: 18px; font-weight: 700; }
+    .progress-container { height: 8px; background: rgba(255,255,255,0.06); border-radius: 6px; margin: 12px 0; overflow: hidden; }
+    .progress-bar { height: 100%; background: var(--timeline-progress); border-radius: 6px; width: 0%; transition: width 0.45s ease; }
 
-  .hidden { display: none; }
+    .question-container { margin: 10px 0; }
+    .question-number { color: var(--accent); font-weight: 700; margin-bottom: 6px; }
+    .question-text { color: var(--text-primary); font-size: 15px; margin-bottom: 12px; line-height: 1.4; }
 
-  .result {
-    text-align: center;
-    padding: 30px;
-  }
+    .options-container { display: grid; gap: 10px; }
+    .option { padding: 12px 14px; border-radius: 10px; background: rgba(255,255,255,0.03); border: 1px solid var(--card-border); color: var(--text-secondary); font-weight: 600; cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: 10px; }
+    .option:hover { background: rgba(143, 233, 255, 0.06); transform: translateX(4px); color: var(--text-primary); }
+    .option.selected { background: rgba(0, 168, 255, 0.12); border-color: var(--accent); color: var(--text-primary); box-shadow: 0 0 10px rgba(0,168,255,0.12); }
+    .option.correct { background: rgba(74, 222, 128, 0.12); border-color: var(--success); color: #d1fae5; }
+    .option.wrong { background: rgba(248, 113, 113, 0.12); border-color: var(--error); color: #fee2e2; }
 
-  .fade {
-    animation: fade 0.4s ease;
-  }
+    .option-letter { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,0.06); font-weight: 800; font-size: 12px; }
 
-  @keyframes fade {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-</style>
+    .quiz-controls { display: flex; justify-content: space-between; margin-top: 14px; flex-wrap: wrap; gap: 10px; }
+    .nav-buttons { display: flex; gap: 8px; }
+    .btn { background: linear-gradient(90deg, var(--accent-light), var(--accent)); color: var(--bg-900); border: 0; padding: 9px 14px; border-radius: 10px; cursor: pointer; font-weight: 700; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; box-shadow: var(--glow); transition: var(--transition); white-space: nowrap; }
+    .btn:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(0,168,255,0.28); }
+    .ghost { background: transparent; border: 1px solid var(--card-border); color: var(--text-primary); padding: 8px 12px; border-radius: 10px; cursor: pointer; font-weight: 600; transition: var(--transition); white-space: nowrap; }
+    .ghost:hover { background: rgba(143, 233, 255, 0.06); transform: translateY(-1px); }
+
+    .score-display { font-weight: 800; font-size: 15px; color: var(--accent); display: flex; align-items: center; gap: 8px; }
+
+    footer { margin-top: 22px; padding: 14px; text-align: center; color: var(--text-secondary); font-size: 14px; border-top: 1px solid var(--card-border); }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .logo { width: 60px; height: 60px; font-size: 18px; }
+      h1 { font-size: 24px; }
+      .subtitle { font-size: 14px; }
+      .quiz-controls { width: 100%; flex-direction: column; align-items: center; }
+      .nav-buttons, .score-display { width: 100%; justify-content: center; }
+    }
+  </style>
 </head>
 <body>
+  <div class="container">
+    <header role="banner">
+      <div class="logo" aria-hidden="true">S-Net</div>
+      <div class="header-content">
+        <h1>Segurança de Rede — Tutorial Interativo</h1>
+        <p class="subtitle">Conceitos essenciais: Firewall, VPN, Criptografia, IDS/IPS e mais. Leia os cards e teste com o quiz à direita.</p>
+      </div>
+    </header>
 
-<div class="container">
-  <h1>🛡️ Segurança de Rede</h1>
-  <p style="text-align:center;color:#cbd5e1;">Aprenda os conceitos principais e teste seus conhecimentos!</p>
+    <main class="main-content" role="main">
+      <!-- Left: tutorial cards -->
+      <section class="content-section" aria-labelledby="content-title">
+        <div class="types-header">
+          <h2 class="types-title" id="content-title">Explorador — Conceitos de Segurança</h2>
+          <div class="event-year-display">Tema: <strong id="current-type">Firewall</strong></div>
+        </div>
 
-  <!-- Seção de aprendizado -->
-  <div id="tutorial" class="fade">
-    <div class="grid">
-      <div class="section"><h3>Firewall</h3><p>Filtra o tráfego de rede com regras de segurança, bloqueando acessos não autorizados.</p></div>
-      <div class="section"><h3>VPN</h3><p>Cria um túnel seguro e criptografado para proteger dados em redes públicas.</p></div>
-      <div class="section"><h3>Criptografia</h3><p>Protege informações convertendo-as em dados ilegíveis sem a chave correta.</p></div>
-      <div class="section"><h3>Segmentação de Rede</h3><p>Divide a rede em partes menores (VLANs) para limitar a propagação de ataques.</p></div>
-      <div class="section"><h3>IDS / IPS</h3><p>Detectam e bloqueiam atividades suspeitas na rede.</p></div>
-      <div class="section"><h3>Segurança Wi-Fi</h3><p>Use WPA3 e senhas fortes; evite redes abertas e desative o WPS.</p></div>
-      <div class="section"><h3>Autenticação</h3><p>Use autenticação multifator (MFA) e senhas únicas.</p></div>
-      <div class="section"><h3>Atualizações</h3><p>Mantenha sistemas e firmwares atualizados para corrigir vulnerabilidades.</p></div>
-      <div class="section"><h3>ARP Spoofing</h3><p>Enganar a rede com endereços falsos de MAC pode desviar tráfego — evite com segurança de camada 2.</p></div>
-      <div class="section"><h3>Engenharia Social</h3><p>Golpes e phishing exploram o fator humano. Desconfie de e-mails e links suspeitos.</p></div>
-    </div>
-    <div style="text-align:center;margin-top:20px;">
-      <button onclick="startQuiz()">Começar Quiz</button>
-    </div>
+        <div class="types-list" id="types-list">
+          <!-- cards injected by JS -->
+        </div>
+
+        <div class="concepts-section">
+          <div class="concepts-header">
+            <h3 class="concepts-title">Dicas rápidas</h3>
+          </div>
+          <ul class="concepts-list">
+            <li class="concept-item"><i class="fas fa-shield-alt concept-icon" aria-hidden="true"></i><strong>Firewall:</strong> Filtra tráfego e aplica políticas por porta/IP/aplicação.</li>
+            <li class="concept-item"><i class="fas fa-lock concept-icon" aria-hidden="true"></i><strong>Criptografia:</strong> Use TLS/HTTPS e VPN para proteger dados em trânsito.</li>
+            <li class="concept-item"><i class="fas fa-user-shield concept-icon" aria-hidden="true"></i><strong>MFA:</strong> Autenticação multifator protege contas mesmo com senha vazada.</li>
+            <li class="concept-item"><i class="fas fa-sync-alt concept-icon" aria-hidden="true"></i><strong>Atualizações:</strong> Patches essenciais — mantenha firmware e softwares atualizados.</li>
+            <li class="concept-item"><i class="fas fa-user-secret concept-icon" aria-hidden="true"></i><strong>Phishing:</strong> Treine usuários e utilize filtros de e-mail para reduzir riscos.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Right: quiz -->
+      <aside class="quiz-section" aria-labelledby="quiz-title">
+        <div class="quiz-header">
+          <h2 class="quiz-title" id="quiz-title">Quiz: Segurança de Rede</h2>
+          <div class="score-display" id="score-display"><i class="fas fa-graduation-cap" aria-hidden="true"></i> <span id="score">0/10</span></div>
+        </div>
+
+        <div class="progress-container" aria-hidden="false">
+          <div class="progress-bar" id="progress-bar"></div>
+        </div>
+
+        <div class="question-container" id="question-container"></div>
+
+        <div class="quiz-controls">
+          <div class="nav-buttons">
+            <button id="prev" class="ghost" aria-label="Pergunta anterior"><i class="fas fa-arrow-left" aria-hidden="true"></i></button>
+            <button id="next" class="btn" aria-label="Próxima pergunta"><i class="fas fa-arrow-right" aria-hidden="true"></i></button>
+          </div>
+          <button id="submit" class="btn" aria-label="Enviar respostas"><i class="fas fa-paper-plane" aria-hidden="true"></i> Enviar</button>
+        </div>
+      </aside>
+    </main>
+
+    <footer role="contentinfo">
+      <p>Resumo: Firewalls filtram tráfego; VPNs cifram; segmentação reduz risco; mantenha sistemas atualizados. Use ← / → para navegar e Enter para selecionar.</p>
+    </footer>
   </div>
 
-  <!-- Quiz -->
-  <div id="quiz" class="quiz fade">
-    <h2 id="question"></h2>
-    <div id="options"></div>
-    <div style="margin-top:15px;display:flex;justify-content:space-between;">
-      <button id="prevBtn" onclick="prevQuestion()">Anterior</button>
-      <button id="nextBtn" onclick="nextQuestion()">Próxima</button>
-    </div>
-    <p style="text-align:center;color:#94a3b8;margin-top:10px;" id="progress"></p>
-  </div>
+  <canvas id="confetti" style="position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:1200"></canvas>
 
-  <!-- Resultado -->
-  <div id="result" class="hidden fade result">
-    <h2>Resultado do Quiz</h2>
-    <p id="scoreText"></p>
-    <button onclick="restart()">Refazer Quiz</button>
-    <button onclick="backToTutorial()">Voltar ao Conteúdo</button>
-  </div>
-</div>
+  <script>
+    // ---------- Dados do tutorial (substitui typesData) ----------
+    const tutorialCards = [
+      { id: 'firewall', title: 'Firewall', icon: 'fas fa-fire', text: 'Filtra tráfego de rede com regras. Pode bloquear portas, protocolos e proteger serviços expostos.', tts: 'Firewall: dispositivo que filtra tráfego conforme regras.' },
+      { id: 'vpn', title: 'VPN', icon: 'fas fa-lock', text: 'Túnel criptografado entre pontos. Protege tráfego em redes públicas e permite acesso remoto seguro.', tts: 'VPN: cria um túnel seguro entre redes.' },
+      { id: 'crypto', title: 'Criptografia', icon: 'fas fa-key', text: 'Protege confidencialidade e integridade dos dados. Use TLS/HTTPS para tráfego web e criptografia forte em repouso.', tts: 'Criptografia garante que apenas quem tem chave leia os dados.' },
+      { id: 'segmentation', title: 'Segmentação de Rede', icon: 'fas fa-th-large', text: 'Separar redes em VLANs/subnets limita movimento lateral e isola serviços críticos.', tts: 'Segmentação reduz impacto de ataques.' },
+      { id: 'ids', title: 'IDS / IPS', icon: 'fas fa-exclamation-triangle', text: 'IDS monitora tráfego e alerta sobre anomalias; IPS pode bloquear automaticamente tráfego malicioso.', tts: 'IDS detecta, IPS previne intrusões.' },
+      { id: 'wifi', title: 'Segurança Wi-Fi', icon: 'fas fa-wifi', text: 'Use WPA3 quando possível, senhas fortes e desative WPS. Redes abertas são um grande risco.', tts: 'Proteja redes Wi-Fi com WPA3 e boas práticas.' },
+      { id: 'auth', title: 'Autenticação', icon: 'fas fa-user-shield', text: 'Autenticação multifator (MFA) protege contas mesmo se a senha vazar. Senhas únicas e largas são essenciais.', tts: 'MFA adiciona camada de segurança.' },
+      { id: 'patch', title: 'Atualizações', icon: 'fas fa-sync', text: 'Mantenha firmware e software atualizados — muitos ataques exploram versões desatualizadas.', tts: 'Atualizações corrigem vulnerabilidades conhecidas.' },
+      { id: 'arp', title: 'ARP / MAC Spoofing', icon: 'fas fa-network-wired', text: 'ARP spoofing pode redirecionar tráfego local; proteja com port security e protocolos de camada 2 seguros.', tts: 'ARP spoofing manipula tabelas ARP para interceptar tráfego.' },
+      { id: 'social', title: 'Engenharia Social', icon: 'fas fa-user-secret', text: 'Phishing e manipulação humana causam muitos incidentes — combine treinamento com controles técnicos.', tts: 'Engenharia social explora erros humanos.' }
+    ];
 
-<script>
-  const questions = [
-    {q: 'O que faz um firewall?', o:['Filtra tráfego da rede','Criptografa senhas','Aumenta a velocidade'], a:0},
-    {q: 'A VPN serve para:', o:['Criar túnel criptografado','Bloquear anúncios','Melhorar Wi-Fi'], a:0},
-    {q: 'O que é IDS?', o:['Detecta invasões','Conecta dispositivos','Cria senhas'], a:0},
-    {q: 'Segmentação de rede serve para:', o:['Limitar ataques','Aumentar ping','Deixar tudo público'], a:0},
-    {q: 'MITM significa:', o:['Ataque de interceptação','Sistema de firewall','Protocolo Wi-Fi'], a:0},
-    {q: 'Melhor prática de senha:', o:['Usar MFA e senha única','Reutilizar senha','Escrever no papel'], a:0},
-    {q: 'HTTPS protege:', o:['Confidencialidade','Velocidade','Endereço IP'], a:0},
-    {q: 'Risco Wi-Fi comum:', o:['Rede aberta e WPS','WPA3 com senha forte','VPN ativa'], a:0},
-    {q: 'Menor privilégio é:', o:['Dar só o necessário','Dar admin pra todos','Sem acesso algum'], a:0},
-    {q: 'Prevenção de phishing:', o:['Treinamento e filtros','Compartilhar senha','Ignorar links'], a:0}
-  ];
+    // ---------- Quiz (as perguntas originais de segurança) ----------
+    const quiz = [
+      { q: 'O que faz um firewall em uma rede?', opts: ['Inspeciona e filtra tráfego conforme regras', 'Criptografa todo o tráfego automaticamente', 'Aumenta a velocidade da conexão'], a: 0, explain: 'Firewalls filtram tráfego com base em regras (porta, IP, aplicação).' },
+      { q: 'Qual a finalidade de uma VPN?', opts: ['Criar um túnel cifrado entre redes ou clientes', 'Bloquear anúncios em páginas web', 'Substituir senhas por chaves públicas sem configuração'], a: 0, explain: 'VPNs protegem confidencialidade e integridade do tráfego entre endpoints.' },
+      { q: 'O que é IDS (Sistema de Detecção de Intrusão)?', opts: ['Ferramenta que detecta atividades suspeitas e alerta', 'Dispositivo que substitui firewall', 'Protocolo de roteamento avançado'], a: 0, explain: 'IDS analisa tráfego ou logs para identificar padrões maliciosos e gerar alertas.' },
+      { q: 'Qual prática ajuda a reduzir o impacto de um ataque interno?', opts: ['Segmentação de rede (VLANs/subnets)', 'Deixar todos os dispositivos na mesma rede', 'Compartilhar credenciais entre equipes'], a: 0, explain: 'Segmentar a rede limita movimento lateral e isola serviços críticos.' },
+      { q: 'O que é MITM (Man-in-the-Middle)?', opts: ['Intercepção e possivelmente alteração de tráfego entre duas partes', 'Ataque que apaga todos os logs do servidor', 'Uma técnica de compressão de pacotes'], a: 0, explain: 'MITM envolve interceptação de comunicações; criptografia e certificados ajudam a mitigar.' },
+      { q: 'Qual é a melhor prática para proteger senhas?', opts: ['Usar autenticação multifator (MFA) e senhas únicas e longas', 'Anotar senhas em papel e colar no monitor', 'Reutilizar a mesma senha em serviços diferentes'], a: 0, explain: 'MFA adiciona proteção; senhas únicas e longas reduzem riscos.' },
+      { q: 'O que o TLS/HTTPS protege principalmente?', opts: ['Confidencialidade e integridade do tráfego web', 'Velocidade de download de arquivos', 'Endereço físico do servidor'], a: 0, explain: 'TLS cifra o tráfego entre cliente e servidor e garante integridade.' },
+      { q: 'Qual das opções é um risco conhecido em redes Wi-Fi?', opts: ['Redes abertas e WPS habilitado', 'Uso de WPA3 com senha forte', 'Conectar apenas dispositivos atualizados'], a: 0, explain: 'Redes abertas e WPS facilitam acesso a invasores; WPA3 com boas práticas é seguro.' },
+      { q: 'O que significa \"principle of least privilege\"?', opts: ['Dar a cada usuário apenas as permissões necessárias para sua função', 'Conceder privilégios administrativos a todos para facilitar suporte', 'Remover todas as permissões a novos funcionários'], a: 0, explain: 'Restringir privilégios reduz possibilidades de abuso ou erros.' },
+      { q: 'Qual ação reduz chance de sucesso de phishing?', opts: ['Treinamento de usuários + filtros de e-mail e verificação de links', 'Ignorar atualizações do navegador', 'Compartilhar senhas por chat'], a: 0, explain: 'Treinamento e controles técnicos combinados são a melhor defesa.' }
+    ];
 
-  let current = 0;
-  let answers = Array(questions.length).fill(null);
+    // ---------- DOM refs ----------
+    const typesList = document.getElementById('types-list');
+    const currentType = document.getElementById('current-type');
+    const questionContainer = document.getElementById('question-container');
+    const prevBtn = document.getElementById('prev');
+    const nextBtn = document.getElementById('next');
+    const submitBtn = document.getElementById('submit');
+    const scoreEl = document.getElementById('score');
+    const progressBar = document.getElementById('progress-bar');
 
-  const tutorial = document.getElementById('tutorial');
-  const quiz = document.getElementById('quiz');
-  const result = document.getElementById('result');
-  const questionEl = document.getElementById('question');
-  const optionsEl = document.getElementById('options');
-  const progress = document.getElementById('progress');
+    // ---------- Estado ----------
+    const QUIZ_KEY = 'seguranca_quiz_submitted_at';
+    const ANSWERS_KEY = 'seguranca_quiz_answers';
+    let currentQuestion = 0;
+    let answers = JSON.parse(localStorage.getItem(ANSWERS_KEY)) || new Array(quiz.length).fill(null);
+    let quizSubmitted = localStorage.getItem(QUIZ_KEY) !== null;
 
-  function startQuiz(){
-    tutorial.style.display = 'none';
-    quiz.style.display = 'block';
-    loadQuestion();
-  }
-
-  function loadQuestion(){
-    const q = questions[current];
-    questionEl.textContent = q.q;
-    optionsEl.innerHTML = '';
-    q.o.forEach((opt, i) => {
-      const div = document.createElement('div');
-      div.className = 'option fade';
-      div.textContent = opt;
-      div.onclick = () => selectOption(i, div);
-      optionsEl.appendChild(div);
+    // ---------- Inicialização ----------
+    document.addEventListener('DOMContentLoaded', () => {
+      renderTutorialCards();
+      setupEventListeners();
+      updateProgress();
+      renderQuestion();
+      updateScoreDisplay();
+      updateRetakeButton();
     });
-    progress.textContent = `Pergunta ${current+1} de ${questions.length}`;
-    document.getElementById('prevBtn').disabled = current === 0;
-    document.getElementById('nextBtn').textContent = current === questions.length-1 ? 'Finalizar' : 'Próxima';
-  }
 
-  function selectOption(i, el){
-    const q = questions[current];
-    const opts = document.querySelectorAll('.option');
-    opts.forEach(o => o.classList.remove('correct','wrong'));
-    if(i === q.a){ el.classList.add('correct'); }
-    else { el.classList.add('wrong'); }
-    answers[current] = i;
-  }
+    // ---------- Render tutorial cards ----------
+    function renderTutorialCards() {
+      typesList.innerHTML = '';
+      tutorialCards.forEach((t, i) => {
+        const item = document.createElement('div');
+        item.className = `type-item ${i === 0 ? 'active' : ''}`;
+        item.dataset.id = t.id;
+        item.innerHTML = `
+          <div class="type-header">
+            <i class="${t.icon} type-icon" aria-hidden="true"></i>
+            <span class="type-title">${t.title}</span>
+            <button class="type-toggle" aria-label="Expandir/Contrair"><i class="fas fa-chevron-down" aria-hidden="true"></i></button>
+          </div>
+          <div class="type-description">${t.text}</div>
+        `;
+        // Toggle expand when clicking toggle or entire card
+        item.querySelector('.type-toggle').addEventListener('click', (e) => {
+          e.stopPropagation();
+          item.classList.toggle('active');
+          updateCurrentType();
+        });
+        item.addEventListener('click', () => {
+          // make clicked active, collapse others
+          document.querySelectorAll('.type-item').forEach(x => x.classList.remove('active'));
+          item.classList.add('active');
+          updateCurrentType();
+        });
+        typesList.appendChild(item);
+      });
+      updateCurrentType();
+    }
 
-  function nextQuestion(){
-    if(current < questions.length-1){ current++; loadQuestion(); }
-    else showResult();
-  }
+    function updateCurrentType() {
+      const active = document.querySelector('.type-item.active') || typesList.firstElementChild;
+      if (!active) return;
+      const title = active.querySelector('.type-title').textContent;
+      currentType.textContent = title;
+    }
 
-  function prevQuestion(){
-    if(current > 0){ current--; loadQuestion(); }
-  }
+    // ---------- Quiz rendering ----------
+    function renderQuestion() {
+      // Prevent changing questions if quiz already submitted and still in cooldown
+      const q = quiz[currentQuestion];
+      questionContainer.innerHTML = `
+        <div class="question-number">Pergunta ${currentQuestion + 1} de ${quiz.length}</div>
+        <div class="question-text">${q.q}</div>
+        <div class="options-container" id="options-container"></div>
+      `;
+      const optionsContainer = document.getElementById('options-container');
+      q.opts.forEach((opt, idx) => {
+        const div = document.createElement('div');
+        div.className = 'option' + (answers[currentQuestion] === idx ? ' selected' : '');
+        div.setAttribute('role', 'button');
+        div.setAttribute('tabindex', '0');
+        div.dataset.index = idx;
+        div.innerHTML = `<div class="option-letter">${String.fromCharCode(65 + idx)}</div><div>${opt}</div>`;
+        optionsContainer.appendChild(div);
+      });
 
-  function showResult(){
-    quiz.style.display = 'none';
-    result.classList.remove('hidden');
-    const score = answers.reduce((s,a,i)=>s+(a===questions[i].a?1:0),0);
-    document.getElementById('scoreText').textContent = `Você acertou ${score} de ${questions.length} perguntas!`;
-  }
+      prevBtn.disabled = currentQuestion === 0 || (quizSubmitted && !canRetake());
+      nextBtn.disabled = currentQuestion === quiz.length - 1 || (quizSubmitted && !canRetake());
+      updateProgress();
+      updateScoreDisplay();
+    }
 
-  function restart(){
-    answers = Array(questions.length).fill(null);
-    current = 0;
-    result.classList.add('hidden');
-    quiz.style.display = 'block';
-    loadQuestion();
-  }
+    function updateProgress() {
+      const answered = answers.filter(a => a !== null).length;
+      const percent = (answered / quiz.length) * 100;
+      progressBar.style.width = `${percent}%`;
+    }
 
-  function backToTutorial(){
-    result.classList.add('hidden');
-    tutorial.style.display = 'block';
-  }
-</script>
+    function updateScoreDisplay() {
+      const answered = answers.filter(a => a !== null).length;
+      scoreEl.textContent = `${answered}/${quiz.length}`;
+    }
+
+    // ---------- Listeners ----------
+    function setupEventListeners() {
+      // Option click (delegation)
+      document.addEventListener('click', (e) => {
+        if (quizSubmitted && !canRetake()) return;
+        const opt = e.target.closest('.option');
+        if (!opt) return;
+        const idx = parseInt(opt.dataset.index, 10);
+        answers[currentQuestion] = idx;
+        localStorage.setItem(ANSWERS_KEY, JSON.stringify(answers));
+        renderQuestion();
+      });
+
+      // Keyboard: Enter/Space selects option if focused
+      document.addEventListener('keydown', (e) => {
+        if (quizSubmitted && !canRetake()) return;
+        if (e.key === 'Enter' || e.key === ' ') {
+          const focused = document.activeElement;
+          if (focused && focused.classList && focused.classList.contains('option')) {
+            focused.click();
+            e.preventDefault();
+          }
+        }
+        if (e.key === 'ArrowLeft') prevBtn.click();
+        if (e.key === 'ArrowRight') nextBtn.click();
+      });
+
+      prevBtn.addEventListener('click', () => {
+        if (quizSubmitted && !canRetake()) return;
+        if (currentQuestion > 0) { currentQuestion--; renderQuestion(); }
+      });
+      nextBtn.addEventListener('click', () => {
+        if (quizSubmitted && !canRetake()) return;
+        if (currentQuestion < quiz.length - 1) { currentQuestion++; renderQuestion(); }
+      });
+
+      submitBtn.addEventListener('click', () => {
+        if (quizSubmitted && !canRetake()) return;
+        if (answers.some(a => a === null)) { alert('Por favor, responda todas as perguntas antes de enviar.'); return; }
+        localStorage.setItem(QUIZ_KEY, Date.now().toString());
+        quizSubmitted = true;
+
+        let correct = 0;
+        for (let i = 0; i < quiz.length; i++) if (answers[i] === quiz[i].a) correct++;
+
+        document.getElementById('score-display').innerHTML = `<i class="fas fa-trophy" aria-hidden="true"></i> ${correct}/${quiz.length}`;
+
+        // build review
+        const reviewRoot = document.createElement('div');
+        reviewRoot.style.display = 'grid';
+        reviewRoot.style.gap = '12px';
+
+        quiz.forEach((item, qIndex) => {
+          const block = document.createElement('div');
+          const h = document.createElement('div'); 
+          h.style.fontWeight = '700'; 
+          h.style.marginBottom = '8px'; 
+          h.style.color = 'var(--text-primary)'; 
+          h.textContent = `${qIndex+1}. ${item.q}`;
+          block.appendChild(h);
+
+          const opts = document.createElement('div');
+          opts.style.display = 'grid';
+          opts.style.gap = '8px';
+          opts.style.marginBottom = '4px';
+
+          item.opts.forEach((op, optIndex) => {
+            const o = document.createElement('div'); 
+            o.className = 'option'; 
+            o.style.cursor = 'default'; 
+            o.style.pointerEvents = 'none';
+            o.innerHTML = `<div class="option-letter">${String.fromCharCode(65 + optIndex)}</div><div>${op}</div>`;
+            if (optIndex === item.a) o.classList.add('correct');
+            else if (answers[qIndex] === optIndex) o.classList.add('wrong');
+            opts.appendChild(o);
+          });
+          block.appendChild(opts);
+
+          const explain = document.createElement('div');
+          explain.style.fontSize = '14px';
+          explain.style.color = 'var(--text-secondary)';
+          explain.style.marginTop = '6px';
+          explain.style.fontStyle = 'italic';
+          explain.textContent = item.explain;
+          block.appendChild(explain);
+
+          reviewRoot.appendChild(block);
+        });
+
+        questionContainer.innerHTML = '';
+        questionContainer.appendChild(reviewRoot);
+        updateRetakeButton();
+
+        if (correct === quiz.length) {
+          showSuccessToast();
+          launchConfetti();
+          playSound('success');
+        } else {
+          playSound('error');
+        }
+      });
+
+      // Expose retake via storage event in other tabs
+      window.addEventListener('storage', (e) => {
+        if (e.key === QUIZ_KEY || e.key === ANSWERS_KEY) {
+          answers = JSON.parse(localStorage.getItem(ANSWERS_KEY)) || new Array(quiz.length).fill(null);
+          quizSubmitted = localStorage.getItem(QUIZ_KEY) !== null;
+          renderQuestion();
+          updateProgress();
+          updateRetakeButton();
+        }
+      });
+
+      // Resize confetti canvas
+      window.addEventListener('resize', resizeCanvas);
+      resizeCanvas();
+    }
+
+    // ---------- Retake cooldown (10 min) ----------
+    function canRetake() {
+      const submittedAt = localStorage.getItem(QUIZ_KEY);
+      if (!submittedAt) return true;
+      const now = Date.now();
+      const diffMinutes = (now - parseInt(submittedAt, 10)) / (1000 * 60);
+      return diffMinutes >= 10;
+    }
+
+    function updateRetakeButton() {
+      const existing = document.getElementById('retake-btn');
+      if (existing) existing.remove();
+      const controls = document.querySelector('.quiz-controls');
+      if (!controls) return;
+
+      if (quizSubmitted && !canRetake()) {
+        const retakeBtn = document.createElement('button');
+        retakeBtn.id = 'retake-btn';
+        retakeBtn.className = 'btn';
+        retakeBtn.disabled = true;
+        retakeBtn.innerHTML = '<i class="fas fa-clock" aria-hidden="true"></i> Aguarde...';
+        controls.appendChild(retakeBtn);
+
+        // countdown (updates every second)
+        const countdown = setInterval(() => {
+          const submittedAt = localStorage.getItem(QUIZ_KEY);
+          if (!submittedAt) { clearInterval(countdown); updateRetakeButton(); return; }
+          const now = Date.now();
+          const remaining = 10 - Math.floor((now - parseInt(submittedAt,10)) / (1000 * 60));
+          if (remaining <= 0) {
+            clearInterval(countdown);
+            updateRetakeButton();
+          } else {
+            retakeBtn.innerHTML = `<i class="fas fa-clock" aria-hidden="true"></i> Refazer em ${remaining} min`;
+          }
+        }, 1000);
+      } else if (quizSubmitted && canRetake()) {
+        const retakeBtn = document.createElement('button');
+        retakeBtn.id = 'retake-btn';
+        retakeBtn.className = 'btn';
+        retakeBtn.innerHTML = '<i class="fas fa-redo" aria-hidden="true"></i> Refazer Quiz';
+        retakeBtn.addEventListener('click', resetQuiz);
+        controls.appendChild(retakeBtn);
+      }
+    }
+
+    function resetQuiz() {
+      localStorage.removeItem(ANSWERS_KEY);
+      localStorage.removeItem(QUIZ_KEY);
+      answers = new Array(quiz.length).fill(null);
+      currentQuestion = 0;
+      quizSubmitted = false;
+      renderQuestion();
+      updateProgress();
+      updateScoreDisplay();
+      updateRetakeButton();
+      document.getElementById('score-display').innerHTML = `<i class="fas fa-graduation-cap" aria-hidden="true"></i> <span id="score">0/10</span>`;
+      document.getElementById('score').textContent = '0/10';
+    }
+
+    // ---------- Sounds ----------
+    function playSound(type) {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      try {
+        const audioCtx = new AudioCtx();
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        oscillator.connect(gainNode); gainNode.connect(audioCtx.destination);
+        switch(type) {
+          case 'success':
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(660, audioCtx.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(990, audioCtx.currentTime + 0.28);
+            gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+            break;
+          case 'error':
+            oscillator.type = 'triangle';
+            oscillator.frequency.setValueAtTime(260, audioCtx.currentTime);
+            gainNode.gain.setValueAtTime(0.12, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.28);
+            break;
+        }
+        oscillator.start();
+        oscillator.stop(audioCtx.currentTime + 0.6);
+      } catch (e) {
+        // Some browsers block audio without user gesture — ignore silently
+      }
+    }
+
+    // ---------- Toast ----------
+    function showSuccessToast() {
+      const toast = document.createElement('div');
+      toast.style.position = 'fixed';
+      toast.style.top = '16px';
+      toast.style.left = '50%';
+      toast.style.transform = 'translateX(-50%)';
+      toast.style.padding = '12px 18px';
+      toast.style.borderRadius = '12px';
+      toast.style.background = 'linear-gradient(90deg, var(--success), #34d399)';
+      toast.style.color = 'var(--bg-900)';
+      toast.style.fontWeight = '800';
+      toast.style.zIndex = 1000;
+      toast.innerHTML = '<i class="fas fa-star" aria-hidden="true"></i> Parabéns! Você acertou todas as questões!';
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+    // ---------- Confetti ----------
+    const confettiCanvas = document.getElementById('confetti');
+    const confettiCtx = confettiCanvas.getContext('2d');
+    function resizeCanvas() { confettiCanvas.width = window.innerWidth; confettiCanvas.height = window.innerHeight; }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+    let confettiPieces = [];
+    function launchConfetti() {
+      confettiPieces = [];
+      const root = document.documentElement;
+      let colorsStr = getComputedStyle(root).getPropertyValue('--confetti-colors') || '#00a8ff,#8fe9ff,#b8d7ea';
+      const colors = colorsStr.split(',').map(c => c.trim().replace(/['"]/g, ''));
+      for (let i = 0; i < 120; i++) {
+        confettiPieces.push({
+          x: Math.random() * confettiCanvas.width,
+          y: -20,
+          r: 3 + Math.random() * 8,
+          vx: -3 + Math.random() * 6,
+          vy: 2 + Math.random() * 6,
+          rot: Math.random() * 360,
+          vr: -0.1 + Math.random() * 0.2,
+          color: colors[i % colors.length]
+        });
+      }
+      requestAnimationFrame(drawConfetti);
+      setTimeout(() => { confettiPieces = []; confettiCtx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height); }, 3200);
+    }
+    function drawConfetti() {
+      confettiCtx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
+      confettiPieces.forEach(p => {
+        p.x += p.vx; p.y += p.vy; p.vy += 0.12; p.rot += p.vr;
+        confettiCtx.save();
+        confettiCtx.translate(p.x,p.y);
+        confettiCtx.rotate((p.rot*Math.PI)/180);
+        confettiCtx.fillStyle = p.color;
+        confettiCtx.fillRect(-p.r/2,-p.r/2,p.r,p.r*0.6);
+        confettiCtx.restore();
+      });
+      if (confettiPieces.length) requestAnimationFrame(drawConfetti);
+    }
+  </script>
 </body>
 </html>
