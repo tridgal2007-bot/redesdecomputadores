@@ -4,1409 +4,830 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0d1525" />
-  <title>Packet-Lite Pro — Construção Guiada (Modo Realista)</title>
+  <title>Camadas de Redes – OSI e TCP/IP</title>
+
   <!-- Fontes premium -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
   <!-- Ícones premium -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
   <style>
-    :root{
-      --bg-900:#071428;
-      --bg-gradient: linear-gradient(160deg,#030416 0%,#071428 35%,#0a1730 70%,#112034 100%);
-      --panel: rgba(11,20,34,0.7);
-      --card-border: rgba(143,233,255,0.08);
-      --accent:#00a8ff;
-      --accent-light:#8fe9ff;
-      --text:#e6f6ff;
-      --muted:#9fbfda;
-      --success:#4ade80;
-      --warning:#fbbf24;
-      --error:#f87171;
-      --glass: rgba(255,255,255,0.03);
-      --glow: 0 10px 30px rgba(0,168,255,0.08);
-      --transition: all .22s cubic-bezier(.2,.9,.2,1);
-      --step-complete: #8b5cf6;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%;margin:0;background:var(--bg-gradient);font-family:'Space Grotesk','Montserrat',system-ui,-apple-system,'Segoe UI',Roboto,Arial;color:var(--muted);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
-    .container{max-width:1400px;margin:0 auto;padding:18px;min-height:100vh;display:flex;flex-direction:column;gap:12px}
-    header{display:flex;align-items:center;gap:16px;padding:8px 0}
-    .logo{width:72px;height:72px;border-radius:14px;background:linear-gradient(135deg,var(--text),var(--accent));display:grid;place-items:center;color:#041127;font-weight:900;font-size:20px;box-shadow:var(--glow)}
-    h1{margin:0;color:var(--text);font-size:22px;font-weight:800;letter-spacing:-0.4px;background:linear-gradient(to right,var(--text),var(--accent-light));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-    .subtitle{font-size:13px;color:var(--muted);margin-top:6px}
-    .controls{margin-left:auto;display:flex;gap:8px;align-items:center}
-    .main{display:flex;gap:18px;flex:1}
-    .panel{background:var(--panel);border:1px solid var(--card-border);border-radius:14px;padding:18px;box-shadow:0 6px 24px rgba(0,0,0,0.45);backdrop-filter:blur(6px);overflow:hidden}
-    .left{flex:0 0 320px}
-    .center{flex:1;min-height:560px;position:relative;display:flex;flex-direction:column}
-    .right{flex:0 0 360px;min-width:280px}
-    /* device palette */
-    .device-btn{display:flex;gap:10px;align-items:center;padding:10px;border-radius:10px;background:var(--glass);border:1px solid rgba(255,255,255,0.02);cursor:pointer;transition:var(--transition);user-select:none}
-    .device-btn:hover{transform:translateY(-4px);box-shadow:var(--glow)}
-    .device-icon{width:44px;height:44px;border-radius:8px;background:linear-gradient(180deg,rgba(255,255,255,0.03),rgba(0,0,0,0.12));display:grid;place-items:center;font-size:20px;color:var(--accent-light)}
-    .muted{color:var(--muted);font-size:12px}
-    /* canvas */
-    #topo{flex:1;border-radius:12px;overflow:hidden;position:relative;background:
-      radial-gradient(circle at 10% 20%, rgba(8,168,255,0.03) 0%, transparent 20%),
-      linear-gradient(180deg, rgba(255,255,255,0.01), transparent 20%);
-      cursor: grab;
-      transition: cursor 0.2s;
-    }
-    #topo.panning{cursor: grabbing;}
-    svg#links{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:2}
-    /* device element */
-    .device{position:absolute;width:160px;padding:10px;border-radius:10px;background:linear-gradient(180deg,#071623,#061422);box-shadow:0 8px 30px rgba(0,0,0,0.6);cursor:grab;user-select:none;z-index:5;border:1px solid rgba(255,255,255,0.02)}
-    .device:active{cursor:grabbing}
-    .dev-head{display:flex;gap:10px;align-items:center}
-    .dev-name{font-weight:700;font-size:13px;color:var(--text);outline:none}
-    .dev-type{font-size:11px;color:var(--muted)}
-    .ports{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;justify-content:center}
-    .port{width:20px;height:20px;border-radius:4px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.03);display:grid;place-items:center;font-size:11px;cursor:pointer;position:relative;transition:box-shadow .18s}
-    .port.wifi{border-radius:50%}
-    .port.connected::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(90deg,rgba(139,92,246,0.18),rgba(0,168,255,0.12));opacity:0.9}
-    .port .led{position:absolute;right:-6px;top:-6px;width:10px;height:10px;border-radius:50%;background:#333;border:1px solid rgba(255,255,255,0.06)}
-    .led.up{background:var(--success);box-shadow:0 0 8px rgba(74,222,128,0.25)}
-    .led.down{background:#333;opacity:0.35}
-    .port:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,0.6)}
-    .network-status{display:flex;gap:6px;margin-top:8px;justify-content:center}
-    .network-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.03)}
-    .network-dot.active{background:var(--success);box-shadow:0 0 6px rgba(74,222,128,0.18)}
-    /* link styles in svg via stroke colors (css vars used inline) */
-    /* inspector */
-    .inspector h3{margin:0 0 8px 0;color:var(--text)}
-    .inspector-row{display:flex;justify-content:space-between;align-items:center;padding:8px;background:rgba(255,255,255,0.02);border-radius:8px;margin-bottom:8px;font-size:13px}
-    .inspector-row input, .inspector-row select{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--text);padding:6px;border-radius:6px;width:100%}
-    .small{font-size:12px;padding:6px 10px;border-radius:8px;background:linear-gradient(90deg,var(--accent-light),var(--accent));color:#041127;border:none;cursor:pointer}
-    .ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted);padding:6px 10px;border-radius:8px}
-    .delete-btn{background:linear-gradient(90deg,var(--error),#ef4444);color:#fff;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px}
-    .delete-btn:hover{background:linear-gradient(90deg,#dc2626,#b91c1c)}
-    /* modals */
-    .modal-back{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:none;z-index:1200;align-items:center;justify-content:center}
-    .modal-back.active{display:flex}
-    .modal{background:var(--panel);padding:18px;border-radius:12px;border:1px solid var(--card-border);width:420px;max-width:96%}
-    .modal h3{margin:0 0 8px 0;color:var(--text)}
-    /* link label near curve */
-    .link-label{font-family:'Space Grotesk';font-size:11px;fill:#cfefff;pointer-events:none}
-    footer{font-size:12px;color:var(--muted);text-align:center;margin-top:12px}
-
-    /* === Build Steps (do primeiro arquivo, adaptado) === */
-    .build-steps { margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
-    .step {
-      padding: 12px; border-radius: 8px; background: rgba(255,255,255,0.02);
-      transition: var(--transition); cursor: pointer; position: relative; overflow: hidden;
-    }
-    .step:hover { background: rgba(0,168,255,0.05); }
-    .step.completed {
-      background: rgba(139,92,246,0.12); border-left: 3px solid var(--step-complete);
-    }
-    .step.active {
-      background: rgba(0,168,255,0.08); border-left: 3px solid var(--accent);
-      box-shadow: 0 4px 12px rgba(0,168,255,0.15);
-    }
-    .step.collapsed .step-description { max-height: 0; opacity: 0; overflow: hidden; transition: max-height 0.3s ease, opacity 0.3s ease; }
-    .step:not(.collapsed) .step-description { max-height: 120px; opacity: 1; }
-    .step-title {
-      font-weight: 600; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; color: var(--text);
-    }
-    .step-icon {
-      width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center;
-      background: rgba(255,255,255,0.04); color: var(--accent); font-weight: 700;
-    }
-    .step-description {
-      font-size: 13px; color: var(--muted); margin-bottom: 8px;
-      transition: max-height 0.3s ease, opacity 0.3s ease;
-    }
-    .step-progress { height: 4px; background: rgba(255,255,255,0.08); border-radius: 2px; overflow: hidden; }
-    .step-progress-fill {
-      height: 100%; background: var(--accent); width: 0%; transition: width 0.5s ease;
-    }
-    .step.completed .step-progress-fill { background: var(--step-complete); width: 100%; }
-
-    /* Build progress container */
-    .build-progress-container {
-      margin-bottom: 16px;
-    }
-    .build-progress-title {
-      display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px; color: var(--muted);
-    }
-    .build-progress-bar {
-      height: 8px; background: rgba(255,255,255,0.04); border-radius: 4px; overflow: hidden;
-    }
-    .build-progress-fill {
-      height: 100%; background: linear-gradient(90deg,var(--accent-light),var(--accent));
-      width: 0%; transition: width 0.5s ease;
+    /* ---------- PALETA AZUL PREMIUM (PADRÃO) - CORES MAIS SUAVES ---------- */
+    :root {
+      --bg-1: #0a0e17;
+      --bg-2: #0d1525;
+      --card-bg: rgba(18, 28, 51, 0.75);
+      --card-border: rgba(173, 216, 230, 0.12);
+      --accent: #4fc3f7;
+      --accent-light: #b3e5fc;
+      --accent-hover: #4fc3f7;
+      --text-primary: #f8f9fa;
+      --text-secondary: #d1e8e2;
+      --success: #4ade80;
+      --warning: #fbbf24;
+      --error: #f87171;
+      --timeline-bg: rgba(79, 195, 247, 0.06);
+      --timeline-progress: linear-gradient(90deg, var(--accent-light), var(--accent));
+      --glow: 0 0 20px rgba(79, 195, 247, 0.25);
+      --transition: all 0.28s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      --shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.6);
+      --rounded: 16px;
+      --focus-ring: 0 0 0 4px rgba(59, 130, 246, 0.3);
+      --bg-gradient: linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 35%, #121c33 70%, #1a2540 100%);
+      --accent-rgb: 79, 195, 247;
     }
 
-    /* Error message */
-    .error-message {
-      margin-top: 12px; padding: 8px; background: rgba(248,113,113,0.08);
-      border-left: 3px solid var(--error); border-radius: 6px; color: var(--muted); display: none;
+    /* Reduced motion preference */
+    @media (prefers-reduced-motion: reduce) {
+      :root { --transition: none; }
+      * { transition: none !important; animation: none !important; }
     }
 
-    /* Tutorial overlay */
-    .tutorial-overlay {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.7); display: flex; justify-content: center;
-      align-items: center; z-index: 2000; opacity: 0; pointer-events: none;
-      transition: opacity 0.3s ease;
+    /* Tema Vermelho Suavizado */
+    :root.theme-red {
+      --bg-1: #1a0d0d;
+      --bg-2: #2c1818;
+      --card-bg: rgba(26, 13, 13, 0.75);
+      --card-border: rgba(244, 143, 143, 0.12);
+      --accent: #ef9a9a;
+      --accent-light: #ffcdd2;
+      --accent-hover: #ef9a9a;
+      --text-primary: #fff8f8;
+      --text-secondary: #f8bbd9;
+      --success: #4ade80;
+      --warning: #fbbf24;
+      --error: #f87171;
+      --timeline-bg: rgba(239, 154, 154, 0.06);
+      --timeline-progress: linear-gradient(90deg, var(--accent-light), var(--accent));
+      --glow: 0 0 20px rgba(239, 154, 154, 0.25);
+      --shadow: 0 10px 30px rgba(127, 29, 29, 0.4);
+      --shadow-hover: 0 12px 40px rgba(153, 27, 27, 0.5);
+      --focus-ring: 0 0 0 4px rgba(239, 68, 68, 0.3);
+      --bg-gradient: linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 35%, #3d2222 70%, #501616 100%);
+      --accent-rgb: 239, 154, 154;
     }
-    .tutorial-overlay.active {
-      opacity: 1; pointer-events: auto;
-    }
-    .tutorial-content {
-      background: var(--panel); padding: 24px; border-radius: 16px;
-      border: 1px solid var(--card-border); max-width: 600px; width: 90%;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative;
-    }
-    .tutorial-title {
-      font-size: 22px; font-weight: 700; margin-bottom: 16px; color: var(--accent);
-    }
-    .tutorial-text {
-      line-height: 1.6; margin-bottom: 20px; color: var(--muted);
-    }
-    .tutorial-actions {
-      display: flex; gap: 12px; justify-content: flex-end;
-    }
-    .close-tutorial {
-      position: absolute; top: 16px; right: 16px; background: rgba(255,255,255,0.06);
-      border: none; width: 30px; height: 30px; border-radius: 50%; color: var(--muted);
-      cursor: pointer; transition: var(--transition);
-    }
-    .close-tutorial:hover { background: rgba(143,233,255,0.1); }
 
-    /* Rotação do ícone de celular em dispositivos móveis */
+    /* Tema Verde Suavizado */
+    :root.theme-green {
+      --bg-1: #0f1a0f;
+      --bg-2: #1a281a;
+      --card-bg: rgba(15, 26, 15, 0.75);
+      --card-border: rgba(144, 238, 144, 0.12);
+      --accent: #a5d6a7;
+      --accent-light: #e8f5e8;
+      --accent-hover: #a5d6a7;
+      --text-primary: #f1f8e9;
+      --text-secondary: #c8e6c9;
+      --success: #4ade80;
+      --warning: #fbbf24;
+      --error: #f87171;
+      --timeline-bg: rgba(165, 214, 167, 0.06);
+      --timeline-progress: linear-gradient(90deg, var(--accent-light), var(--accent));
+      --glow: 0 0 20px rgba(165, 214, 167, 0.25);
+      --shadow: 0 10px 30px rgba(20, 83, 45, 0.4);
+      --shadow-hover: 0 12px 40px rgba(22, 101, 52, 0.5);
+      --focus-ring: 0 0 0 4px rgba(34, 197, 94, 0.3);
+      --bg-gradient: linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 35%, #254a25 70%, #306d30 100%);
+      --accent-rgb: 165, 214, 167;
+    }
+
+    /* Tema Roxo Suavizado */
+    :root.theme-purple {
+      --bg-1: #1a0f1f;
+      --bg-2: #2a1a2f;
+      --card-bg: rgba(26, 15, 31, 0.75);
+      --card-border: rgba(221, 160, 221, 0.12);
+      --accent: #ce93d8;
+      --accent-light: #f3e5f5;
+      --accent-hover: #ce93d8;
+      --text-primary: #fafafa;
+      --text-secondary: #e1bee7;
+      --success: #4ade80;
+      --warning: #fbbf24;
+      --error: #f87171;
+      --timeline-bg: rgba(206, 147, 216, 0.06);
+      --timeline-progress: linear-gradient(90deg, var(--accent-light), var(--accent));
+      --glow: 0 0 20px rgba(206, 147, 216, 0.25);
+      --shadow: 0 10px 30px rgba(79, 70, 229, 0.4);
+      --shadow-hover: 0 12px 40px rgba(99, 102, 241, 0.5);
+      --focus-ring: 0 0 0 4px rgba(168, 85, 247, 0.3);
+      --bg-gradient: linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 35%, #3d2744 70%, #501659 100%);
+      --accent-rgb: 206, 147, 216;
+    }
+
+    /* Tema Laranja Suavizado */
+    :root.theme-orange {
+      --bg-1: #2c1608;
+      --bg-2: #3d1f0e;
+      --card-bg: rgba(44, 22, 8, 0.75);
+      --card-border: rgba(255, 218, 185, 0.12);
+      --accent: #ffb74d;
+      --accent-light: #fff8e1;
+      --accent-hover: #ffb74d;
+      --text-primary: #fffde7;
+      --text-secondary: #ffe0b2;
+      --success: #4ade80;
+      --warning: #fbbf24;
+      --error: #f87171;
+      --timeline-bg: rgba(255, 183, 77, 0.06);
+      --timeline-progress: linear-gradient(90deg, var(--accent-light), var(--accent));
+      --glow: 0 0 20px rgba(255, 183, 77, 0.25);
+      --shadow: 0 10px 30px rgba(146, 64, 14, 0.4);
+      --shadow-hover: 0 12px 40px rgba(180, 83, 9, 0.5);
+      --focus-ring: 0 0 0 4px rgba(251, 146, 60, 0.3);
+      --bg-gradient: linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 35%, #582919 70%, #723424 100%);
+      --accent-rgb: 255, 183, 77;
+    }
+
+    /* Tema Rosa Suavizado */
+    :root.theme-pink {
+      --bg-1: #1f0a1a;
+      --bg-2: #2f0f25;
+      --card-bg: rgba(31, 10, 26, 0.75);
+      --card-border: rgba(255, 182, 193, 0.12);
+      --accent: #f8bbd9;
+      --accent-light: #fce4ec;
+      --accent-hover: #f8bbd9;
+      --text-primary: #fdf2f8;
+      --text-secondary: #f8bbd9;
+      --success: #4ade80;
+      --warning: #fbbf24;
+      --error: #f87171;
+      --timeline-bg: rgba(248, 187, 217, 0.06);
+      --timeline-progress: linear-gradient(90deg, var(--accent-light), var(--accent));
+      --glow: 0 0 20px rgba(248, 187, 217, 0.25);
+      --shadow: 0 10px 30px rgba(136, 19, 55, 0.4);
+      --shadow-hover: 0 12px 40px rgba(190, 24, 93, 0.5);
+      --focus-ring: 0 0 0 4px rgba(244, 114, 182, 0.3);
+      --bg-gradient: linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 35%, #42153a 70%, #541b4f 100%);
+      --accent-rgb: 248, 187, 217;
+    }
+
+    /* Tema Ciano Suavizado */
+    :root.theme-teal {
+      --bg-1: #0a1f1f;
+      --bg-2: #0f2a2a;
+      --card-bg: rgba(10, 31, 31, 0.75);
+      --card-border: rgba(175, 238, 238, 0.12);
+      --accent: #80deea;
+      --accent-light: #e0f2f1;
+      --accent-hover: #80deea;
+      --text-primary: #f0f9ff;
+      --text-secondary: #b2dfdb;
+      --success: #4ade80;
+      --warning: #fbbf24;
+      --error: #f87171;
+      --timeline-bg: rgba(128, 222, 234, 0.06);
+      --timeline-progress: linear-gradient(90deg, var(--accent-light), var(--accent));
+      --glow: 0 0 20px rgba(128, 222, 234, 0.25);
+      --shadow: 0 10px 30px rgba(6, 78, 59, 0.4);
+      --shadow-hover: 0 12px 40px rgba(15, 118, 110, 0.5);
+      --focus-ring: 0 0 0 4px rgba(45, 212, 191, 0.3);
+      --bg-gradient: linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 35%, #144040 70%, #195555 100%);
+      --accent-rgb: 128, 222, 234;
+    }
+
+    /* Tema Preto e Branco (Cinza Escala) Suavizado */
+    :root.theme-grayscale {
+      --bg-1: #000000;
+      --bg-2: #111111;
+      --card-bg: rgba(0, 0, 0, 0.75);
+      --card-border: rgba(211, 211, 211, 0.06);
+      --accent: #e0e0e0;
+      --accent-light: #f5f5f5;
+      --accent-hover: #e0e0e0;
+      --text-primary: #ffffff;
+      --text-secondary: #d3d3d3;
+      --success: #4ade80;
+      --warning: #fbbf24;
+      --error: #f87171;
+      --timeline-bg: rgba(224, 224, 224, 0.03);
+      --timeline-progress: linear-gradient(90deg, var(--accent-light), var(--accent));
+      --glow: 0 0 20px rgba(224, 224, 224, 0.15);
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      --shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.8);
+      --focus-ring: 0 0 0 4px rgba(255, 255, 255, 0.2);
+      --bg-gradient: linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 35%, #222222 70%, #333333 100%);
+      --accent-rgb: 224, 224, 224;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body { height: 100%; margin: 0; background: var(--bg-gradient); color: var(--text-secondary); font-family: 'Space Grotesk', 'Montserrat', system-ui, -apple-system, 'Segoe UI', Roboto, Arial; overflow-x: hidden; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; transition: var(--transition); }
+
+    /* Container central */
+    .container { width: 100%; max-width: 1400px; margin: 0 auto; padding: 18px; min-height: 100vh; display: flex; flex-direction: column; }
+
+    header { display: flex; align-items: center; gap: 16px; padding: 12px 0; position: relative; z-index: 10; flex-wrap: wrap; }
+
+    .logo { width: 70px; height: 70px; border-radius: 16px; background: linear-gradient(135deg, var(--text-primary), var(--accent)); display: grid; place-items: center; color: var(--bg-1); font-weight: 800; font-size: 20px; box-shadow: var(--glow); transition: var(--transition); flex-shrink: 0; }
+    .logo:hover { transform: scale(1.04); }
+
+    .header-content { flex: 1; min-width: 0; }
+    h1 { margin: 0; color: var(--text-primary); font-size: 22px; font-weight: 800; letter-spacing: -0.4px; background: linear-gradient(to right, var(--text-primary), var(--accent-light)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    .subtitle { margin-top: 6px; color: var(--text-secondary); font-size: 13px; line-height: 1.4; max-width: 64ch; }
+
+    .controls { display: flex; gap: 10px; align-items: center; margin-left: auto; flex-wrap: wrap; justify-content: flex-end; }
+
+    .btn { background: linear-gradient(90deg, var(--accent-light), var(--accent)); color: var(--bg-1); border: 0; padding: 9px 14px; border-radius: 10px; cursor: pointer; font-weight: 700; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; box-shadow: var(--glow); transition: var(--transition); white-space: nowrap; }
+    .btn:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(var(--accent-rgb), 0.28); }
+
+    .ghost { background: transparent; border: 1px solid var(--card-border); color: var(--text-primary); padding: 8px 12px; border-radius: 10px; cursor: pointer; font-weight: 600; transition: var(--transition); white-space: nowrap; }
+    .ghost:hover { background: rgba(var(--accent-rgb), 0.06); transform: translateY(-1px); }
+
+    /* Main layout */
+    .main-content { display: flex; flex-direction: column; gap: 20px; margin-top: 18px; }
+    @media (min-width: 992px) { .main-content { flex-direction: row; } }
+
+    .content-section, .quiz-section { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 18px; padding: 20px; box-shadow: var(--shadow); backdrop-filter: blur(8px); position: relative; overflow: hidden; width: 100%; }
+
+    /* Protocols Explorer - Adapted from cards */
+    .protocols-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
+    .protocols-title { color: var(--text-primary); font-size: 18px; font-weight: 700; }
+    .protocols-list { display: grid; gap: 12px; margin-top: 12px; }
+    .protocol-item { background: rgba(255,255,255,0.03); border: 1px solid var(--card-border); border-radius: 12px; padding: 16px; cursor: pointer; transition: var(--transition); position: relative; overflow: hidden; }
+    .protocol-item:hover { background: rgba(var(--accent-rgb), 0.06); transform: translateY(-2px); box-shadow: var(--glow); }
+    .protocol-item.active { background: rgba(var(--accent-rgb), 0.08); border-color: var(--accent); }
+    .protocol-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+    .protocol-icon { font-size: 20px; color: var(--accent-light); }
+    .protocol-title { font-size: 16px; font-weight: 700; color: var(--text-primary); flex: 1; }
+    .protocol-description { line-height: 1.5; color: var(--text-secondary); font-size: 14px; display: none; }
+    .protocol-item.active .protocol-description { display: block; }
+    .protocol-toggle { background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 16px; transition: var(--transition); }
+    .protocol-item.active .protocol-toggle { transform: rotate(180deg); color: var(--accent); }
+
+    /* Subsections like h3 */
+    .protocol-subheader { margin: 18px 0 10px 0; color: var(--accent); font-size: 1.25rem; font-weight: 600; }
+    .highlight { background: rgba(var(--accent-rgb), 0.18); padding: 2px 6px; border-radius: 4px; font-weight: 600; color: var(--accent-light); }
+
+    /* Concepts (integrated) */
+    .concepts-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+    .concepts-title { color: var(--text-primary); font-size: 18px; font-weight: 700; }
+    .concepts-list { display: grid; gap: 8px; }
+    .concept-item { padding: 10px; background: rgba(255,255,255,0.02); border-radius: 8px; border-left: 3px solid var(--accent); display: flex; align-items: center; gap: 8px; }
+    .concept-icon { color: var(--accent-light); font-size: 14px; }
+
+    /* Quiz like previous */
+    .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
+    .quiz-title { color: var(--text-primary); font-size: 18px; font-weight: 700; }
+    .progress-container { height: 8px; background: rgba(255,255,255,0.06); border-radius: 6px; margin: 12px 0; overflow: hidden; }
+    .progress-bar { height: 100%; background: var(--timeline-progress); border-radius: 6px; width: 0%; transition: width 0.45s ease; }
+
+    .question-container { margin: 10px 0; }
+    .question-number { color: var(--accent); font-weight: 700; margin-bottom: 6px; }
+    .question-text { color: var(--text-primary); font-size: 15px; margin-bottom: 12px; line-height: 1.4; }
+
+    .options-container { display: grid; gap: 10px; }
+    .option { padding: 12px 14px; border-radius: 10px; background: rgba(255,255,255,0.03); border: 1px solid var(--card-border); color: var(--text-secondary); font-weight: 600; cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: 10px; }
+    .option:hover { background: rgba(var(--accent-rgb), 0.06); transform: translateX(4px); color: var(--text-primary); }
+    .option.selected { background: rgba(var(--accent-rgb), 0.12); border-color: var(--accent); color: var(--text-primary); box-shadow: 0 0 10px rgba(var(--accent-rgb), 0.12); }
+    .option.correct { background: rgba(74, 222, 128, 0.12); border-color: var(--success); color: #d1fae5; }
+    .option.wrong { background: rgba(248, 113, 113, 0.12); border-color: var(--error); color: #fee2e2; }
+
+    .option-letter { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,0.06); font-weight: 800; font-size: 12px; }
+
+    .quiz-controls { display: flex; justify-content: space-between; margin-top: 14px; flex-wrap: wrap; gap: 10px; }
+    .nav-buttons { display: flex; gap: 8px; }
+    .score-display { font-weight: 800; font-size: 15px; color: var(--accent); display: flex; align-items: center; gap: 8px; }
+
+    footer { margin-top: 22px; padding: 14px; text-align: center; color: var(--text-secondary); font-size: 12px; border-top: 1px solid var(--card-border); }
+
+    /* Responsive tweaks */
     @media (max-width: 768px) {
-      .device-icon i.fas.fa-mobile-alt {
-        transform: rotate(90deg);
-      }
+      .logo { width: 60px; height: 60px; font-size: 18px; }
+      h1 { font-size: 20px; }
+      .subtitle { font-size: 13px; }
+      .quiz-controls { width: 100%; flex-direction: column; align-items: center; }
+      .nav-buttons, .score-display { width: 100%; justify-content: center; }
+      .btn, .ghost { width: auto; padding: 8px 12px; font-size: 12px; }
+      .protocols-list { gap: 10px; }
+      .protocol-item { padding: 14px; }
+      .protocol-title { font-size: 15px; }
+    }
+    @media (max-width: 480px) {
+      .container { padding: 12px; }
+      .logo { width: 50px; height: 50px; font-size: 16px; }
+      h1 { font-size: 18px; }
+      .subtitle { font-size: 12px; }
+      .btn, .ghost { padding: 6px 10px; font-size: 11px; }
+      .protocol-item { padding: 12px; }
     }
 
-    @media(max-width:1000px){.right{display:none}.left{flex:0 0 280px}}
   </style>
 </head>
 <body>
   <div class="container">
     <header role="banner">
-      <div class="logo" aria-hidden="true">P-Lite</div>
-      <div style="min-width:0">
-        <h1>Packet-Lite Pro — Construção Guiada (Modo Realista)</h1>
-        <div class="subtitle">Interface aprimorada: portas, cabos, IP/MAC, velocidade, inspector e tráfego visual.</div>
+      <div class="logo" aria-hidden="true">OSI→Net</div>
+
+      <div class="header-content">
+        <h1>Camadas de Redes – OSI e TCP/IP</h1>
+        <p class="subtitle">Entenda como os dados viajam pela internet usando modelos estruturados — e teste seu domínio com nosso quiz interativo.</p>
       </div>
+
       <div class="controls" aria-hidden="false">
-        <button id="exportState" class="ghost">Exportar</button>
-        <button id="importState" class="ghost">Importar</button>
       </div>
     </header>
-    <main class="main">
-      <section class="panel left" aria-labelledby="build-title">
-        <h2 id="build-title" style="color:var(--text);margin:0 0 10px 0">Construção da Rede</h2>
 
-        <!-- Build Progress -->
-        <div class="build-progress-container">
-          <div class="build-progress-title">
-            <span>Progresso da Construção</span>
-            <span id="progress-percent">0%</span>
+    <main class="main-content" role="main">
+      <section class="content-section" aria-labelledby="content-title">
+        <div class="protocols-header">
+          <h2 class="protocols-title" id="content-title">Explorador de Camadas</h2>
+          <div class="event-year-display">Camada: <span id="current-protocol">OSI</span></div>
+        </div>
+
+        <div class="protocols-list" id="protocols-list">
+          <!-- Protocols will be inserted by JS -->
+        </div>
+
+        <div class="concepts-section">
+          <div class="concepts-header">
+            <h3 class="concepts-title">Conceitos rápidos</h3>
           </div>
-          <div class="build-progress-bar">
-            <div class="build-progress-fill" id="build-progress-fill"></div>
-          </div>
-        </div>
-
-        <!-- Build Steps -->
-        <div class="build-steps" id="buildSteps">
-          <!-- Steps populated by JS -->
-        </div>
-
-        <hr style="border:0;border-top:1px solid var(--card-border);margin:12px 0" />
-
-        <div style="margin-bottom:8px"><strong style="color:var(--text)">Dispositivos</strong></div>
-        <div id="devicePalette" style="display:flex;flex-direction:column;gap:8px"></div>
-        <hr style="border:0;border-top:1px solid var(--card-border);margin:12px 0" />
-        <div style="margin-bottom:8px"><strong style="color:var(--text)">Ações</strong></div>
-        <div style="display:flex;flex-direction:column;gap:8px">
-          <button id="clear" class="small">Reiniciar Canvas</button>
-          <button id="autoLayout" class="ghost">Auto-arranjar</button>
-          <button id="simulateTraffic" class="ghost">Gerar Tráfego Aleatório</button>
-        </div>
-        <div style="margin-top:14px">
-          <div style="color:var(--muted);font-size:13px;margin-bottom:6px">Legenda</div>
-          <div style="display:flex;flex-wrap:wrap;gap:8px">
-            <div style="padding:6px;background:rgba(0,168,255,0.06);border-radius:8px;color:var(--accent);font-size:12px">Cabo Ethernet</div>
-            <div style="padding:6px;background:rgba(139,92,246,0.06);border-radius:8px;color:#8b5cf6;font-size:12px">Fibra</div>
-            <div style="padding:6px;background:rgba(255,195,0,0.06);border-radius:8px;color:var(--warning);font-size:12px">Wi-Fi</div>
-          </div>
-        </div>
-        <div style="color:var(--muted);font-size:13px;margin-top:12px">
-          <strong>Navegação:</strong> Arraste o canvas para mover como um mapa. Clique em fios para excluir.
-        </div>
-        <div id="errorMessage" class="error-message"></div>
-      </section>
-      <section class="panel center">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
-          <div class="badge" style="padding:6px 10px;background:rgba(255,255,255,0.02);border-radius:8px;color:var(--muted)">Packet-Lite Pro</div>
-          <div style="color:var(--muted);font-size:13px">Canvas — arraste para navegar, dispositivos para mover, clique em portas para conectar (agora com escolha de cabo)</div>
-          <div style="flex:1"></div>
-          <div id="status" style="color:var(--muted);font-size:13px">Pronto</div>
-        </div>
-        <div id="topo" style="position:relative;flex:1">
-          <svg id="links"></svg>
+          <ul class="concepts-list">
+            <li class="concept-item"><i class="fas fa-layer-group concept-icon" aria-hidden="true"></i><strong>OSI = 7 camadas</strong> — ideal para estudo e troubleshooting.</li>
+            <li class="concept-item"><i class="fas fa-layer-group concept-icon" aria-hidden="true"></i><strong>TCP/IP = 4 camadas</strong> — usado na internet real.</li>
+            <li class="concept-item"><i class="fas fa-link concept-icon" aria-hidden="true"></i><strong>Camada de Enlace (OSI)</strong> lida com endereços MAC.</li>
+            <li class="concept-item"><i class="fas fa-satellite concept-icon" aria-hidden="true"></i><strong>Camada de Rede (OSI)</strong> lida com IP e roteamento.</li>
+            <li class="concept-item"><i class="fas fa-box concept-icon" aria-hidden="true"></i><strong>TCP</strong> opera na camada de transporte — é confiável.</li>
+            <li class="concept-item"><i class="fas fa-globe concept-icon" aria-hidden="true"></i><strong>HTTP</strong> está na camada de aplicação do TCP/IP.</li>
+          </ul>
         </div>
       </section>
-      <aside class="panel right inspector" aria-labelledby="sim-title">
-        <h3 id="sim-title">Inspetor de Dispositivo</h3>
-        <div id="inspectorEmpty" style="color:var(--muted);margin-top:8px">Clique em um dispositivo (ou botão direito) para ver/configurar.</div>
-        <div id="inspector" style="display:none;margin-top:8px">
-          <div class="inspector-row">
-            <div style="flex:1">
-              <div style="font-size:12px;color:var(--muted)">Hostname</div>
-              <input id="inspHostname" type="text" />
-            </div>
-            <div style="width:12px"></div>
+
+      <aside class="quiz-section" aria-labelledby="quiz-title">
+        <div class="quiz-header">
+          <h2 class="quiz-title" id="quiz-title">Quiz Interativo</h2>
+          <div class="score-display" id="score-display"><i class="fas fa-graduation-cap" aria-hidden="true"></i> <span id="score">0/10</span></div>
+        </div>
+
+        <div class="progress-container" aria-hidden="false">
+          <div class="progress-bar" id="progress-bar"></div>
+        </div>
+
+        <div class="question-container" id="question-container"></div>
+
+        <div class="quiz-controls">
+          <div class="nav-buttons">
+            <button id="prev" class="ghost" aria-label="Pergunta anterior"><i class="fas fa-arrow-left" aria-hidden="true"></i></button>
+            <button id="next" class="btn" aria-label="Próxima pergunta"><i class="fas fa-arrow-right" aria-hidden="true"></i></button>
           </div>
-          <div class="inspector-row">
-            <div style="flex:1">
-              <div style="font-size:12px;color:var(--muted)">MAC</div>
-              <input id="inspMac" type="text" />
-            </div>
-            <div style="width:12px"></div>
-          </div>
-          <div class="inspector-row">
-            <div style="flex:1">
-              <div style="font-size:12px;color:var(--muted)">IP (static/DHCP)</div>
-              <div style="display:flex;gap:8px">
-                <input id="inspIp" type="text" />
-                <select id="inspIpMode" style="width:110px">
-                  <option value="dhcp">DHCP</option>
-                  <option value="static">Static</option>
-                </select>
-              </div>
-            </div>
-          </div>
-          <div class="inspector-row">
-            <div style="flex:1">
-              <div style="font-size:12px;color:var(--muted)">Role</div>
-              <select id="inspRole">
-                <option value="edge">Edge/Client</option>
-                <option value="server">Server</option>
-                <option value="infra">Infrastructure</option>
-              </select>
-            </div>
-          </div>
-          <div style="display:flex;gap:8px;margin-top:8px">
-            <button id="applyConfig" class="small">Aplicar</button>
-            <button id="resetMac" class="ghost">Gerar MAC</button>
-            <button id="inspectPing" class="ghost">Pingar (loopback)</button>
-          </div>
-          <div style="display:flex;gap:8px;margin-top:8px">
-            <button id="deleteDevice" class="delete-btn">Excluir Dispositivo</button>
-          </div>
-          <hr style="border:0;border-top:1px solid var(--card-border);margin:12px 0" />
-          <div style="color:var(--muted);font-size:13px;margin-bottom:6px">Status & Tráfego</div>
-          <div style="display:flex;gap:8px;flex-direction:column">
-            <div style="display:flex;justify-content:space-between">
-              <div style="color:var(--muted);font-size:12px">Conexões</div>
-              <div id="inspConns" style="font-weight:700;color:var(--text)">0</div>
-            </div>
-            <div style="display:flex;justify-content:space-between">
-              <div style="color:var(--muted);font-size:12px">Throughput</div>
-              <div id="inspThroughput" style="font-weight:700;color:var(--text)">0 kb/s</div>
-            </div>
-            <div style="display:flex;justify-content:space-between">
-              <div style="color:var(--muted);font-size:12px">Last Seen</div>
-              <div id="inspLastSeen" style="font-weight:700;color:var(--text)">—</div>
-            </div>
-          </div>
+          <button id="submit" class="btn" aria-label="Enviar respostas"><i class="fas fa-paper-plane" aria-hidden="true"></i> Enviar</button>
         </div>
       </aside>
     </main>
-    <footer>Use Shift+Clique para selecionar 2 dispositivos e "Simular Ping". Right-click em um dispositivo para abrir configurações rápidas. Arraste o canvas para navegar.</footer>
+
+    <footer role="contentinfo">
+      <p>Resumo: O modelo OSI tem 7 camadas; o TCP/IP, 4. Ambos estruturam como dados viajam — da aplicação até o cabo. Clique nas camadas para expandir detalhes.</p>
+      <p>Atalhos: ← / → — Navegar perguntas. Enter — Selecionar opção.</p>
+      <p>Dica: Explore as camadas antes do quiz para melhor compreensão! • Atualizado em Novembro de 2025</p>
+    </footer>
   </div>
 
-  <!-- Tutorial Overlay -->
-  <div class="tutorial-overlay" id="tutorialOverlay">
-    <div class="tutorial-content">
-      <button class="close-tutorial" id="closeTutorial">✕</button>
-      <h2 class="tutorial-title" id="tutorialTitle">Bem-vindo ao Packet-Lite Pro</h2>
-      <p class="tutorial-text" id="tutorialText">Este simulador educacional guiará você na construção de uma rede completa, passo a passo, com configurações realistas de IP, MAC, tipos de cabo e inspeção de tráfego.</p>
-      <div class="tutorial-actions">
-        <button class="small" id="startTutorial">Começar Construção</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modals -->
-  <div class="modal-back" id="cableModal">
-    <div class="modal">
-      <h3>Escolha o tipo de cabo</h3>
-      <div style="display:flex;gap:8px;margin-top:12px">
-        <button class="small" data-cable="copper">Cabo Ethernet (1 Gbps)</button>
-        <button class="small" data-cable="fiber">Fibra (10 Gbps)</button>
-        <button class="small" data-cable="wifi">Wi-Fi (802.11ac)</button>
-      </div>
-      <div style="margin-top:12px;text-align:right"><button id="cancelCable" class="ghost">Cancelar</button></div>
-    </div>
-  </div>
+  <canvas id="confetti" style="position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:1200"></canvas>
 
   <script>
-    /***********************************************
-     * Packet-Lite Pro — Realista + Tutorial Guiado
-     ***********************************************/
-    /* --- DOM refs --- */
-    const topo = document.getElementById('topo');
-    const svg = document.getElementById('links');
-    const devicePalette = document.getElementById('devicePalette');
-    const buildProgressFill = document.getElementById('build-progress-fill');
-    const progressPercent = document.getElementById('progress-percent');
-    const errorMessageEl = document.getElementById('errorMessage');
-    const statusEl = document.getElementById('status');
-    const inspector = document.getElementById('inspector');
-    const inspectorEmpty = document.getElementById('inspectorEmpty');
-    const inspHostname = document.getElementById('inspHostname');
-    const inspMac = document.getElementById('inspMac');
-    const inspIp = document.getElementById('inspIp');
-    const inspIpMode = document.getElementById('inspIpMode');
-    const inspRole = document.getElementById('inspRole');
-    const inspConns = document.getElementById('inspConns');
-    const inspThroughput = document.getElementById('inspThroughput');
-    const inspLastSeen = document.getElementById('inspLastSeen');
-    const cableModal = document.getElementById('cableModal');
-    const tutorialOverlay = document.getElementById('tutorialOverlay');
-    const tutorialTitle = document.getElementById('tutorialTitle');
-    const tutorialText = document.getElementById('tutorialText');
-    const buildStepsContainer = document.getElementById('buildSteps');
-    const deleteDeviceBtn = document.getElementById('deleteDevice');
+    // --- Função para aplicar tema ---
+    function applyTheme(theme) {
+      const root = document.documentElement;
+      root.className = theme === 'blue' ? '' : `theme-${theme}`;
+    }
 
-    /* --- State --- */
-    let nodes = {};
-    let links = [];
-    let nextId = 1;
-    let connStart = null;
-    let connStartPortEl = null;
-    let selectedForSim = [];
-    let deviceCounts = {};
-    let currentInspector = null;
-    let dhcpPool = { base: '192.168.100.', next: 10 };
-    let drawScheduled = false;
-    let networkStatusInterval = null;
-    let currentStep = 0;
-    let buildSteps = [];
-    let tutorialCompleted = false;
-    let firstTimeUser = true;
+    // Carregar tema salvo do localStorage
+    const savedTheme = localStorage.getItem('theme') || 'blue';
+    applyTheme(savedTheme);
 
-    // Panning state
-    let panX = 0;
-    let panY = 0;
-    let isPanning = false;
-    let panStartX = 0;
-    let panStartY = 0;
-
-    /* --- Device definitions --- */
-    const deviceDefs = {
-      pc: {label:'PC',ports:1,icon:'fas fa-desktop',role:'edge'},
-      laptop:{label:'Laptop',ports:1,icon:'fas fa-laptop',role:'edge'},
-      phone:{label:'Phone',ports:1,icon:'fas fa-mobile-alt',note:'wifi',role:'edge'},
-      tablet:{label:'Tablet',ports:1,icon:'fas fa-tablet-alt',note:'wifi',role:'edge'},
-      switch:{label:'Switch',ports:8,icon:'fas fa-network-wired',role:'infra'},
-      router:{label:'Router',ports:4,icon:'fas fa-route',role:'infra'},
-      cloud:{label:'Cloud',ports:4,icon:'fas fa-cloud',role:'infra'},
-      server:{label:'Server',ports:4,icon:'fas fa-server',role:'server'},
-      printer:{label:'Printer',ports:1,icon:'fas fa-print',role:'edge'},
-      ap:{label:'AccessPoint',ports:1,icon:'fas fa-wifi',note:'wifi',role:'infra'},
-      firewall:{label:'Firewall',ports:2,icon:'fas fa-shield-alt',role:'infra'},
-      camera:{label:'Camera',ports:1,icon:'fas fa-video',role:'edge'}
-    };
-    const paletteOrder = ['router','switch','server','ap','pc','laptop','phone','printer','firewall','cloud','camera'];
-
-    /* --- Build Process (adapted to realistic mode) --- */
-    const buildProcess = [
-      {
-        title: "Infraestrutura Básica",
-        description: "Adicione um roteador central para gerenciar o tráfego da rede.",
-        devices: ['router'],
-        required: 1,
-        completed: false
+    // --- Dados ---
+    const protocolsData = [
+      { 
+        id: 'osi', 
+        title: 'Modelo OSI', 
+        icon: 'fas fa-layer-group', 
+        text: `
+          <h3>O Padrão de Referência: Modelo OSI</h3>
+          <p>Imagine enviar uma carta internacional. Você escreve o conteúdo (aplicação), coloca em um envelope com endereço (camada de apresentação/sessão), leva ao correio (transporte), que a classifica e envia por avião (rede), até chegar ao destino local (enlace) e finalmente à caixa de correio (física).</p>
+          <p>Esse processo ilustra o <strong>modelo OSI</strong> — um framework teórico com <strong>7 camadas</strong> que padroniza a comunicação em redes. Cada camada tem uma responsabilidade clara:</p>
+          <ul>
+            <li><strong>Camada 7 – Aplicação</strong>: Interface com o usuário (HTTP, FTP, SMTP).</li>
+            <li><strong>Camada 6 – Apresentação</strong>: Formatação, criptografia e compressão.</li>
+            <li><strong>Camada 5 – Sessão</strong>: Início, manutenção e fim de sessões (ex: login em um site).</li>
+            <li><strong>Camada 4 – Transporte</strong>: Confiança na entrega (TCP) ou velocidade (UDP).</li>
+            <li><strong>Camada 3 – Rede</strong>: Roteamento lógico com endereços IP.</li>
+            <li><strong>Camada 2 – Enlace</strong>: Comunicação local com endereços MAC (ex: AA:BB:CC:DD:EE:FF).</li>
+            <li><strong>Camada 1 – Física</strong>: Transmissão de bits brutos (cabo, Wi-Fi, fibra).</li>
+          </ul>
+          <p>Apesar de raramente implementado na íntegra, o OSI é essencial para <strong>diagnóstico de problemas</strong> e <strong>ensino de redes</strong>.</p>
+        `,
+        tts: 'Modelo OSI: Framework teórico com 7 camadas para padronizar comunicação em redes.'
       },
-      {
-        title: "Switches de Distribuição",
-        description: "Adicione switches para conectar múltiplos dispositivos em segmentos de rede.",
-        devices: ['switch'],
-        required: 2,
-        completed: false
+      { 
+        id: 'tcpip', 
+        title: 'Modelo TCP/IP', 
+        icon: 'fas fa-network-wired', 
+        text: `
+          <h3>O Modelo da Internet Real: TCP/IP</h3>
+          <p>Enquanto o OSI é teórico, o <strong>modelo TCP/IP</strong> é o que realmente roda a internet desde os anos 70. Projetado para ser prático e robusto, ele simplifica a pilha em apenas <strong>4 camadas</strong>:</p>
+          <ul>
+            <li><strong>Camada de Aplicação</strong>: Combina as camadas 5, 6 e 7 do OSI. Aqui vivem HTTP, DNS, SMTP — tudo que o usuário ou aplicativo vê.</li>
+            <li><strong>Camada de Transporte</strong>: Igual ao OSI. Responsável por segmentar dados e garantir entrega com <strong>TCP</strong> (confiável) ou <strong>UDP</strong> (rápido).</li>
+            <li><strong>Camada Internet</strong>: Corresponde à <strong>camada de rede do OSI</strong>. Usa o protocolo IP para endereçamento e roteamento global.</li>
+            <li><strong>Camada de Acesso à Rede</strong>: Engloba as camadas física e de enlace do OSI. Lida com tecnologias como Ethernet, Wi-Fi e endereços MAC.</li>
+          </ul>
+          <p>Note que não há camada de sessão ou apresentação explícitas — essas funções são absorvidas pelas aplicações ou protocolos de camada superior.</p>
+        `,
+        tts: 'Modelo TCP/IP: Prático com 4 camadas, base da internet real desde os anos 70.'
       },
-      {
-        title: "Servidores e Recursos",
-        description: "Adicione servidores, impressora e firewall para fornecer serviços e segurança.",
-        devices: ['server', 'printer', 'firewall'],
-        required: 3,
-        completed: false
+      { 
+        id: 'funcoes', 
+        title: 'Funções por Camada', 
+        icon: 'fas fa-cogs', 
+        text: `
+          <h3>Quem Faz O Quê? Funções Específicas</h3>
+          <p>Entender o papel de cada camada ajuda a resolver problemas rapidamente. Veja exemplos práticos:</p>
+          <ul>
+            <li><strong>Endereçamento MAC</strong> (ex: <code>00:1A:2B:3C:4D:5E</code>) é usado apenas dentro de uma rede local e é tratado na <strong>camada de enlace</strong> (camada 2 do OSI).</li>
+            <li>Quando você digita <code>google.com</code>, o DNS resolve para um IP (camada de aplicação), mas o roteamento até lá é feito pela <strong>camada de rede</strong> (camada 3).</li>
+            <li>O <strong>TCP</strong> garante que todos os pacotes cheguem na ordem correta e sem erros — uma função exclusiva da <strong>camada de transporte</strong>.</li>
+            <li>Já o <strong>UDP</strong> não se preocupa com isso — ideal para chamadas de vídeo, onde velocidade importa mais que perfeição.</li>
+            <li>A <strong>camada de sessão</strong> (OSI) é responsável por manter você logado em um site durante a navegação — algo que o TCP/IP delega à aplicação.</li>
+          </ul>
+          <p>Curiosidade: o <strong>protocolo IP</strong> é <em>sem conexão</em> — ele não sabe se os pacotes chegaram. Essa responsabilidade é do TCP.</p>
+        `,
+        tts: 'Funções por camada: Exemplos práticos para entender e resolver problemas em redes.'
       },
-      {
-        title: "Dispositivos Finais",
-        description: "Adicione PCs, laptops e tablets que os usuários utilizarão.",
-        devices: ['pc', 'laptop', 'tablet'],
-        required: 4,
-        completed: false
-      },
-      {
-        title: "Dispositivos Móveis",
-        description: "Adicione celulares e um ponto de acesso (AP) para conexão Wi-Fi.",
-        devices: ['phone', 'ap'],
-        required: 2,
-        completed: false
-      },
-      {
-        title: "Conexões e Testes",
-        description: "Conecte todos os dispositivos, escolha o tipo de cabo e teste a conectividade.",
-        devices: [],
-        required: 0,
-        completed: false
+      { 
+        id: 'protocolos', 
+        title: 'Protocolos-Chave', 
+        icon: 'fas fa-server', 
+        text: `
+          <h3>Protocolos que Movem a Internet</h3>
+          <p>Protocolos são conjuntos de regras que permitem a comunicação entre dispositivos. Aqui estão os mais importantes, organizados por camada:</p>
+          <ul>
+            <li><strong>Camada de Aplicação (TCP/IP)</strong>: 
+              <ul>
+                <li><strong>HTTP/HTTPS</strong>: navegação web.</li>
+                <li><strong>SMTP/POP/IMAP</strong>: e-mail.</li>
+                <li><strong>DNS</strong>: traduz nomes (ex: google.com) em IPs.</li>
+              </ul>
+            </li>
+            <li><strong>Camada de Transporte</strong>:
+              <ul>
+                <li><strong>TCP</strong>: entrega confiável, com controle de fluxo e retransmissão.</li>
+                <li><strong>UDP</strong>: entrega rápida, sem garantias — usado em jogos e streaming.</li>
+              </ul>
+            </li>
+            <li><strong>Camada Internet</strong>:
+              <ul>
+                <li><strong>IP (IPv4/IPv6)</strong>: endereçamento e roteamento global.</li>
+                <li><strong>ICMP</strong>: usado pelo <code>ping</code> para testar conectividade.</li>
+              </ul>
+            </li>
+            <li><strong>Camada de Acesso à Rede</strong>:
+              <ul>
+                <li><strong>Ethernet</strong>: padrão para redes cabeadas.</li>
+                <li><strong>Wi-Fi (802.11)</strong>: comunicação sem fio.</li>
+                <li><strong>ARP</strong>: mapeia IP → MAC em redes locais.</li>
+              </ul>
+            </li>
+          </ul>
+          <p>Saber onde cada protocolo atua é crucial para entender falhas: se o <code>ping</code> funciona mas o site não carrega, o problema está acima da camada de rede — provavelmente na aplicação ou transporte.</p>
+        `,
+        tts: 'Protocolos-chave: Regras por camada que movem a internet, de HTTP a Ethernet.'
       }
     ];
 
-    const networkRules = {
-      connectionRules: {
-        router: { cannotConnectTo: ['router'] },
-        firewall: { mustBeConnectedTo: ['router'] },
-        ap: { mustBeConnectedTo: ['switch', 'router'] },
-        phone: { canOnlyConnectTo: ['ap'] },
-        tablet: { canOnlyConnectTo: ['ap'] }
-      },
-      maxDevices: { router:2, switch:6, server:4, firewall:2, ap:3 }
-    };
+    const quiz = [
+      { q: "Quantas camadas tem o modelo OSI?", opts: ["4", "5", "7"], a: 2, explain: 'O OSI tem 7 camadas para padronizar a comunicação.' },
+      { q: "Qual camada do OSI lida com endereços MAC?", opts: ["Física", "Enlace", "Rede"], a: 1, explain: 'A camada de enlace (2) gerencia endereços MAC em redes locais.' },
+      { q: "O protocolo IP atua em qual camada do modelo OSI?", opts: ["Transporte", "Rede", "Aplicação"], a: 1, explain: 'IP é responsável por roteamento na camada de rede (3).' },
+      { q: "Qual camada é responsável por criptografia e compressão?", opts: ["Sessão", "Apresentação", "Aplicação"], a: 1, explain: 'A camada de apresentação (6) formata e criptografa dados.' },
+      { q: "Quantas camadas tem o modelo TCP/IP?", opts: ["3", "4", "7"], a: 1, explain: 'TCP/IP simplifica em 4 camadas para uso prático na internet.' },
+      { q: "O TCP opera em qual camada?", opts: ["Internet", "Transporte", "Aplicação"], a: 1, explain: 'TCP garante entrega na camada de transporte.' },
+      { q: "Qual camada gerencia sessões entre aplicações?", opts: ["Sessão", "Transporte", "Apresentação"], a: 0, explain: 'A camada de sessão (5) inicia e mantém conexões.' },
+      { q: "Em qual camada do TCP/IP atua o HTTP?", opts: ["Transporte", "Internet", "Aplicação"], a: 2, explain: 'HTTP é parte da camada de aplicação no TCP/IP.' },
+      { q: "Qual modelo é usado na internet real?", opts: ["OSI", "TCP/IP", "HTTP"], a: 1, explain: 'TCP/IP é o modelo prático da internet desde os anos 70.' },
+      { q: "Qual camada do OSI corresponde à camada Internet do TCP/IP?", opts: ["Enlace", "Rede", "Transporte"], a: 1, explain: 'A camada de rede (3) do OSI é a Internet no TCP/IP.' }
+    ];
 
-    /* --- Utilities --- */
-    function log(text){
-      const d = new Date();
-      statusEl.textContent = `${d.toLocaleTimeString()} — ${text}`;
-    }
-    function showError(msg){
-      errorMessageEl.textContent = msg;
-      errorMessageEl.style.display = 'block';
-      setTimeout(()=> errorMessageEl.style.display = 'none', 5000);
-    }
-    function makeId(prefix){ return prefix + (nextId++); }
-    function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c])) }
+    const QUIZ_KEY = 'camadas_quiz_submitted_at';
+    let currentQuestion = 0;
+    let answers = JSON.parse(localStorage.getItem('camadas_quiz_answers')) || new Array(quiz.length).fill(null);
+    let quizSubmitted = localStorage.getItem(QUIZ_KEY) !== null;
 
-    /* --- MAC & IP --- */
-    function generateMac(){
-      const hex = '0123456789ABCDEF';
-      let mac = '02';
-      for(let i=0;i<5;i++){
-        mac += ':' + hex[Math.floor(Math.random()*16)] + hex[Math.floor(Math.random()*16)];
+    // --- DOM ---
+    const currentProtocol = document.getElementById('current-protocol');
+    const protocolsList = document.getElementById('protocols-list');
+    const questionContainer = document.getElementById('question-container');
+    const prevBtn = document.getElementById('prev');
+    const nextBtn = document.getElementById('next');
+    const submitBtn = document.getElementById('submit');
+    const scoreSpan = document.getElementById('score');
+    const progressBar = document.getElementById('progress-bar');
+
+    // --- Inicialização ---
+    document.addEventListener('DOMContentLoaded', () => {
+      renderProtocols();
+      if (quizSubmitted && !canRetake()) {
+        submitBtn.click();
+      } else {
+        renderQuestion();
+        updateProgress();
       }
-      return mac;
-    }
-    function allocateIp(){
-      const ip = dhcpPool.base + (dhcpPool.next++);
-      return ip;
-    }
+      setupEventListeners();
+      updateRetakeButton();
+    });
 
-    /* --- Build Steps UI --- */
-    function initBuildSteps(){
-      buildStepsContainer.innerHTML = '';
-      buildSteps = [];
-      buildProcess.forEach((step, index)=>{
-        const stepEl = document.createElement('div');
-        stepEl.className = 'step collapsed';
-        stepEl.dataset.step = index;
-        stepEl.innerHTML = `
-          <div class="step-title">
-            <div class="step-icon">${index + 1}</div>
-            <span>${step.title}</span>
+    // Render protocols as expandable cards
+    function renderProtocols() {
+      protocolsList.innerHTML = '';
+      protocolsData.forEach(protocol => {
+        const item = document.createElement('div');
+        item.className = `protocol-item ${protocol.id === currentProtocolId ? 'active' : ''}`;
+        item.dataset.id = protocol.id;
+        item.innerHTML = `
+          <div class="protocol-header">
+            <i class="${protocol.icon} protocol-icon" aria-hidden="true"></i>
+            <span class="protocol-title">${protocol.title}</span>
+            <button class="protocol-toggle" aria-label="Expandir/Contrair"><i class="fas fa-chevron-down" aria-hidden="true"></i></button>
           </div>
-          <div class="step-description">${step.description}</div>
-          <div class="step-progress">
-            <div class="step-progress-fill"></div>
-          </div>
+          <div class="protocol-description">${protocol.text}</div>
         `;
-        buildSteps.push(stepEl);
-        buildStepsContainer.appendChild(stepEl);
-        stepEl.addEventListener('click', () => {
-          if(index <= currentStep) toggleStepCollapse(index);
+        item.addEventListener('click', (e) => {
+          if (e.target.closest('.protocol-toggle')) return;
+          item.classList.toggle('active');
         });
+        item.querySelector('.protocol-toggle').addEventListener('click', (e) => {
+          e.stopPropagation();
+          item.classList.toggle('active');
+        });
+        protocolsList.appendChild(item);
       });
-      activateStep(0);
+      updateCurrentProtocol();
     }
-    function toggleStepCollapse(stepIndex){
-      const step = buildSteps[stepIndex];
-      if(!step) return;
-      step.classList.toggle('collapsed');
-    }
-    function activateStep(stepIndex){
-      currentStep = stepIndex;
-      buildSteps.forEach((stepEl, i)=>{
-        stepEl.classList.remove('active');
-        stepEl.classList.remove('collapsed');
-        if(i < stepIndex && buildProcess[i].completed) {
-          stepEl.classList.add('collapsed','completed');
-        } else if(i === stepIndex) {
-          stepEl.classList.add('active');
-        } else {
-          stepEl.classList.add('collapsed');
-        }
-      });
-      updateBuildProgress();
-      if(firstTimeUser && !tutorialCompleted) {
-        showTutorial(stepIndex);
+
+    let currentProtocolId = 'osi';
+    function updateCurrentProtocol() {
+      const activeItem = document.querySelector('.protocol-item.active') || protocolsList.firstElementChild;
+      if (activeItem) {
+        currentProtocolId = activeItem.dataset.id;
+        currentProtocol.textContent = protocolsData.find(p => p.id === currentProtocolId).title;
       }
     }
 
-    /* --- Tutorial --- */
-    function showTutorial(stepIndex) {
-      const step = buildProcess[stepIndex];
-      tutorialTitle.textContent = step.title;
-      tutorialText.innerHTML = `
-        <strong>${step.title}</strong><br><br>
-        ${step.description}<br><br>
-        <strong>Instruções:</strong><br>
-        ${getStepInstructions(stepIndex)}
-      `;
-      tutorialOverlay.classList.add('active');
-    }
-    function getStepInstructions(stepIndex){
-      switch(stepIndex) {
-        case 0:
-          return "1. Clique no botão 'Router'<br>2. Um roteador será adicionado<br>3. Você pode arrastá-lo e configurar IP/MAC pelo inspector";
-        case 1:
-          return "1. Adicione dois switches<br>2. Conecte-os ao roteador: clique em uma porta, escolha 'Cabo Ethernet', depois clique na porta do roteador";
-        case 2:
-          return "1. Adicione um servidor, uma impressora e um firewall<br>2. Conecte-os aos switches ou roteador conforme as regras<br>3. Use o inspector para configurar IPs estáticos se necessário";
-        case 3:
-          return "1. Adicione PCs, laptops e tablets<br>2. Conecte-os aos switches com cabo Ethernet<br>3. Verifique IPs via DHCP no inspector";
-        case 4:
-          return "1. Adicione um AP e celulares<br>2. Conecte o AP à rede com fio<br>3. Conecte os celulares ao AP usando 'Wi-Fi'";
-        case 5:
-          return "1. Selecione dois dispositivos com Shift+Clique<br>2. Clique em 'Simular Ping' na barra superior<br>3. Parabéns! Sua rede realista está pronta!";
-        default:
-          return "Siga as instruções para este passo.";
-      }
-    }
-    document.getElementById('startTutorial').addEventListener('click', () => {
-      tutorialOverlay.classList.remove('active');
-      log(`Passo "${buildProcess[currentStep].title}" iniciado!`);
-    });
-    document.getElementById('closeTutorial').addEventListener('click', () => {
-      tutorialOverlay.classList.remove('active');
-      firstTimeUser = false;
-      localStorage.setItem('packetLiteFirstTime', 'false');
-    });
-    tutorialOverlay.addEventListener('click', (e) => {
-      if(e.target === tutorialOverlay) {
-        e.stopPropagation();
-      }
-    });
-
-    /* --- Build Progress --- */
-    function updateBuildProgress(){
-      let completedSteps = 0;
-      const totalSteps = buildProcess.length;
-      for(let i=0;i<buildProcess.length;i++){
-        if(buildProcess[i].completed) {
-          completedSteps++;
-          if(buildSteps[i]) buildSteps[i].classList.add('completed');
-        } else {
-          if(buildSteps[i]) buildSteps[i].classList.remove('completed');
-        }
-      }
-      const progress = Math.round((completedSteps / totalSteps) * 100);
-      buildProgressFill.style.width = `${progress}%`;
-      progressPercent.textContent = `${progress}%`;
-      checkStepCompletion(currentStep);
-    }
-    function checkStepCompletion(stepIndex){
-      const step = buildProcess[stepIndex];
-      if(step.completed) return;
-      let deviceCount = 0;
-      step.devices.forEach(type => { deviceCount += deviceCounts[type] || 0; });
-      if(deviceCount >= step.required){
-        step.completed = true;
-        log(`Passo "${step.title}" concluído!`);
-        if(stepIndex < buildProcess.length - 1){
-          setTimeout(() => {
-            activateStep(stepIndex + 1);
-            log(`Avançando para: ${buildProcess[stepIndex + 1].title}`);
-          }, 1500);
-        } else {
-          log('Construção da rede concluída! Parabéns!');
-          localStorage.setItem('packetLiteFirstTime', 'false');
-        }
-        updateBuildProgress();
-      } else {
-        const progress = step.required > 0 ? Math.min(100, Math.round((deviceCount / step.required) * 100)) : 0;
-        if(buildSteps[stepIndex]) buildSteps[stepIndex].querySelector('.step-progress-fill').style.width = `${progress}%`;
-      }
+    function canRetake() {
+      const submittedAt = localStorage.getItem(QUIZ_KEY);
+      if (!submittedAt) return true;
+      const now = Date.now();
+      const diffMinutes = (now - parseInt(submittedAt)) / (1000 * 60);
+      return diffMinutes >= 10;
     }
 
-    /* --- Device Palette --- */
-    function initDevicePalette(){
-      devicePalette.innerHTML = '';
-      paletteOrder.forEach(type=>{
-        const def = deviceDefs[type];
-        const btn = document.createElement('div');
-        btn.className = 'device-btn';
-        btn.innerHTML = `<div class="device-icon"><i class="${def.icon}"></i></div><div><div style="font-weight:700;color:var(--text)">${def.label}</div><div class="muted" style="font-size:12px">${def.ports} portas ${def.note? '• '+def.note:''}</div></div>`;
-        devicePalette.appendChild(btn);
-        btn.addEventListener('click', ()=> addDevice(type));
-      });
-    }
+    function updateRetakeButton() {
+      const existing = document.getElementById('retake-btn');
+      if (existing) existing.remove();
 
-    /* --- Add Device --- */
-    function updateDeviceCounts(){
-      deviceCounts = {};
-      Object.values(nodes).forEach(n => deviceCounts[n.type] = (deviceCounts[n.type] || 0) + 1);
-    }
-    function addDevice(type){
-      const def = deviceDefs[type];
-      if(networkRules.maxDevices[type] && (deviceCounts[type] || 0) >= networkRules.maxDevices[type]){
-        showError(`Máximo de ${networkRules.maxDevices[type]} ${def.label}(s) atingido.`);
-        return;
-      }
-      const id = makeId('n');
-      const base = Object.keys(nodes).length;
-      const node = {
-        id, type,
-        x: 40 + (base % 6) * 160 - panX,  // Adjust for current pan
-        y: 40 + Math.floor(base/6) * 120 - panY,
-        name: def.label + '-' + id.slice(1),
-        ports: Array.from({length:def.ports}, ()=>({})),
-        el: null,
-        mac: generateMac(),
-        ip: null,
-        ipMode: 'dhcp',
-        role: def.role || 'edge',
-        throughput: 0,
-        lastSeen: null
-      };
-      if(node.ipMode === 'dhcp') node.ip = allocateIp();
-      nodes[id] = node;
-      drawNode(node);
-      updateDeviceCounts();
-      log('Adicionado: ' + node.name);
-      scheduleDrawLinks();
-      saveStateToLocalStorage();
-      checkStepCompletion(currentStep);
-    }
+      if (quizSubmitted && !canRetake()) {
+        const retakeBtn = document.createElement('button');
+        retakeBtn.id = 'retake-btn';
+        retakeBtn.className = 'btn';
+        retakeBtn.disabled = true;
+        retakeBtn.innerHTML = '<i class="fas fa-clock" aria-hidden="true"></i> Aguarde...';
+        document.querySelector('.quiz-controls').appendChild(retakeBtn);
 
-    /* --- Draw Node --- */
-    function drawNode(node){
-      const existing = document.querySelector(`[data-id="${node.id}"]`);
-      if(existing) existing.remove();
-      const def = deviceDefs[node.type] || {icon:'fas fa-question',label:node.type,ports:node.ports.length};
-      const el = document.createElement('div');
-      el.className = 'device';
-      el.style.left = (node.x + panX) + 'px';  // Apply pan offset
-      el.style.top = (node.y + panY) + 'px';
-      el.dataset.id = node.id;
-      el.dataset.type = node.type;
-      el.innerHTML = `
-        <div class="dev-head">
-          <div class="device-icon" style="width:42px;height:42px;border-radius:8px"><i class="${def.icon}" style="font-size:18px;color:var(--accent)"></i></div>
-          <div style="min-width:0">
-            <div class="dev-name" contenteditable="true" spellcheck="false">${escapeHtml(node.name)}</div>
-            <div class="dev-type">${node.type.toUpperCase()} • ${node.ip || '—'}</div>
-          </div>
-        </div>
-        <div class="ports"></div>
-        <div class="network-status"></div>
-      `;
-      topo.appendChild(el);
-      node.el = el;
-      const portsWrap = el.querySelector('.ports');
-      portsWrap.innerHTML = '';
-      node.ports.forEach((p,i)=>{
-        const pEl = document.createElement('div');
-        pEl.className = 'port' + (deviceDefs[node.type].note && deviceDefs[node.type].note.includes('wifi') ? ' wifi' : '');
-        pEl.dataset.pinIndex = i;
-        pEl.title = `Porta ${i}`;
-        pEl.innerHTML = `<div class="led down"></div>`;
-        portsWrap.appendChild(pEl);
-      });
-      const nameEl = el.querySelector('.dev-name');
-      nameEl.addEventListener('blur', ()=> {
-        const v = nameEl.textContent.trim();
-        node.name = v || node.name;
-        nameEl.textContent = node.name;
-        saveStateToLocalStorage();
-      });
-      const statusWrap = el.querySelector('.network-status');
-      statusWrap.innerHTML = '';
-      const count = Math.min(3, node.ports.length);
-      for(let i=0;i<count;i++){ const dot = document.createElement('div'); dot.className='network-dot'; statusWrap.appendChild(dot); }
-    }
-
-    /* --- Port Click & Cable Modal --- */
-    topo.addEventListener('click', (e)=>{
-      const portEl = e.target.closest('.port');
-      if(portEl){
-        const deviceEl = portEl.closest('.device');
-        const nodeId = deviceEl.dataset.id;
-        const portIndex = parseInt(portEl.dataset.pinIndex,10);
-        onPortClick(nodeId, portIndex, portEl);
-        return;
-      }
-      const dev = e.target.closest('.device');
-      if(dev){
-        const nodeId = dev.dataset.id;
-        if(e.shiftKey){
-          toggleSelectForSim(nodeId, dev);
-        } else {
-          selectInspector(nodeId);
-        }
-      } else {
-        clearInspector();
-      }
-    });
-    topo.addEventListener('contextmenu', (e)=>{
-      const dev = e.target.closest('.device');
-      if(dev){
-        e.preventDefault();
-        const nodeId = dev.dataset.id;
-        selectInspector(nodeId);
-        const node = nodes[nodeId];
-        const newMode = node.ipMode === 'dhcp' ? 'static' : 'dhcp';
-        if(confirm(`Alternar IP para ${newMode.toUpperCase()}?`)){
-          node.ipMode = newMode;
-          if(newMode === 'dhcp') node.ip = allocateIp();
-          else node.ip = node.ip || '0.0.0.0';
-          updateInspectorValues(node);
-          drawNode(node);
-          scheduleDrawLinks();
-          saveStateToLocalStorage();
-          log(`${node.name} agora em ${newMode.toUpperCase()}`);
-        }
-      }
-    });
-    function onPortClick(nodeId, portIndex, portEl){
-      if(!connStart){
-        connStart = { nodeId, portIndex };
-        connStartPortEl = portEl;
-        portEl.style.outline = '2px solid rgba(0,168,255,0.6)';
-        openCableModal();
-        return;
-      }
-      if(connStart.nodeId === nodeId && connStart.portIndex === portIndex){
-        clearConnStart();
-        log('Conexão cancelada');
-        return;
-      }
-      if(!validateConnection(connStart.nodeId, nodeId)){
-        clearConnStart();
-        return;
-      }
-      const cableType = connStart.cable || 'copper';
-      const linkId = makeId('l');
-      const speed = cableType === 'fiber' ? 10000 : (cableType === 'wifi' ? 600 : 1000);
-      const label = cableType === 'fiber' ? 'Fibra 10Gbps' : cableType === 'wifi' ? 'Wi-Fi 802.11ac' : 'Ethernet 1Gbps';
-      links.push({ id: linkId, aNode: connStart.nodeId, aPort: connStart.portIndex, bNode: nodeId, bPort: portIndex, type: cableType, speed, label });
-      scheduleDrawLinks();
-      updatePortOutlines();
-      updateNetworkStatus();
-      clearConnStart();
-      log('Conexão criada');
-      saveStateToLocalStorage();
-      if(currentStep === buildProcess.length - 1) {
-        buildProcess[currentStep].completed = true;
-        updateBuildProgress();
-      }
-    }
-    function openCableModal(){
-      cableModal.classList.add('active');
-    }
-    function closeCableModal(){
-      cableModal.classList.remove('active');
-    }
-    cableModal.addEventListener('click', (e)=>{ if(e.target === cableModal) closeCableModal(); });
-    cableModal.querySelectorAll('[data-cable]').forEach(btn=>{
-      btn.addEventListener('click', ()=>{
-        const t = btn.dataset.cable;
-        if(connStart) connStart.cable = t;
-        closeCableModal();
-        log('Tipo de cabo escolhido: ' + t);
-      });
-    });
-    document.getElementById('cancelCable').addEventListener('click', ()=>{
-      clearConnStart();
-      closeCableModal();
-    });
-    function clearConnStart(){
-      if(connStartPortEl) connStartPortEl.style.outline = '';
-      connStart = null; connStartPortEl = null;
-    }
-
-    /* --- Validation --- */
-    function validateConnection(aNodeId, bNodeId){
-      const a = nodes[aNodeId], b = nodes[bNodeId];
-      if(!a || !b) return false;
-      const aType = a.type, bType = b.type;
-      const rA = networkRules.connectionRules[aType];
-      if(rA){
-        if(rA.cannotConnectTo && rA.cannotConnectTo.includes(bType)){
-          showError(`${deviceDefs[aType].label} não pode conectar diretamente a ${deviceDefs[bType].label}`);
-          return false;
-        }
-        if(rA.mustBeConnectedTo && !rA.mustBeConnectedTo.includes(bType)){
-          showError(`${deviceDefs[aType].label} deve ser conectado a ${rA.mustBeConnectedTo.map(t=>deviceDefs[t].label).join(', ')}`);
-          return false;
-        }
-      }
-      const rB = networkRules.connectionRules[bType];
-      if(rB && rB.canOnlyConnectTo && !rB.canOnlyConnectTo.includes(aType)){
-        showError(`${deviceDefs[bType].label} só pode se conectar a: ${rB.canOnlyConnectTo.map(t=>deviceDefs[t].label).join(', ')}`);
-        return false;
-      }
-      return true;
-    }
-
-    /* --- SVG Links --- */
-    function scheduleDrawLinks(){
-      if(drawScheduled) return;
-      drawScheduled = true;
-      requestAnimationFrame(()=>{ _drawLinks(); drawScheduled = false; });
-    }
-    function _drawLinks(){
-      while(svg.firstChild) svg.removeChild(svg.firstChild);
-      const topoRect = topo.getBoundingClientRect();
-      const deviceEls = Array.from(topo.querySelectorAll('.device'));
-      const portRects = {};
-      deviceEls.forEach(devEl => {
-        const devId = devEl.dataset.id;
-        const ports = Array.from(devEl.querySelectorAll('.port'));
-        portRects[devId] = ports.map(p => p.getBoundingClientRect());
-      });
-      const frag = document.createDocumentFragment();
-      links.forEach(l => {
-        const aRects = portRects[l.aNode];
-        const bRects = portRects[l.bNode];
-        if(!aRects || !bRects) return;
-        const aPRect = aRects[l.aPort];
-        const bPRect = bRects[l.bPort];
-        if(!aPRect || !bPRect) return;
-        const x1 = aPRect.left - topoRect.left + aPRect.width/2;
-        const y1 = aPRect.top - topoRect.top + aPRect.height/2;
-        const x2 = bPRect.left - topoRect.left + bPRect.width/2;
-        const y2 = bPRect.top - topoRect.top + bPRect.height/2;
-        const cx1 = x1 + (x2 - x1) * 0.25;
-        const cx2 = x1 + (x2 - x1) * 0.75;
-        const d = `M ${x1} ${y1} C ${cx1} ${y1} ${cx2} ${y2} ${x2} ${y2}`;
-        const g = document.createElementNS('http://www.w3.org/2000/svg','g');
-        g.classList.add('link');
-        g.dataset.linkId = l.id;
-        g.style.cursor = 'pointer';
-        const base = document.createElementNS('http://www.w3.org/2000/svg','path');
-        base.setAttribute('d', d);
-        base.setAttribute('stroke', l.type === 'fiber' ? 'rgba(139,92,246,0.12)' : (l.type === 'wifi' ? 'rgba(255,195,0,0.12)' : 'rgba(0,168,255,0.08)'));
-        base.setAttribute('stroke-width', 10);
-        base.setAttribute('fill','none');
-        base.setAttribute('stroke-linecap','round');
-        g.appendChild(base);
-        const top = document.createElementNS('http://www.w3.org/2000/svg','path');
-        top.setAttribute('d', d);
-        top.setAttribute('stroke', l.type === 'fiber' ? '#8b5cf6' : (l.type === 'wifi' ? '#ffcf33' : '#06b6d4'));
-        top.setAttribute('stroke-width', 3);
-        top.setAttribute('fill','none');
-        top.setAttribute('stroke-linecap','round');
-        top.setAttribute('stroke-dasharray', l.type === 'wifi' ? '4 8' : '0');
-        g.appendChild(top);
-        const traffic = document.createElementNS('http://www.w3.org/2000/svg','path');
-        traffic.setAttribute('d', d);
-        traffic.setAttribute('stroke', '#7fffd4');
-        traffic.setAttribute('stroke-width', 2);
-        traffic.setAttribute('fill','none');
-        traffic.setAttribute('stroke-linecap','round');
-        traffic.setAttribute('stroke-dasharray','6 200');
-        traffic.style.transition = 'stroke-dashoffset .2s linear';
-        g.appendChild(traffic);
-        const midLabel = document.createElementNS('http://www.w3.org/2000/svg','text');
-        midLabel.setAttribute('class','link-label');
-        midLabel.setAttribute('x', (x1+x2)/2 + 8);
-        midLabel.setAttribute('y', (y1+y2)/2 - 8);
-        midLabel.textContent = `${l.label} • ${l.speed} Mbps`;
-        g.appendChild(midLabel);
-        g.addEventListener('click', (ev)=>{
-          ev.stopPropagation();
-          if(confirm('Remover conexão?')) {
-            links = links.filter(x => x.id !== l.id);
-            scheduleDrawLinks();
-            updatePortOutlines();
-            updateNetworkStatus();
-            saveStateToLocalStorage();
-            log('Conexão removida');
+        const countdown = setInterval(() => {
+          const submittedAt = localStorage.getItem(QUIZ_KEY);
+          const now = Date.now();
+          const remaining = 10 - Math.floor((now - parseInt(submittedAt)) / (1000 * 60));
+          if (remaining <= 0) {
+            clearInterval(countdown);
+            updateRetakeButton();
+          } else {
+            retakeBtn.innerHTML = `<i class="fas fa-clock" aria-hidden="true"></i> Refazer em ${remaining} min`;
           }
-        });
-        frag.appendChild(g);
-      });
-      svg.appendChild(frag);
-      updatePortOutlines();
+        }, 1000);
+      } else if (quizSubmitted && canRetake()) {
+        const retakeBtn = document.createElement('button');
+        retakeBtn.id = 'retake-btn';
+        retakeBtn.className = 'btn';
+        retakeBtn.innerHTML = '<i class="fas fa-redo" aria-hidden="true"></i> Refazer Quiz';
+        retakeBtn.addEventListener('click', resetQuiz);
+        document.querySelector('.quiz-controls').appendChild(retakeBtn);
+      }
     }
-    function updatePortOutlines(){
-      document.querySelectorAll('.port').forEach(p=>{ p.classList.remove('connected'); p.style.boxShadow=''; const led = p.querySelector('.led'); if(led) led.className='led down' });
-      links.forEach(l=>{
-        const aEl = document.querySelector(`[data-id="${l.aNode}"]`);
-        const bEl = document.querySelector(`[data-id="${l.bNode}"]`);
-        if(!aEl || !bEl) return;
-        const aPorts = aEl.querySelectorAll('.port');
-        const bPorts = bEl.querySelectorAll('.port');
-        if(l.aPort < aPorts.length){
-          const aPortEl = aPorts[l.aPort];
-          aPortEl.classList.add('connected');
-          aPortEl.style.boxShadow = 'inset 0 0 0 3px rgba(123,93,255,0.12)';
-          const led = aPortEl.querySelector('.led'); if(led){ led.classList.remove('down'); led.classList.add('up') }
+
+    function resetQuiz() {
+      localStorage.removeItem('camadas_quiz_answers');
+      localStorage.removeItem(QUIZ_KEY);
+      answers = new Array(quiz.length).fill(null);
+      currentQuestion = 0;
+      quizSubmitted = false;
+      renderQuestion();
+      updateProgress();
+      updateRetakeButton();
+
+      const scoreDisplay = document.getElementById('score-display');
+      scoreDisplay.innerHTML = `<i class="fas fa-graduation-cap" aria-hidden="true"></i> <span id="score">0/10</span>`;
+      document.getElementById('score').textContent = '0/10';
+    }
+
+    function renderQuestion() {
+      if (quizSubmitted && !canRetake()) return;
+
+      const q = quiz[currentQuestion];
+      questionContainer.innerHTML = `
+        <div class="question-number">Pergunta ${currentQuestion + 1} de ${quiz.length}</div>
+        <div class="question-text">${q.q}</div>
+        <div class="options-container" id="options-container"></div>
+      `;
+
+      const optionsContainer = document.getElementById('options-container');
+      q.opts.forEach((opt, idx) => {
+        const option = document.createElement('div');
+        option.className = 'option';
+        option.setAttribute('role','button');
+        option.setAttribute('tabindex','0');
+        option.setAttribute('aria-pressed', String(answers[currentQuestion] === idx));
+        if (answers[currentQuestion] === idx) option.classList.add('selected');
+        option.innerHTML = `<div class="option-letter">${String.fromCharCode(65 + idx)}</div><div>${opt}</div>`;
+        option.dataset.index = idx;
+        optionsContainer.appendChild(option);
+      });
+
+      prevBtn.disabled = currentQuestion === 0;
+      nextBtn.disabled = currentQuestion === quiz.length - 1;
+
+      const answered = answers.filter(a => a !== null).length;
+      scoreSpan.textContent = `${answered}/${quiz.length}`;
+    }
+
+    function updateProgress() {
+      const answered = answers.filter(a => a !== null).length;
+      const percentage = (answered / quiz.length) * 100;
+      progressBar.style.width = `${percentage}%`;
+    }
+
+    // Listeners
+    function setupEventListeners() {
+      // Protocols: Click to update current
+      protocolsList.addEventListener('click', (e) => {
+        const item = e.target.closest('.protocol-item');
+        if (item) {
+          document.querySelectorAll('.protocol-item').forEach(i => i.classList.remove('active'));
+          item.classList.add('active');
+          updateCurrentProtocol();
         }
-        if(l.bPort < bPorts.length){
-          const bPortEl = bPorts[l.bPort];
-          bPortEl.classList.add('connected');
-          bPortEl.style.boxShadow = 'inset 0 0 0 3px rgba(123,93,255,0.12)';
-          const led = bPortEl.querySelector('.led'); if(led){ led.classList.remove('down'); led.classList.add('up') }
+      });
+
+      // Quiz options
+      document.addEventListener('click', (e) => {
+        if (quizSubmitted && !canRetake()) return;
+        const option = e.target.closest('.option');
+        if (!option) return;
+        const idx = parseInt(option.dataset.index, 10);
+        answers[currentQuestion] = idx;
+        localStorage.setItem('camadas_quiz_answers', JSON.stringify(answers));
+        renderQuestion();
+        updateProgress();
+      });
+
+      document.addEventListener('keydown', (e) => {
+        const option = e.target.closest('.option');
+        if (!option) return;
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); option.click(); }
+      });
+
+      prevBtn.addEventListener('click', () => {
+        if (quizSubmitted && !canRetake()) return;
+        if (currentQuestion > 0) {
+          currentQuestion--;
+          renderQuestion();
         }
       });
-    }
-
-    /* --- Panning --- */
-    topo.addEventListener('pointerdown', (e) => {
-      const deviceEl = e.target.closest('.device');
-      const portEl = e.target.closest('.port');
-      if (deviceEl || portEl) return;  // Don't pan if interacting with device/port
-
-      isPanning = true;
-      panStartX = e.clientX - panX;
-      panStartY = e.clientY - panY;
-      topo.classList.add('panning');
-      topo.setPointerCapture(e.pointerId);
-    });
-
-    document.addEventListener('pointermove', (e) => {
-      if (!isPanning) return;
-
-      panX = e.clientX - panStartX;
-      panY = e.clientY - panStartY;
-      topo.style.transform = `translate(${panX}px, ${panY}px)`;
-
-      // Redraw devices to apply pan
-      Object.values(nodes).forEach(node => {
-        if (node.el) {
-          node.el.style.left = (node.x + panX) + 'px';
-          node.el.style.top = (node.y + panY) + 'px';
+      nextBtn.addEventListener('click', () => {
+        if (quizSubmitted && !canRetake()) return;
+        if (currentQuestion < quiz.length - 1) {
+          currentQuestion++;
+          renderQuestion();
         }
       });
 
-      scheduleDrawLinks();
-    }, { passive: true });
-
-    document.addEventListener('pointerup', (e) => {
-      if (!isPanning) return;
-
-      isPanning = false;
-      topo.classList.remove('panning');
-      topo.releasePointerCapture(e.pointerId);
-
-      // Save pan state to node positions (adjust logical positions)
-      Object.values(nodes).forEach(node => {
-        node.x -= (e.clientX - panStartX - panX);  // Update logical pos inversely
-        node.y -= (e.clientY - panStartY - panY);
-      });
-
-      // Reset pan to 0 and redraw with updated positions
-      panX = 0;
-      panY = 0;
-      topo.style.transform = 'translate(0px, 0px)';
-      Object.values(nodes).forEach(drawNode);
-      scheduleDrawLinks();
-
-      saveStateToLocalStorage();
-    });
-
-    /* --- Dragging (Devices) --- */
-    let currentDrag = null;
-    topo.addEventListener('pointerdown', (e)=>{
-      const deviceEl = e.target.closest('.device');
-      if(!deviceEl || e.target.closest('.port')) return;
-      const nodeId = deviceEl.dataset.id;
-      const node = nodes[nodeId];
-      if(!node) return;
-      e.preventDefault();
-      currentDrag = { node, el: deviceEl, startX:e.clientX, startY:e.clientY, ox:node.x, oy:node.y };
-      deviceEl.setPointerCapture(e.pointerId);
-      deviceEl.style.zIndex = 999;
-    });
-    document.addEventListener('pointermove', (e)=>{
-      if(!currentDrag) return;
-      const {node, el, startX, startY, ox, oy} = currentDrag;
-      const dx = e.clientX - startX, dy = e.clientY - startY;
-      node.x = ox + dx; node.y = oy + dy;
-      el.style.left = (node.x + panX) + 'px'; el.style.top = (node.y + panY) + 'px';
-      scheduleDrawLinks();
-    }, {passive:true});
-    document.addEventListener('pointerup', (e)=>{
-      if(!currentDrag) return;
-      try{ currentDrag.el.releasePointerCapture && currentDrag.el.releasePointerCapture(e.pointerId); }catch(_){}
-      currentDrag.el.style.zIndex = '';
-      currentDrag = null;
-      saveStateToLocalStorage();
-    });
-
-    /* --- Remove Node --- */
-    function removeNode(id){
-      links = links.filter(l=> l.aNode !== id && l.bNode !== id);
-      if(nodes[id].el) nodes[id].el.remove();
-      delete nodes[id];
-      scheduleDrawLinks();
-      updateDeviceCounts();
-      updateNetworkStatus();
-      saveStateToLocalStorage();
-      checkStepCompletion(currentStep);
-      log(`Dispositivo removido: ${nodes[id]?.name || id}`);
-      clearInspector();
-    }
-
-    deleteDeviceBtn.addEventListener('click', () => {
-      if (!currentInspector) return;
-      if (confirm(`Excluir dispositivo "${currentInspector.name}"? Isso removerá também suas conexões.`)) {
-        removeNode(currentInspector.id);
-      }
-    });
-
-    /* --- Simulation --- */
-    function buildAdj(){
-      const g = {};
-      Object.keys(nodes).forEach(id => g[id]=new Set());
-      links.forEach(l => { if(g[l.aNode]) g[l.aNode].add(l.bNode); if(g[l.bNode]) g[l.bNode].add(l.aNode); });
-      return g;
-    }
-    function findPath(src, dst){
-      const g = buildAdj();
-      const q=[src], prev={}; prev[src]=null; let qi=0;
-      while(qi<q.length){
-        const u = q[qi++]; if(u===dst) break;
-        for(const v of g[u]) if(!(v in prev)){ prev[v]=u; q.push(v); }
-      }
-      if(!(dst in prev)) return null;
-      const path=[]; let cur=dst; while(cur!==null){ path.push(cur); cur=prev[cur]; } return path.reverse();
-    }
-    function computeLatencyForPath(path){
-      if(!path || path.length<1) return null;
-      let total = 0;
-      for(let i=0;i<path.length-1;i++){
-        const a = path[i], b = path[i+1];
-        const l = links.find(L => (L.aNode===a && L.bNode===b) || (L.aNode===b && L.bNode===a));
-        if(!l) total += 40; else {
-          const speed = l.speed;
-          if(speed >= 5000) total += 1;
-          else if(speed >= 1000) total += 5;
-          else if(speed >= 100) total += 12;
-          else total += 30;
-          total += Math.random() * 6;
-        }
-      }
-      if(path.length === 1) total = 0.5 + Math.random()*0.5;
-      return Math.round(total*10)/10;
-    }
-    function simulatePingBetween(a,b){
-      const path = findPath(a,b);
-      if(!path) { log('Ping: destino inacessível'); return; }
-      const latency = computeLatencyForPath(path);
-      log(`Ping de ${nodes[a].name} → ${nodes[b].name}: ${latency} ms (${path.length-1} hops)`);
-      animatePacketAlongPath(path);
-    }
-    function animatePacketAlongPath(path){
-      scheduleDrawLinks();
-      const topoRect = topo.getBoundingClientRect();
-      const pathElements = [];
-      for(let i=0;i<path.length-1;i++){
-        const a = path[i], b = path[i+1];
-        const l = links.find(L => (L.aNode===a && L.bNode===b) || (L.aNode===b && L.bNode===a));
-        if(!l) continue;
-        const g = svg.querySelector(`g.link[data-link-id="${l.id}"]`);
-        if(!g) continue;
-        const actualPath = g.querySelector('path');
-        if(actualPath) pathElements.push({path:actualPath, link:l});
-      }
-      if(pathElements.length===0) return;
-      const circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
-      circle.setAttribute('r',6);
-      circle.setAttribute('fill','#7fffd4');
-      svg.appendChild(circle);
-      const segs = pathElements.map(p => ({ path: p.path, len: p.path.getTotalLength(), link: p.link }));
-      const totalLen = segs.reduce((s,x)=>s+x.len,0);
-      const speedPxPerSec = 300;
-      const duration = Math.max(400, totalLen / speedPxPerSec * 1000);
-      const start = performance.now();
-      const trafficPaths = pathElements.map(p=>{
-        const g = p.path.parentNode;
-        const t = g.querySelectorAll('path')[2];
-        if(t) t.setAttribute('stroke-dasharray','6 200');
-        return t;
-      }).filter(Boolean);
-      let animId;
-      const anim = (now)=>{
-        const t = (now-start)/duration;
-        if(t>=1){ circle.remove(); trafficPaths.forEach(tp=>tp.setAttribute('stroke-dasharray','0 200')); cancelAnimationFrame(animId); return; }
-        const pos = t * totalLen;
-        let acc=0, idx=0;
-        while(idx<segs.length && acc+segs[idx].len < pos){ acc += segs[idx].len; idx++; }
-        if(idx>=segs.length) idx = segs.length-1;
-        const seg = segs[idx];
-        const local = Math.max(0, pos-acc);
-        const pt = seg.path.getPointAtLength(local);
-        circle.setAttribute('cx', pt.x);
-        circle.setAttribute('cy', pt.y);
-        trafficPaths.forEach(tp => {
-          const offset = (now/10) % 400;
-          tp.setAttribute('stroke-dashoffset', -offset);
-        });
-        animId = requestAnimationFrame(anim);
-      };
-      animId = requestAnimationFrame(anim);
-    }
-
-    /* --- Inspector --- */
-    function selectInspector(nodeId){
-      currentInspector = nodes[nodeId];
-      if(!currentInspector) return;
-      inspector.style.display = 'block';
-      inspectorEmpty.style.display = 'none';
-      updateInspectorValues(currentInspector);
-    }
-    function updateInspectorValues(node){
-      inspHostname.value = node.name;
-      inspMac.value = node.mac;
-      inspIp.value = node.ip || '';
-      inspIpMode.value = node.ipMode || 'dhcp';
-      inspRole.value = node.role || 'edge';
-      inspConns.textContent = links.filter(l=> l.aNode===node.id || l.bNode===node.id).length;
-      inspThroughput.textContent = Math.round(node.throughput) + ' kb/s';
-      inspLastSeen.textContent = node.lastSeen ? new Date(node.lastSeen).toLocaleTimeString() : '—';
-      if(node.el){
-        node.el.querySelector('.dev-name').textContent = node.name;
-        node.el.querySelector('.dev-type').textContent = `${node.type.toUpperCase()} • ${node.ip || '—'}`;
-      }
-    }
-    function clearInspector(){
-      currentInspector = null;
-      inspector.style.display = 'none';
-      inspectorEmpty.style.display = 'block';
-    }
-    document.getElementById('applyConfig').addEventListener('click', ()=>{
-      if(!currentInspector) return;
-      currentInspector.name = inspHostname.value.trim() || currentInspector.name;
-      currentInspector.mac = inspMac.value.trim() || currentInspector.mac;
-      currentInspector.ipMode = inspIpMode.value;
-      currentInspector.ip = inspIp.value.trim() || (currentInspector.ipMode === 'dhcp' ? allocateIp() : currentInspector.ip);
-      currentInspector.role = inspRole.value;
-      updateInspectorValues(currentInspector);
-      drawNode(currentInspector);
-      saveStateToLocalStorage();
-      log('Config aplicada: ' + currentInspector.name);
-    });
-    document.getElementById('resetMac').addEventListener('click', ()=>{
-      if(!currentInspector) return;
-      currentInspector.mac = generateMac();
-      inspMac.value = currentInspector.mac;
-    });
-    document.getElementById('inspectPing').addEventListener('click', ()=>{
-      if(!currentInspector) return;
-      log(`Ping local ${currentInspector.name}: 0.3 ms`);
-    });
-
-    /* --- Network Status --- */
-    function updateNetworkStatus(){
-      const connected = {};
-      Object.keys(nodes).forEach(id => connected[id] = []);
-      links.forEach(l=>{
-        if(connected[l.aNode]) connected[l.aNode].push(l);
-        if(connected[l.bNode]) connected[l.bNode].push(l);
-      });
-      Object.entries(nodes).forEach(([id,node])=>{
-        const el = node.el;
-        if(!el) return;
-        const dots = el.querySelectorAll('.network-dot');
-        const conns = connected[id] || [];
-        dots.forEach((d,i)=> { if(i < conns.length) d.classList.add('active'); else d.classList.remove('active') });
-        const throughput = conns.reduce((s,c)=> s + (c.speed/8) * (Math.random()*0.6 + 0.2), 0);
-        node.throughput = throughput;
-        node.lastSeen = Date.now();
-        if(currentInspector && currentInspector.id === id) updateInspectorValues(node);
-      });
-      if(links.length) log(`Rede ativa — ${Object.keys(nodes).length} nós • ${links.length} links`);
-      else log('Nenhuma conexão ativa');
-      if(!networkStatusInterval){
-        networkStatusInterval = setInterval(()=>{
-          Object.values(nodes).forEach(node=>{
-            const el = node.el;
-            if(!el) return;
-            const dots = el.querySelectorAll('.network-dot.active');
-            if(dots.length && Math.random()>0.9) {
-              const d = dots[Math.floor(Math.random()*dots.length)];
-              d.style.opacity = Math.random()>0.5 ? '0.3' : '1';
-            }
-          });
-        },3000);
-      }
-    }
-
-    /* --- UI Controls --- */
-    const pingBtn = document.createElement('button');
-    pingBtn.textContent = 'Simular Ping';
-    pingBtn.className = 'ghost';
-    pingBtn.style.marginLeft = '8px';
-    pingBtn.addEventListener('click', ()=>{
-      if(selectedForSim.length !== 2){ alert('Selecione exatamente 2 dispositivos (Shift+Clique).'); return; }
-      simulatePingBetween(selectedForSim[0], selectedForSim[1]);
-    });
-    document.querySelector('.controls').appendChild(pingBtn);
-
-    const pathBtn = document.createElement('button');
-    pathBtn.textContent = 'Mostrar caminho';
-    pathBtn.className = 'ghost';
-    pathBtn.style.marginLeft = '8px';
-    pathBtn.addEventListener('click', ()=>{
-      if(selectedForSim.length !== 2){ alert('Selecione exatamente 2 dispositivos (Shift+Clique).'); return; }
-      const path = findPath(selectedForSim[0], selectedForSim[1]);
-      if(!path) { log('Sem caminho'); return; }
-      highlightPath(path);
-    });
-    document.querySelector('.controls').appendChild(pathBtn);
-
-    function highlightPath(path){
-      scheduleDrawLinks();
-      for(let i=0;i<path.length-1;i++){
-        const a = path[i], b = path[i+1];
-        const l = links.find(L => (L.aNode===a && L.bNode===b) || (L.aNode===b && L.bNode===a));
-        if(!l) continue;
-        const g = svg.querySelector(`g.link[data-link-id="${l.id}"]`);
-        if(!g) continue;
-        const paths = g.querySelectorAll('path');
-        paths.forEach(p => p.setAttribute('stroke', '#7fffd4'));
-        setTimeout(()=> scheduleDrawLinks(), 2000);
-      }
-    }
-
-    function toggleSelectForSim(id, el){
-      const idx = selectedForSim.indexOf(id);
-      if(idx > -1){
-        selectedForSim.splice(idx,1);
-        el.style.boxShadow = '';
-        log('Removido da seleção: ' + nodes[id].name);
-      } else {
-        if(selectedForSim.length >= 2){
-          showError('Já há 2 dispositivos selecionados');
+      submitBtn.addEventListener('click', () => {
+        if (quizSubmitted && !canRetake()) return;
+        if (answers.some(a => a === null)) {
+          alert('Por favor, responda todas as perguntas antes de enviar.');
           return;
         }
-        selectedForSim.push(id);
-        el.style.boxShadow = '0 0 0 4px rgba(0,168,255,0.12)';
-        log('Selecionado para simulação: ' + nodes[id].name);
-      }
-    }
 
-    /* --- Export/Import --- */
-    document.getElementById('exportState').addEventListener('click', ()=>{
-      const s = localStorage.getItem('packetLiteRealState');
-      if(!s) { alert('Nada para exportar'); return; }
-      const blob = new Blob([s], {type:'application/json'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a'); a.href = url; a.download = 'packetlite-state.json'; a.click(); URL.revokeObjectURL(url);
-    });
-    document.getElementById('importState').addEventListener('click', ()=>{
-      const inp = document.createElement('input'); inp.type='file'; inp.accept='application/json';
-      inp.addEventListener('change',(e)=>{
-        const f = e.target.files[0]; if(!f) return;
-        const r = new FileReader(); r.onload = ()=> { localStorage.setItem('packetLiteRealState', r.result); loadStateFromLocalStorage(); saveStateToLocalStorage(); };
-        r.readAsText(f);
-      });
-      inp.click();
-    });
+        localStorage.setItem(QUIZ_KEY, Date.now().toString());
+        quizSubmitted = true;
 
-    /* --- Auto Layout & Clear --- */
-    document.getElementById('autoLayout').addEventListener('click', ()=>{
-      const ids = Object.keys(nodes);
-      let x = 40, y = 40, col = 0;
-      ids.forEach((id,i)=>{
-        nodes[id].x = x + (col*200);
-        nodes[id].y = y + (Math.floor(i/6)*140);
-        drawNode(nodes[id]);
-        col = (col+1)%3;
-      });
-      scheduleDrawLinks();
-      saveStateToLocalStorage();
-    });
-    document.getElementById('clear').addEventListener('click', ()=>{
-      if(!confirm('Reiniciar o canvas e o progresso?')) return;
-      Object.keys(nodes).forEach(k=> { if(nodes[k] && nodes[k].el) nodes[k].el.remove(); });
-      nodes = {}; links = []; nextId = 1; connStart=null;
-      buildProcess.forEach(step => step.completed = false);
-      currentStep = 0;
-      panX = 0; panY = 0;
-      topo.style.transform = 'translate(0px, 0px)';
-      while(svg.firstChild) svg.removeChild(svg.firstChild);
-      initBuildSteps();
-      updateBuildProgress();
-      log('Canvas e progresso reiniciados');
-      saveStateToLocalStorage();
-    });
+        let correct = 0;
+        for (let i = 0; i < quiz.length; i++) if (answers[i] === quiz[i].a) correct++;
 
-    /* --- Save/Load --- */
-    function saveStateToLocalStorage(){
-      try{
-        const nodesForSave = {};
-        Object.values(nodes).forEach(n=> nodesForSave[n.id] = { id:n.id,type:n.type,x:n.x,y:n.y,name:n.name,ports:n.ports,mac:n.mac,ip:n.ip,ipMode:n.ipMode,role:n.role,throughput:n.throughput,lastSeen:n.lastSeen });
-        const state = { nodes: nodesForSave, links, currentStep, buildProcess: buildProcess.map(s => ({ ...s, completed: s.completed })), timestamp:Date.now() };
-        localStorage.setItem('packetLiteRealState', JSON.stringify(state));
-      }catch(e){ console.warn('save error',e) }
-    }
-    function loadStateFromLocalStorage(){
-      try{
-        const s = localStorage.getItem('packetLiteRealState');
-        if(!s) return false;
-        const state = JSON.parse(s);
-        Object.keys(nodes).forEach(k=> { if(nodes[k] && nodes[k].el) nodes[k].el.remove(); });
-        nodes = {}; links = []; nextId = 1;
-        for(const id in state.nodes){
-          const n = state.nodes[id];
-          nodes[id] = { ...n, el:null, ports: n.ports || Array.from({length: deviceDefs[n.type].ports}, ()=>({})) };
+        document.getElementById('score-display').innerHTML = `<i class="fas fa-trophy" aria-hidden="true"></i> ${correct}/${quiz.length}`;
+
+        const reviewRoot = document.createElement('div');
+        quiz.forEach((item, qIndex) => {
+          const block = document.createElement('div');
+          const h = document.createElement('div'); 
+          h.style.fontWeight = '700'; 
+          h.style.marginBottom = '12px'; 
+          h.style.color = 'var(--text-primary)'; 
+          h.textContent = `${qIndex+1}. ${item.q}`;
+          block.appendChild(h);
+          const opts = document.createElement('div');
+          opts.style.display = 'grid';
+          opts.style.gap = '8px';
+          opts.style.marginBottom = '12px';
+          item.opts.forEach((op, optIndex) => {
+            const o = document.createElement('div'); 
+            o.className = 'option'; 
+            o.style.cursor = 'default'; 
+            o.style.pointerEvents = 'none';
+            o.innerHTML = `<div class="option-letter">${String.fromCharCode(65 + optIndex)}</div><div>${op}</div>`;
+            if (optIndex === item.a) o.classList.add('correct');
+            else if (answers[qIndex] === optIndex) o.classList.add('wrong');
+            opts.appendChild(o);
+          });
+          block.appendChild(opts);
+          const explain = document.createElement('div'); 
+          explain.style.fontSize = '14px'; 
+          explain.style.color = 'var(--success)'; 
+          explain.style.fontStyle = 'italic'; 
+          explain.style.marginTop = '8px';
+          explain.textContent = item.explain;
+          block.appendChild(explain);
+          reviewRoot.appendChild(block);
+        });
+
+        questionContainer.innerHTML = '';
+        questionContainer.appendChild(reviewRoot);
+
+        updateRetakeButton();
+
+        if (correct === quiz.length) {
+          showSuccessToast();
+          launchConfetti();
         }
-        links = (state.links || []).map(x=>({...x}));
-        if(state.buildProcess){
-          for(let i=0;i<state.buildProcess.length && i < buildProcess.length; i++){
-            buildProcess[i].completed = state.buildProcess[i].completed;
-          }
-          currentStep = state.currentStep || 0;
-        }
-        const nodeMax = Object.keys(nodes).length ? Math.max(...Object.keys(nodes).map(k=>parseInt(k.slice(1)||0))) : 0;
-        nextId = Math.max(nextId, nodeMax+1);
-        Object.values(nodes).forEach(drawNode);
-        scheduleDrawLinks();
-        updateDeviceCounts();
-        initBuildSteps();
-        updateNetworkStatus();
-        return true;
-      }catch(e){ console.warn('load error',e); return false; }
+      });
     }
 
-    /* --- First Time Check --- */
-    function checkFirstTimeUser() {
-      const firstTime = localStorage.getItem('packetLiteFirstTime');
-      if(firstTime === 'false') {
-        firstTimeUser = false;
-        return false;
-      }
-      return true;
+    function showSuccessToast() {
+      const toast = document.createElement('div');
+      toast.style.position = 'fixed';
+      toast.style.top = '16px';
+      toast.style.left = '50%';
+      toast.style.transform = 'translateX(-50%)';
+      toast.style.padding = '12px 18px';
+      toast.style.borderRadius = '12px';
+      toast.style.background = 'linear-gradient(90deg, var(--success), #34d399)';
+      toast.style.color = 'var(--bg-1)';
+      toast.style.fontWeight = '800';
+      toast.style.zIndex = 1000;
+      toast.innerHTML = '<i class="fas fa-star" aria-hidden="true"></i> Parabéns! Você acertou todas as questões!';
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
     }
 
-    /* --- Init --- */
-    function initApp(){
-      firstTimeUser = checkFirstTimeUser();
-      initDevicePalette();
-      initBuildSteps();
-      const loaded = loadStateFromLocalStorage();
-      if(!loaded){
-        log('Bem vindo ao Packet-Lite Pro (modo realista)');
+    const confettiCanvas = document.getElementById('confetti');
+    const confettiCtx = confettiCanvas.getContext('2d');
+    function resizeCanvas() { confettiCanvas.width = window.innerWidth; confettiCanvas.height = window.innerHeight; }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+    let confettiPieces = [];
+    function launchConfetti() {
+      confettiPieces = [];
+      for (let i = 0; i < 120; i++) {
+        confettiPieces.push({ x: Math.random() * confettiCanvas.width, y: -20, r: 3 + Math.random() * 8, vx: -3 + Math.random() * 6, vy: 2 + Math.random() * 6, rot: Math.random() * 360, vr: -0.1 + Math.random() * 0.2, color: `hsl(${Math.random() * 360}, 80%, 60%)` });
       }
-      requestAnimationFrame(()=> scheduleDrawLinks());
-      updateNetworkStatus();
-      setInterval(()=>{ updateNetworkStatus(); saveStateToLocalStorage(); }, 5000);
+      requestAnimationFrame(drawConfetti);
+      setTimeout(() => { confettiPieces = []; confettiCtx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height); }, 3200);
     }
-    document.addEventListener('DOMContentLoaded', initApp);
+    function drawConfetti() {
+      confettiCtx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
+      confettiPieces.forEach(p => {
+        p.x += p.vx; p.y += p.vy; p.vy += 0.12; p.rot += p.vr;
+        confettiCtx.save();
+        confettiCtx.translate(p.x,p.y);
+        confettiCtx.rotate((p.rot*Math.PI)/180);
+        confettiCtx.fillStyle = p.color;
+        confettiCtx.fillRect(-p.r/2,-p.r/2,p.r,p.r*0.6);
+        confettiCtx.restore();
+      });
+      if (confettiPieces.length) requestAnimationFrame(drawConfetti);
+    }
+
+    window.addEventListener('resize', () => {
+      if (!quizSubmitted || canRetake()) {
+        renderQuestion();
+      }
+    });
+
   </script>
 </body>
 </html>

@@ -15,22 +15,30 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
+    /* ---------- PALETA AZUL PREMIUM (PADRÃO) - CORES MAIS SUAVES ---------- */
     :root {
-      --bg-900: #071428;
-      --bg-gradient: linear-gradient(160deg, #0a0e17 0%, #0d1525 35%, #121c33 70%, #1a2540 100%);
-      --card-bg: rgba(18, 28, 51, 0.7);
-      --card-border: rgba(143, 233, 255, 0.15);
-      --accent: #00a8ff;
-      --accent-light: #8fe9ff;
-      --text-primary: #ffffff;
-      --text-secondary: #b8d7ea;
+      --bg-1: #0a0e17;
+      --bg-2: #0d1525;
+      --card-bg: rgba(18, 28, 51, 0.75);
+      --card-border: rgba(173, 216, 230, 0.12);
+      --accent: #4fc3f7;
+      --accent-light: #b3e5fc;
+      --accent-hover: #4fc3f7;
+      --text-primary: #f8f9fa;
+      --text-secondary: #d1e8e2;
       --success: #4ade80;
       --warning: #fbbf24;
       --error: #f87171;
-      --timeline-bg: rgba(0, 168, 255, 0.08);
+      --timeline-bg: rgba(79, 195, 247, 0.06);
       --timeline-progress: linear-gradient(90deg, var(--accent-light), var(--accent));
-      --glow: 0 0 20px rgba(0, 168, 255, 0.35);
+      --glow: 0 0 20px rgba(79, 195, 247, 0.25);
       --transition: all 0.28s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      --shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.6);
+      --rounded: 16px;
+      --focus-ring: 0 0 0 4px rgba(59, 130, 246, 0.3);
+      --bg-gradient: linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 35%, #121c33 70%, #1a2540 100%);
+      --accent-rgb: 79, 195, 247;
     }
 
     /* Reduced motion preference */
@@ -39,16 +47,184 @@
       * { transition: none !important; animation: none !important; }
     }
 
+    /* Tema Vermelho Suavizado */
+    :root.theme-red {
+      --bg-1: #1a0d0d;
+      --bg-2: #2c1818;
+      --card-bg: rgba(26, 13, 13, 0.75);
+      --card-border: rgba(244, 143, 143, 0.12);
+      --accent: #ef9a9a;
+      --accent-light: #ffcdd2;
+      --accent-hover: #ef9a9a;
+      --text-primary: #fff8f8;
+      --text-secondary: #f8bbd9;
+      --success: #4ade80;
+      --warning: #fbbf24;
+      --error: #f87171;
+      --timeline-bg: rgba(239, 154, 154, 0.06);
+      --timeline-progress: linear-gradient(90deg, var(--accent-light), var(--accent));
+      --glow: 0 0 20px rgba(239, 154, 154, 0.25);
+      --shadow: 0 10px 30px rgba(127, 29, 29, 0.4);
+      --shadow-hover: 0 12px 40px rgba(153, 27, 27, 0.5);
+      --focus-ring: 0 0 0 4px rgba(239, 68, 68, 0.3);
+      --bg-gradient: linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 35%, #3d2222 70%, #501616 100%);
+      --accent-rgb: 239, 154, 154;
+    }
+
+    /* Tema Verde Suavizado */
+    :root.theme-green {
+      --bg-1: #0f1a0f;
+      --bg-2: #1a281a;
+      --card-bg: rgba(15, 26, 15, 0.75);
+      --card-border: rgba(144, 238, 144, 0.12);
+      --accent: #a5d6a7;
+      --accent-light: #e8f5e8;
+      --accent-hover: #a5d6a7;
+      --text-primary: #f1f8e9;
+      --text-secondary: #c8e6c9;
+      --success: #4ade80;
+      --warning: #fbbf24;
+      --error: #f87171;
+      --timeline-bg: rgba(165, 214, 167, 0.06);
+      --timeline-progress: linear-gradient(90deg, var(--accent-light), var(--accent));
+      --glow: 0 0 20px rgba(165, 214, 167, 0.25);
+      --shadow: 0 10px 30px rgba(20, 83, 45, 0.4);
+      --shadow-hover: 0 12px 40px rgba(22, 101, 52, 0.5);
+      --focus-ring: 0 0 0 4px rgba(34, 197, 94, 0.3);
+      --bg-gradient: linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 35%, #254a25 70%, #306d30 100%);
+      --accent-rgb: 165, 214, 167;
+    }
+
+    /* Tema Roxo Suavizado */
+    :root.theme-purple {
+      --bg-1: #1a0f1f;
+      --bg-2: #2a1a2f;
+      --card-bg: rgba(26, 15, 31, 0.75);
+      --card-border: rgba(221, 160, 221, 0.12);
+      --accent: #ce93d8;
+      --accent-light: #f3e5f5;
+      --accent-hover: #ce93d8;
+      --text-primary: #fafafa;
+      --text-secondary: #e1bee7;
+      --success: #4ade80;
+      --warning: #fbbf24;
+      --error: #f87171;
+      --timeline-bg: rgba(206, 147, 216, 0.06);
+      --timeline-progress: linear-gradient(90deg, var(--accent-light), var(--accent));
+      --glow: 0 0 20px rgba(206, 147, 216, 0.25);
+      --shadow: 0 10px 30px rgba(79, 70, 229, 0.4);
+      --shadow-hover: 0 12px 40px rgba(99, 102, 241, 0.5);
+      --focus-ring: 0 0 0 4px rgba(168, 85, 247, 0.3);
+      --bg-gradient: linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 35%, #3d2744 70%, #501659 100%);
+      --accent-rgb: 206, 147, 216;
+    }
+
+    /* Tema Laranja Suavizado */
+    :root.theme-orange {
+      --bg-1: #2c1608;
+      --bg-2: #3d1f0e;
+      --card-bg: rgba(44, 22, 8, 0.75);
+      --card-border: rgba(255, 218, 185, 0.12);
+      --accent: #ffb74d;
+      --accent-light: #fff8e1;
+      --accent-hover: #ffb74d;
+      --text-primary: #fffde7;
+      --text-secondary: #ffe0b2;
+      --success: #4ade80;
+      --warning: #fbbf24;
+      --error: #f87171;
+      --timeline-bg: rgba(255, 183, 77, 0.06);
+      --timeline-progress: linear-gradient(90deg, var(--accent-light), var(--accent));
+      --glow: 0 0 20px rgba(255, 183, 77, 0.25);
+      --shadow: 0 10px 30px rgba(146, 64, 14, 0.4);
+      --shadow-hover: 0 12px 40px rgba(180, 83, 9, 0.5);
+      --focus-ring: 0 0 0 4px rgba(251, 146, 60, 0.3);
+      --bg-gradient: linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 35%, #582919 70%, #723424 100%);
+      --accent-rgb: 255, 183, 77;
+    }
+
+    /* Tema Rosa Suavizado */
+    :root.theme-pink {
+      --bg-1: #1f0a1a;
+      --bg-2: #2f0f25;
+      --card-bg: rgba(31, 10, 26, 0.75);
+      --card-border: rgba(255, 182, 193, 0.12);
+      --accent: #f8bbd9;
+      --accent-light: #fce4ec;
+      --accent-hover: #f8bbd9;
+      --text-primary: #fdf2f8;
+      --text-secondary: #f8bbd9;
+      --success: #4ade80;
+      --warning: #fbbf24;
+      --error: #f87171;
+      --timeline-bg: rgba(248, 187, 217, 0.06);
+      --timeline-progress: linear-gradient(90deg, var(--accent-light), var(--accent));
+      --glow: 0 0 20px rgba(248, 187, 217, 0.25);
+      --shadow: 0 10px 30px rgba(136, 19, 55, 0.4);
+      --shadow-hover: 0 12px 40px rgba(190, 24, 93, 0.5);
+      --focus-ring: 0 0 0 4px rgba(244, 114, 182, 0.3);
+      --bg-gradient: linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 35%, #42153a 70%, #541b4f 100%);
+      --accent-rgb: 248, 187, 217;
+    }
+
+    /* Tema Ciano Suavizado */
+    :root.theme-teal {
+      --bg-1: #0a1f1f;
+      --bg-2: #0f2a2a;
+      --card-bg: rgba(10, 31, 31, 0.75);
+      --card-border: rgba(175, 238, 238, 0.12);
+      --accent: #80deea;
+      --accent-light: #e0f2f1;
+      --accent-hover: #80deea;
+      --text-primary: #f0f9ff;
+      --text-secondary: #b2dfdb;
+      --success: #4ade80;
+      --warning: #fbbf24;
+      --error: #f87171;
+      --timeline-bg: rgba(128, 222, 234, 0.06);
+      --timeline-progress: linear-gradient(90deg, var(--accent-light), var(--accent));
+      --glow: 0 0 20px rgba(128, 222, 234, 0.25);
+      --shadow: 0 10px 30px rgba(6, 78, 59, 0.4);
+      --shadow-hover: 0 12px 40px rgba(15, 118, 110, 0.5);
+      --focus-ring: 0 0 0 4px rgba(45, 212, 191, 0.3);
+      --bg-gradient: linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 35%, #144040 70%, #195555 100%);
+      --accent-rgb: 128, 222, 234;
+    }
+
+    /* Tema Preto e Branco (Cinza Escala) Suavizado */
+    :root.theme-grayscale {
+      --bg-1: #000000;
+      --bg-2: #111111;
+      --card-bg: rgba(0, 0, 0, 0.75);
+      --card-border: rgba(211, 211, 211, 0.06);
+      --accent: #e0e0e0;
+      --accent-light: #f5f5f5;
+      --accent-hover: #e0e0e0;
+      --text-primary: #ffffff;
+      --text-secondary: #d3d3d3;
+      --success: #4ade80;
+      --warning: #fbbf24;
+      --error: #f87171;
+      --timeline-bg: rgba(224, 224, 224, 0.03);
+      --timeline-progress: linear-gradient(90deg, var(--accent-light), var(--accent));
+      --glow: 0 0 20px rgba(224, 224, 224, 0.15);
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      --shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.8);
+      --focus-ring: 0 0 0 4px rgba(255, 255, 255, 0.2);
+      --bg-gradient: linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 35%, #222222 70%, #333333 100%);
+      --accent-rgb: 224, 224, 224;
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    html, body { height: 100%; margin: 0; background: var(--bg-gradient); color: var(--text-secondary); font-family: 'Space Grotesk', 'Montserrat', system-ui, -apple-system, 'Segoe UI', Roboto, Arial; overflow-x: hidden; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+    html, body { height: 100%; margin: 0; background: var(--bg-gradient); color: var(--text-secondary); font-family: 'Space Grotesk', 'Montserrat', system-ui, -apple-system, 'Segoe UI', Roboto, Arial; overflow-x: hidden; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; transition: var(--transition); }
 
     /* Container central */
     .container { width: 100%; max-width: 1400px; margin: 0 auto; padding: 18px; min-height: 100vh; display: flex; flex-direction: column; }
 
     header { display: flex; align-items: center; gap: 16px; padding: 12px 0; position: relative; z-index: 10; flex-wrap: wrap; }
 
-    .logo { width: 70px; height: 70px; border-radius: 16px; background: linear-gradient(135deg, var(--text-primary), var(--accent)); display: grid; place-items: center; color: var(--bg-900); font-weight: 800; font-size: 20px; box-shadow: var(--glow); transition: var(--transition); flex-shrink: 0; }
+    .logo { width: 70px; height: 70px; border-radius: 16px; background: linear-gradient(135deg, var(--text-primary), var(--accent)); display: grid; place-items: center; color: var(--bg-1); font-weight: 800; font-size: 20px; box-shadow: var(--glow); transition: var(--transition); flex-shrink: 0; }
     .logo:hover { transform: scale(1.04); }
 
     .header-content { flex: 1; min-width: 0; }
@@ -58,25 +234,25 @@
 
     .controls { display: flex; gap: 10px; align-items: center; margin-left: auto; flex-wrap: wrap; justify-content: flex-end; }
 
-    .btn { background: linear-gradient(90deg, var(--accent-light), var(--accent)); color: var(--bg-900); border: 0; padding: 9px 14px; border-radius: 10px; cursor: pointer; font-weight: 700; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; box-shadow: var(--glow); transition: var(--transition); white-space: nowrap; }
-    .btn:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(0,168,255,0.28); }
+    .btn { background: linear-gradient(90deg, var(--accent-light), var(--accent)); color: var(--bg-1); border: 0; padding: 9px 14px; border-radius: 10px; cursor: pointer; font-weight: 700; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; box-shadow: var(--glow); transition: var(--transition); white-space: nowrap; }
+    .btn:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(var(--accent-rgb), 0.28); }
 
     .ghost { background: transparent; border: 1px solid var(--card-border); color: var(--text-primary); padding: 8px 12px; border-radius: 10px; cursor: pointer; font-weight: 600; transition: var(--transition); white-space: nowrap; }
-    .ghost:hover { background: rgba(143, 233, 255, 0.06); transform: translateY(-1px); }
+    .ghost:hover { background: rgba(var(--accent-rgb), 0.06); transform: translateY(-1px); }
 
     /* Main layout */
     .main-content { display: flex; flex-direction: column; gap: 20px; margin-top: 18px; }
     @media (min-width: 992px) { .main-content { flex-direction: row; } }
 
-    .content-section, .quiz-section { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 18px; padding: 20px; box-shadow: 0 6px 24px rgba(0, 10, 20, 0.5); backdrop-filter: blur(8px); position: relative; overflow: hidden; width: 100%; }
+    .content-section, .quiz-section { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 18px; padding: 20px; box-shadow: var(--shadow); backdrop-filter: blur(8px); position: relative; overflow: hidden; width: 100%; }
 
-    /* Types Explorer - Adapted for Topologies */
+    /* Types Explorer - Adapted from cards */
     .types-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
     .types-title { color: var(--text-primary); font-size: 18px; font-weight: 700; }
     .types-list { display: grid; gap: 12px; margin-top: 12px; }
     .type-item { background: rgba(255,255,255,0.03); border: 1px solid var(--card-border); border-radius: 12px; padding: 16px; cursor: pointer; transition: var(--transition); position: relative; overflow: hidden; }
-    .type-item:hover { background: rgba(143, 233, 255, 0.06); transform: translateY(-2px); box-shadow: var(--glow); }
-    .type-item.active { background: rgba(0, 168, 255, 0.08); border-color: var(--accent); }
+    .type-item:hover { background: rgba(var(--accent-rgb), 0.06); transform: translateY(-2px); box-shadow: var(--glow); }
+    .type-item.active { background: rgba(var(--accent-rgb), 0.08); border-color: var(--accent); }
     .type-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
     .type-icon { font-size: 20px; color: var(--accent-light); }
     .type-title { font-size: 16px; font-weight: 700; color: var(--text-primary); flex: 1; }
@@ -85,8 +261,12 @@
     .type-toggle { background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 16px; transition: var(--transition); }
     .type-item.active .type-toggle { transform: rotate(180deg); color: var(--accent); }
 
+    /* Subsections like h3 */
+    .type-subheader { margin: 18px 0 10px 0; color: var(--accent); font-size: 1.25rem; font-weight: 600; }
+    .highlight { background: rgba(var(--accent-rgb), 0.18); padding: 2px 6px; border-radius: 4px; font-weight: 600; color: var(--accent-light); }
+
     /* Canvas Integration */
-    canvas { background: #091a2f; width: 100%; height: 400px; border-radius: 10px; margin-top: 20px; display: block; }
+    canvas { background: var(--bg-2); width: 100%; border-radius: 10px; margin-top: 20px; display: block; }
 
     /* Concepts (integrated) */
     .concepts-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
@@ -107,8 +287,8 @@
 
     .options-container { display: grid; gap: 10px; }
     .option { padding: 12px 14px; border-radius: 10px; background: rgba(255,255,255,0.03); border: 1px solid var(--card-border); color: var(--text-secondary); font-weight: 600; cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: 10px; }
-    .option:hover { background: rgba(143, 233, 255, 0.06); transform: translateX(4px); color: var(--text-primary); }
-    .option.selected { background: rgba(0, 168, 255, 0.12); border-color: var(--accent); color: var(--text-primary); box-shadow: 0 0 10px rgba(0,168,255,0.12); }
+    .option:hover { background: rgba(var(--accent-rgb), 0.06); transform: translateX(4px); color: var(--text-primary); }
+    .option.selected { background: rgba(var(--accent-rgb), 0.12); border-color: var(--accent); color: var(--text-primary); box-shadow: 0 0 10px rgba(var(--accent-rgb), 0.12); }
     .option.correct { background: rgba(74, 222, 128, 0.12); border-color: var(--success); color: #d1fae5; }
     .option.wrong { background: rgba(248, 113, 113, 0.12); border-color: var(--error); color: #fee2e2; }
 
@@ -156,9 +336,6 @@
       </div>
 
       <div class="controls" aria-hidden="false">
-        <div class="budget" title="Orçamento disponível"></div>
-        <button id="readAll" class="btn" aria-label="Ouvir todo o conteúdo"><i class="fas fa-volume-up" aria-hidden="true"></i> Ouvir</button>
-        <button id="download" class="ghost" aria-label="Baixar página como HTML"><i class="fas fa-download" aria-hidden="true"></i></button>
       </div>
     </header>
 
@@ -173,17 +350,21 @@
           <!-- Types will be inserted by JS -->
         </div>
 
-        <canvas id="redeCanvas" width="1400" height="400"></canvas>
+        <canvas id="redeCanvas"></canvas>
 
         <div class="concepts-section">
           <div class="concepts-header">
             <h3 class="concepts-title">Conceitos rápidos</h3>
           </div>
           <ul class="concepts-list">
-            <li class="concept-item"><i class="fas fa-sitemap concept-icon" aria-hidden="true"></i><strong>Definição:</strong> Arranjo lógico/físico de dispositivos em uma rede.</li>
-            <li class="concept-item"><i class="fas fa-bug concept-icon" aria-hidden="true"></i><strong>Falhas:</strong> Topologias como barramento são sensíveis a quebras no cabo principal.</li>
-            <li class="concept-item"><i class="fas fa-chart-network concept-icon" aria-hidden="true"></i><strong>Desempenho:</strong> Malha oferece redundância, mas consome mais recursos.</li>
-            <li class="concept-item"><i class="fas fa-tools concept-icon" aria-hidden="true"></i><strong>Aplicações:</strong> Estrela comum em LANs modernas por simplicidade.</li>
+            <li class="concept-item"><i class="fas fa-sitemap concept-icon" aria-hidden="true"></i><strong>Definição:</strong> Arranjo lógico/físico de dispositivos em uma rede. Pode ser física (cabeamento) ou lógica (fluxo de dados).</li>
+            <li class="concept-item"><i class="fas fa-bug concept-icon" aria-hidden="true"></i><strong>Falhas:</strong> Topologias como barramento e anel são sensíveis a quebras no cabo principal ou em um nó, podendo interromper toda a rede.</li>
+            <li class="concept-item"><i class="fas fa-chart-network concept-icon" aria-hidden="true"></i><strong>Desempenho:</strong> Malha oferece redundância e múltiplos caminhos, melhorando a tolerância a falhas, mas consome mais recursos e cabos.</li>
+            <li class="concept-item"><i class="fas fa-tools concept-icon" aria-hidden="true"></i><strong>Aplicações:</strong> Estrela comum em LANs modernas por simplicidade; malha em redes críticas como data centers.</li>
+            <li class="concept-item"><i class="fas fa-plus concept-icon" aria-hidden="true"></i><strong>Vantagens Gerais:</strong> Escolha depende do tamanho da rede: barramento para pequenas, estrela para médias, malha para alta disponibilidade.</li>
+            <li class="concept-item"><i class="fas fa-minus concept-icon" aria-hidden="true"></i><strong>Desvantagens Gerais:</strong> Topologias simples como barramento sofrem com colisões; complexas como malha aumentam custos com cabos e configuração.</li>
+            <li class="concept-item"><i class="fas fa-exchange-alt concept-icon" aria-hidden="true"></i><strong>Fluxo de Dados:</strong> Em anel, unidirecional (tradicional); em barramento, compartilhado com risco de colisões; em estrela, centralizado sem colisões com switches.</li>
+            <li class="concept-item"><i class="fas fa-calculator concept-icon" aria-hidden="true"></i><strong>Cálculo de Conexões:</strong> Em malha completa, para n dispositivos: n(n-1)/2 conexões, o que escalona rapidamente.</li>
           </ul>
         </div>
       </section>
@@ -191,7 +372,7 @@
       <aside class="quiz-section" aria-labelledby="quiz-title">
         <div class="quiz-header">
           <h2 class="quiz-title" id="quiz-title">Quiz Interativo</h2>
-          <div class="score-display" id="score-display"><i class="fas fa-graduation-cap" aria-hidden="true"></i> <span id="score">0/5</span></div>
+          <div class="score-display" id="score-display"><i class="fas fa-graduation-cap" aria-hidden="true"></i> <span id="score">0/10</span></div>
         </div>
 
         <div class="progress-container" aria-hidden="false">
@@ -211,16 +392,33 @@
     </main>
 
     <footer role="contentinfo">
-      <p>Resumo: Estrela para gerenciamento fácil, Anel para fluxo sequencial, Barramento para simplicidade, Malha para redundância. Clique nas topologias para expandir e visualizar.</p>
+      <p>Resumo: Estrela para gerenciamento fácil com ponto central, mas sensível a falhas no hub; Anel para fluxo sequencial unidirecional, eficiente mas propenso a interrupções; Barramento para simplicidade e baixo custo, mas com colisões e falhas totais; Malha para redundância máxima com múltiplos caminhos, mas cara e complexa. Clique para expandir detalhes e teste com o quiz!</p>
       <p>Atalhos: ← / → — Navegar perguntas. Enter — Selecionar opção.</p>
-      <p>Dica: Explore as topologias e visualize os diagramas antes do quiz!</p>
+      <p>Dica: Explore as topologias antes do quiz para melhor compreensão! • Atualizado em Novembro de 2025</p>
     </footer>
   </div>
 
+  <canvas id="confetti" style="position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:1200;background:transparent;"></canvas>
+
   <script>
+    // --- Função para aplicar tema ---
+    function applyTheme(theme) {
+      const root = document.documentElement;
+      root.className = theme === 'blue' ? '' : `theme-${theme}`;
+    }
+
+    // Carregar tema salvo do localStorage
+    const savedTheme = localStorage.getItem('theme') || 'blue';
+    applyTheme(savedTheme);
+
     // --- Canvas Setup ---
     const canvas = document.getElementById("redeCanvas");
     const ctx = canvas.getContext("2d");
+
+    function resizeRedeCanvas() {
+      canvas.width = canvas.clientWidth;
+      canvas.height = canvas.clientHeight;
+    }
 
     function desenharDispositivo(x, y, label) {
       ctx.beginPath();
@@ -267,7 +465,7 @@
 
       if (tipo === "anel") {
         let centro = { x: canvas.width / 2, y: canvas.height / 2 };
-        let r = 150;
+        let r = Math.min(canvas.width / 4, canvas.height / 2 - 50);
         ctx.beginPath();
         for (let i = 0; i < 6; i++) {
           let ang = (i / 6) * Math.PI * 2;
@@ -286,11 +484,12 @@
       if (tipo === "barramento") {
         let y = canvas.height / 2;
         ctx.beginPath();
-        ctx.moveTo(100, y);
-        ctx.lineTo(canvas.width - 100, y);
+        ctx.moveTo(50, y);
+        ctx.lineTo(canvas.width - 50, y);
         ctx.stroke();
-        for (let i = 0; i < 5; i++) {
-          let x = 200 + i * 150;
+        let numDevices = Math.floor((canvas.width - 100) / 150) + 1;
+        for (let i = 0; i < numDevices; i++) {
+          let x = 100 + i * ((canvas.width - 200) / (numDevices - 1));
           ctx.beginPath();
           ctx.moveTo(x, y);
           ctx.lineTo(x, y - 70);
@@ -320,10 +519,57 @@
 
     // --- Dados ---
     const typesData = [
-      { id: 'estrela', title: 'Topologia em Estrela', icon: 'fas fa-star', text: 'Todos os dispositivos se conectam a um ponto central (hub ou switch). Fácil de gerenciar e adicionar novos nós, mas falha no centro afeta toda a rede. Comum em LANs modernas.', tts: 'Estrela: Conexões centrais para gerenciamento simples, mas ponto único de falha.' },
-      { id: 'anel', title: 'Topologia em Anel', icon: 'fas fa-circle', text: 'Dispositivos formam um círculo fechado, com dados passando sequencialmente (ex: token passing). Eficiente em tráfego previsível, mas quebra no anel interrompe o fluxo.', tts: 'Anel: Fluxo sequencial em círculo, eficiente mas sensível a falhas.' },
-      { id: 'barramento', title: 'Topologia em Barramento', icon: 'fas fa-minus', text: 'Um único cabo principal conecta todos os dispositivos. Simples e barata de instalar, mas difícil de diagnosticar falhas e suscetível a colisões.', tts: 'Barramento: Cabo único simples, mas propenso a falhas e colisões.' },
-      { id: 'malha', title: 'Topologia em Malha', icon: 'fas fa-th', text: 'Cada dispositivo se conecta diretamente a todos os outros. Alta redundância e desempenho, mas cara e complexa devido ao grande número de cabos.', tts: 'Malha: Conexões totais para redundância máxima, mas cara e complexa.' }
+      { 
+        id: 'estrela', 
+        title: 'Topologia em Estrela', 
+        icon: 'fas fa-star', 
+        text: `
+          <p>A <span class="highlight">topologia em estrela</span> conecta todos os dispositivos a um ponto central (hub ou switch). Opera com fluxo de dados centralizado.</p>
+          <h3 class="type-subheader">Vantagens e Desvantagens</h3>
+          <p>Vantagens: Fácil gerenciamento, isolamento de falhas. Desvantagens: Ponto único de falha no hub, mais cabos necessários.</p>
+          <p>Exemplo: Redes LAN modernas em escritórios, onde um switch central gerencia o tráfego.</p>
+        `,
+        tts: 'Estrela: Todos conectados a um hub central.'
+      },
+      { 
+        id: 'anel', 
+        title: 'Topologia em Anel', 
+        icon: 'fas fa-circle', 
+        text: `
+          <p>A <span class="highlight">topologia em anel</span> forma um círculo onde dados passam sequencialmente entre nós.</p>
+          <h3 class="type-subheader">Funcionamento</h3>
+          <p>Fluxo unidirecional (tradicional), usando token passing para evitar colisões.</p>
+          <p>Vantagens: Eficiente para tráfego constante. Desvantagens: Falha em um nó interrompe toda a rede.</p>
+          <p>Exemplo: Redes Token Ring legadas.</p>
+        `,
+        tts: 'Anel: Dados circulam em loop sequencial.'
+      },
+      { 
+        id: 'barramento', 
+        title: 'Topologia em Barramento', 
+        icon: 'fas fa-minus', 
+        text: `
+          <p>A <span class="highlight">topologia em barramento</span> usa um cabo principal compartilhado por todos os dispositivos.</p>
+          <h3 class="type-subheader">Características</h3>
+          <p>Fluxo de dados compartilhado com CSMA/CD para gerenciar colisões.</p>
+          <p>Vantagens: Simples e barata. Desvantagens: Colisões frequentes, falha total se o cabo quebrar.</p>
+          <p>Exemplo: Redes Ethernet antigas com cabo coaxial.</p>
+        `,
+        tts: 'Barramento: Cabo único compartilhado.'
+      },
+      { 
+        id: 'malha', 
+        title: 'Topologia em Malha', 
+        icon: 'fas fa-th', 
+        text: `
+          <p>A <span class="highlight">topologia em malha</span> conecta cada dispositivo diretamente a todos os outros.</p>
+          <h3 class="type-subheader">Tipos</h3>
+          <p>Completa (full mesh) ou parcial. Fluxo direto com redundância.</p>
+          <p>Vantagens: Alta tolerância a falhas. Desvantagens: Alto custo com cabos e configuração.</p>
+          <p>Exemplo: Data centers para alta disponibilidade.</p>
+        `,
+        tts: 'Malha: Conexões diretas entre todos.'
+      }
     ];
 
     const quiz = [
@@ -331,34 +577,45 @@
       { q: 'Em qual topologia os dados passam por todos os dispositivos em sequência?', opts: ['Anel', 'Barramento', 'Estrela'], a: 0, explain: 'Anel forma um loop onde os dados circulam sequencialmente entre nós.' },
       { q: 'Qual topologia usa um único cabo principal para conectar dispositivos?', opts: ['Barramento', 'Malha', 'Estrela'], a: 0, explain: 'Barramento emprega um cabo coaxial compartilhado por todos os dispositivos.' },
       { q: 'Qual topologia tem o maior número de conexões físicas?', opts: ['Estrela', 'Anel', 'Malha'], a: 2, explain: 'Malha requer conexões diretas entre todos os pares de dispositivos.' },
-      { q: 'Qual topologia é mais suscetível a falhas se o cabo principal quebrar?', opts: ['Barramento', 'Malha', 'Anel'], a: 0, explain: 'Barramento depende de um único cabo; uma quebra afeta toda a rede.' }
+      { q: 'Qual topologia é mais suscetível a falhas se o cabo principal quebrar?', opts: ['Barramento', 'Malha', 'Anel'], a: 0, explain: 'Barramento depende de um único cabo; uma quebra afeta toda a rede.' },
+      { q: 'Qual é uma desvantagem principal da topologia em estrela?', opts: ['Custo alto de cabos', 'Ponto único de falha', 'Dificuldade em adicionar dispositivos'], a: 1, explain: 'Na estrela, uma falha no hub ou switch central pode derrubar toda a rede.' },
+      { q: 'Na topologia em anel tradicional, os dados fluem em qual direção?', opts: ['Bidirecional', 'Unidirecional', 'Aleatória'], a: 1, explain: 'Anel tradicional usa fluxo unidirecional para evitar colisões e simplificar o controle.' },
+      { q: 'Qual topologia é mais propensa a colisões de dados?', opts: ['Estrela', 'Anel', 'Barramento'], a: 2, explain: 'Barramento compartilha o meio, levando a colisões quando múltiplos dispositivos transmitem simultaneamente.' },
+      { q: 'Qual topologia oferece múltiplos caminhos entre dispositivos para redundância?', opts: ['Barramento', 'Malha', 'Estrela'], a: 1, explain: 'Malha fornece caminhos alternativos, melhorando a tolerância a falhas.' },
+      { q: 'Em qual topologia é mais fácil isolar e diagnosticar falhas em um dispositivo específico?', opts: ['Estrela', 'Anel', 'Barramento'], a: 0, explain: 'Estrela permite isolar falhas no hub central sem afetar outros nós.' }
     ];
+
+    const QUIZ_KEY = 'topologias_quiz_submitted_at';
+    let currentQuestion = 0;
+    let answers = JSON.parse(localStorage.getItem('topologias_quiz_answers')) || new Array(quiz.length).fill(null);
+    let quizSubmitted = localStorage.getItem(QUIZ_KEY) !== null;
 
     // --- DOM ---
     const currentType = document.getElementById('current-type');
     const typesList = document.getElementById('types-list');
-    const readAll = document.getElementById('readAll');
-    const download = document.getElementById('download');
     const questionContainer = document.getElementById('question-container');
     const prevBtn = document.getElementById('prev');
     const nextBtn = document.getElementById('next');
     const submitBtn = document.getElementById('submit');
-    const scoreEl = document.getElementById('score');
+    const scoreSpan = document.getElementById('score');
     const progressBar = document.getElementById('progress-bar');
-
-    // --- Estado ---
-    let currentTypeId = 'estrela';
-    let currentQuestion = 0;
-    const answers = new Array(quiz.length).fill(null);
-    let utterance = null;
 
     // --- Inicialização ---
     document.addEventListener('DOMContentLoaded', () => {
+      resizeRedeCanvas();
       renderTypes();
-      mostrarTopologia(currentTypeId); // Inicializar canvas
-      renderQuestion();
+      if (quizSubmitted && !canRetake()) {
+        submitBtn.click();
+      } else {
+        renderQuestion();
+        updateProgress();
+      }
       setupEventListeners();
-      updateProgress();
+      updateRetakeButton();
+      window.addEventListener('resize', () => {
+        resizeRedeCanvas();
+        mostrarTopologia(currentTypeId);
+      });
     });
 
     // Render types as expandable cards
@@ -389,17 +646,75 @@
       updateCurrentType();
     }
 
+    let currentTypeId = 'estrela';
     function updateCurrentType() {
       const activeItem = document.querySelector('.type-item.active') || typesList.firstElementChild;
       if (activeItem) {
         currentTypeId = activeItem.dataset.id;
-        currentType.textContent = typesData.find(t => t.id === currentTypeId).title;
-        mostrarTopologia(currentTypeId); // Atualizar canvas
+        currentType.textContent = typesData.find(d => d.id === currentTypeId).title;
+        mostrarTopologia(currentTypeId);
       }
     }
 
-    // Quiz like previous
+    function canRetake() {
+      const submittedAt = localStorage.getItem(QUIZ_KEY);
+      if (!submittedAt) return true;
+      const now = Date.now();
+      const diffMinutes = (now - parseInt(submittedAt)) / (1000 * 60);
+      return diffMinutes >= 10;
+    }
+
+    function updateRetakeButton() {
+      const existing = document.getElementById('retake-btn');
+      if (existing) existing.remove();
+
+      if (quizSubmitted && !canRetake()) {
+        const retakeBtn = document.createElement('button');
+        retakeBtn.id = 'retake-btn';
+        retakeBtn.className = 'btn';
+        retakeBtn.disabled = true;
+        retakeBtn.innerHTML = '<i class="fas fa-clock" aria-hidden="true"></i> Aguarde...';
+        document.querySelector('.quiz-controls').appendChild(retakeBtn);
+
+        const countdown = setInterval(() => {
+          const submittedAt = localStorage.getItem(QUIZ_KEY);
+          const now = Date.now();
+          const remaining = 10 - Math.floor((now - parseInt(submittedAt)) / (1000 * 60));
+          if (remaining <= 0) {
+            clearInterval(countdown);
+            updateRetakeButton();
+          } else {
+            retakeBtn.innerHTML = `<i class="fas fa-clock" aria-hidden="true"></i> Refazer em ${remaining} min`;
+          }
+        }, 1000);
+      } else if (quizSubmitted && canRetake()) {
+        const retakeBtn = document.createElement('button');
+        retakeBtn.id = 'retake-btn';
+        retakeBtn.className = 'btn';
+        retakeBtn.innerHTML = '<i class="fas fa-redo" aria-hidden="true"></i> Refazer Quiz';
+        retakeBtn.addEventListener('click', resetQuiz);
+        document.querySelector('.quiz-controls').appendChild(retakeBtn);
+      }
+    }
+
+    function resetQuiz() {
+      localStorage.removeItem('topologias_quiz_answers');
+      localStorage.removeItem(QUIZ_KEY);
+      answers = new Array(quiz.length).fill(null);
+      currentQuestion = 0;
+      quizSubmitted = false;
+      renderQuestion();
+      updateProgress();
+      updateRetakeButton();
+
+      const scoreDisplay = document.getElementById('score-display');
+      scoreDisplay.innerHTML = `<i class="fas fa-graduation-cap" aria-hidden="true"></i> <span id="score">0/10</span>`;
+      document.getElementById('score').textContent = '0/10';
+    }
+
     function renderQuestion() {
+      if (quizSubmitted && !canRetake()) return;
+
       const q = quiz[currentQuestion];
       questionContainer.innerHTML = `
         <div class="question-number">Pergunta ${currentQuestion + 1} de ${quiz.length}</div>
@@ -423,9 +738,8 @@
       prevBtn.disabled = currentQuestion === 0;
       nextBtn.disabled = currentQuestion === quiz.length - 1;
 
-      // Atualiza pontuação (respostas dadas)
       const answered = answers.filter(a => a !== null).length;
-      scoreEl.textContent = `${answered}/${quiz.length}`;
+      scoreSpan.textContent = `${answered}/${quiz.length}`;
     }
 
     function updateProgress() {
@@ -436,7 +750,7 @@
 
     // Listeners
     function setupEventListeners() {
-      // Types: Click to update current and canvas
+      // Types: Click to update current
       typesList.addEventListener('click', (e) => {
         const item = e.target.closest('.type-item');
         if (item) {
@@ -448,10 +762,12 @@
 
       // Quiz options
       document.addEventListener('click', (e) => {
+        if (quizSubmitted && !canRetake()) return;
         const option = e.target.closest('.option');
         if (!option) return;
         const idx = parseInt(option.dataset.index, 10);
         answers[currentQuestion] = idx;
+        localStorage.setItem('topologias_quiz_answers', JSON.stringify(answers));
         renderQuestion();
         updateProgress();
       });
@@ -462,11 +778,31 @@
         if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); option.click(); }
       });
 
-      prevBtn.addEventListener('click', () => { if (currentQuestion > 0) { currentQuestion--; renderQuestion(); } });
-      nextBtn.addEventListener('click', () => { if (currentQuestion < quiz.length - 1) { currentQuestion++; renderQuestion(); } });
+      prevBtn.addEventListener('click', () => {
+        if (quizSubmitted && !canRetake()) return;
+        if (currentQuestion > 0) {
+          currentQuestion--;
+          renderQuestion();
+        }
+      });
+      nextBtn.addEventListener('click', () => {
+        if (quizSubmitted && !canRetake()) return;
+        if (currentQuestion < quiz.length - 1) {
+          currentQuestion++;
+          renderQuestion();
+        }
+      });
 
       submitBtn.addEventListener('click', () => {
-        if (answers.some(a => a === null)) { alert('Por favor, responda todas as perguntas antes de enviar.'); return; }
+        if (quizSubmitted && !canRetake()) return;
+        if (answers.some(a => a === null)) {
+          alert('Por favor, responda todas as perguntas antes de enviar.');
+          return;
+        }
+
+        localStorage.setItem(QUIZ_KEY, Date.now().toString());
+        quizSubmitted = true;
+
         let correct = 0;
         for (let i = 0; i < quiz.length; i++) if (answers[i] === quiz[i].a) correct++;
 
@@ -509,50 +845,65 @@
         questionContainer.innerHTML = '';
         questionContainer.appendChild(reviewRoot);
 
-        if (correct === quiz.length) { showSuccessToast(); } 
-      });
+        updateRetakeButton();
 
-      // Global
-      download.addEventListener('click', () => {
-        const html = '<!doctype html>\n' + document.documentElement.outerHTML;
-        const blob = new Blob([html], {type: 'text/html'});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a'); a.href = url; a.download = 'topologias_rede_premium.html'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
-      });
-
-      readAll.addEventListener('click', () => {
-        const allText = typesData.map(t => t.tts).join(' ');
-        speak(allText);
+        if (correct === quiz.length) {
+          showSuccessToast();
+          launchConfetti();
+        }
       });
     }
 
-    // TTS
-    function speak(text) {
-      if (!('speechSynthesis' in window)) { alert('Seu navegador não suporta síntese de fala.'); return; }
-      if (utterance) window.speechSynthesis.cancel();
-      utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'pt-BR';
-      utterance.rate = 0.95;
-      window.speechSynthesis.speak(utterance);
-    }
-
-    // Toast
     function showSuccessToast() {
-      const toast = document.createElement('div'); 
-      toast.style.position = 'fixed'; 
-      toast.style.top = '16px'; 
-      toast.style.left = '50%'; 
-      toast.style.transform = 'translateX(-50%)'; 
-      toast.style.padding = '12px 18px'; 
-      toast.style.borderRadius = '12px'; 
-      toast.style.background = 'linear-gradient(90deg, var(--success), #34d399)'; 
-      toast.style.color = 'var(--bg-900)'; 
-      toast.style.fontWeight = '800'; 
-      toast.style.zIndex = 1000; 
-      toast.innerHTML = '<i class="fas fa-star" aria-hidden="true"></i> Parabéns! Você acertou todas as questões!'; 
+      const toast = document.createElement('div');
+      toast.style.position = 'fixed';
+      toast.style.top = '16px';
+      toast.style.left = '50%';
+      toast.style.transform = 'translateX(-50%)';
+      toast.style.padding = '12px 18px';
+      toast.style.borderRadius = '12px';
+      toast.style.background = 'linear-gradient(90deg, var(--success), #34d399)';
+      toast.style.color = 'var(--bg-1)';
+      toast.style.fontWeight = '800';
+      toast.style.zIndex = 1000;
+      toast.innerHTML = '<i class="fas fa-star" aria-hidden="true"></i> Parabéns! Você acertou todas as questões!';
       document.body.appendChild(toast);
       setTimeout(() => toast.remove(), 3000);
     }
+
+    const confettiCanvas = document.getElementById('confetti');
+    const confettiCtx = confettiCanvas.getContext('2d');
+    function resizeCanvas() { confettiCanvas.width = window.innerWidth; confettiCanvas.height = window.innerHeight; }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+    let confettiPieces = [];
+    function launchConfetti() {
+      confettiPieces = [];
+      for (let i = 0; i < 120; i++) {
+        confettiPieces.push({ x: Math.random() * confettiCanvas.width, y: -20, r: 3 + Math.random() * 8, vx: -3 + Math.random() * 6, vy: 2 + Math.random() * 6, rot: Math.random() * 360, vr: -0.1 + Math.random() * 0.2, color: `hsl(${Math.random() * 360}, 80%, 60%)` });
+      }
+      requestAnimationFrame(drawConfetti);
+      setTimeout(() => { confettiPieces = []; confettiCtx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height); }, 3200);
+    }
+    function drawConfetti() {
+      confettiCtx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
+      confettiPieces.forEach(p => {
+        p.x += p.vx; p.y += p.vy; p.vy += 0.12; p.rot += p.vr;
+        confettiCtx.save();
+        confettiCtx.translate(p.x,p.y);
+        confettiCtx.rotate((p.rot*Math.PI)/180);
+        confettiCtx.fillStyle = p.color;
+        confettiCtx.fillRect(-p.r/2,-p.r/2,p.r,p.r*0.6);
+        confettiCtx.restore();
+      });
+      if (confettiPieces.length) requestAnimationFrame(drawConfetti);
+    }
+
+    window.addEventListener('resize', () => {
+      if (!quizSubmitted || canRetake()) {
+        renderQuestion();
+      }
+    });
 
   </script>
 </body>

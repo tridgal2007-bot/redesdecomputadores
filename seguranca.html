@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Segurança de Rede — Sistema Educacional</title>
+<style>
+  body {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    background: linear-gradient(135deg, #0f172a, #312e81);
+    color: #f1f5f9;
+    min-height: 100vh;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: auto;
+    padding: 30px;
+  }
+
+  h1, h2 {
+    text-align: center;
+  }
+
+  .section {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 20px;
+    margin: 20px 0;
+    box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    transition: transform 0.3s ease;
+  }
+
+  .section:hover { transform: translateY(-3px); }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+  }
+
+  button {
+    background: #6366f1;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.3s;
+  }
+
+  button:hover { background: #818cf8; }
+
+  .quiz {
+    display: none;
+  }
+
+  .option {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 12px;
+    margin: 10px 0;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .option:hover { background: rgba(255,255,255,0.15); }
+  .correct { background: rgba(16,185,129,0.3) !important; }
+  .wrong { background: rgba(239,68,68,0.3) !important; }
+
+  .hidden { display: none; }
+
+  .result {
+    text-align: center;
+    padding: 30px;
+  }
+
+  .fade {
+    animation: fade 0.4s ease;
+  }
+
+  @keyframes fade {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>🛡️ Segurança de Rede</h1>
+  <p style="text-align:center;color:#cbd5e1;">Aprenda os conceitos principais e teste seus conhecimentos!</p>
+
+  <!-- Seção de aprendizado -->
+  <div id="tutorial" class="fade">
+    <div class="grid">
+      <div class="section"><h3>Firewall</h3><p>Filtra o tráfego de rede com regras de segurança, bloqueando acessos não autorizados.</p></div>
+      <div class="section"><h3>VPN</h3><p>Cria um túnel seguro e criptografado para proteger dados em redes públicas.</p></div>
+      <div class="section"><h3>Criptografia</h3><p>Protege informações convertendo-as em dados ilegíveis sem a chave correta.</p></div>
+      <div class="section"><h3>Segmentação de Rede</h3><p>Divide a rede em partes menores (VLANs) para limitar a propagação de ataques.</p></div>
+      <div class="section"><h3>IDS / IPS</h3><p>Detectam e bloqueiam atividades suspeitas na rede.</p></div>
+      <div class="section"><h3>Segurança Wi-Fi</h3><p>Use WPA3 e senhas fortes; evite redes abertas e desative o WPS.</p></div>
+      <div class="section"><h3>Autenticação</h3><p>Use autenticação multifator (MFA) e senhas únicas.</p></div>
+      <div class="section"><h3>Atualizações</h3><p>Mantenha sistemas e firmwares atualizados para corrigir vulnerabilidades.</p></div>
+      <div class="section"><h3>ARP Spoofing</h3><p>Enganar a rede com endereços falsos de MAC pode desviar tráfego — evite com segurança de camada 2.</p></div>
+      <div class="section"><h3>Engenharia Social</h3><p>Golpes e phishing exploram o fator humano. Desconfie de e-mails e links suspeitos.</p></div>
+    </div>
+    <div style="text-align:center;margin-top:20px;">
+      <button onclick="startQuiz()">Começar Quiz</button>
+    </div>
+  </div>
+
+  <!-- Quiz -->
+  <div id="quiz" class="quiz fade">
+    <h2 id="question"></h2>
+    <div id="options"></div>
+    <div style="margin-top:15px;display:flex;justify-content:space-between;">
+      <button id="prevBtn" onclick="prevQuestion()">Anterior</button>
+      <button id="nextBtn" onclick="nextQuestion()">Próxima</button>
+    </div>
+    <p style="text-align:center;color:#94a3b8;margin-top:10px;" id="progress"></p>
+  </div>
+
+  <!-- Resultado -->
+  <div id="result" class="hidden fade result">
+    <h2>Resultado do Quiz</h2>
+    <p id="scoreText"></p>
+    <button onclick="restart()">Refazer Quiz</button>
+    <button onclick="backToTutorial()">Voltar ao Conteúdo</button>
+  </div>
+</div>
+
+<script>
+  const questions = [
+    {q: 'O que faz um firewall?', o:['Filtra tráfego da rede','Criptografa senhas','Aumenta a velocidade'], a:0},
+    {q: 'A VPN serve para:', o:['Criar túnel criptografado','Bloquear anúncios','Melhorar Wi-Fi'], a:0},
+    {q: 'O que é IDS?', o:['Detecta invasões','Conecta dispositivos','Cria senhas'], a:0},
+    {q: 'Segmentação de rede serve para:', o:['Limitar ataques','Aumentar ping','Deixar tudo público'], a:0},
+    {q: 'MITM significa:', o:['Ataque de interceptação','Sistema de firewall','Protocolo Wi-Fi'], a:0},
+    {q: 'Melhor prática de senha:', o:['Usar MFA e senha única','Reutilizar senha','Escrever no papel'], a:0},
+    {q: 'HTTPS protege:', o:['Confidencialidade','Velocidade','Endereço IP'], a:0},
+    {q: 'Risco Wi-Fi comum:', o:['Rede aberta e WPS','WPA3 com senha forte','VPN ativa'], a:0},
+    {q: 'Menor privilégio é:', o:['Dar só o necessário','Dar admin pra todos','Sem acesso algum'], a:0},
+    {q: 'Prevenção de phishing:', o:['Treinamento e filtros','Compartilhar senha','Ignorar links'], a:0}
+  ];
+
+  let current = 0;
+  let answers = Array(questions.length).fill(null);
+
+  const tutorial = document.getElementById('tutorial');
+  const quiz = document.getElementById('quiz');
+  const result = document.getElementById('result');
+  const questionEl = document.getElementById('question');
+  const optionsEl = document.getElementById('options');
+  const progress = document.getElementById('progress');
+
+  function startQuiz(){
+    tutorial.style.display = 'none';
+    quiz.style.display = 'block';
+    loadQuestion();
+  }
+
+  function loadQuestion(){
+    const q = questions[current];
+    questionEl.textContent = q.q;
+    optionsEl.innerHTML = '';
+    q.o.forEach((opt, i) => {
+      const div = document.createElement('div');
+      div.className = 'option fade';
+      div.textContent = opt;
+      div.onclick = () => selectOption(i, div);
+      optionsEl.appendChild(div);
+    });
+    progress.textContent = `Pergunta ${current+1} de ${questions.length}`;
+    document.getElementById('prevBtn').disabled = current === 0;
+    document.getElementById('nextBtn').textContent = current === questions.length-1 ? 'Finalizar' : 'Próxima';
+  }
+
+  function selectOption(i, el){
+    const q = questions[current];
+    const opts = document.querySelectorAll('.option');
+    opts.forEach(o => o.classList.remove('correct','wrong'));
+    if(i === q.a){ el.classList.add('correct'); }
+    else { el.classList.add('wrong'); }
+    answers[current] = i;
+  }
+
+  function nextQuestion(){
+    if(current < questions.length-1){ current++; loadQuestion(); }
+    else showResult();
+  }
+
+  function prevQuestion(){
+    if(current > 0){ current--; loadQuestion(); }
+  }
+
+  function showResult(){
+    quiz.style.display = 'none';
+    result.classList.remove('hidden');
+    const score = answers.reduce((s,a,i)=>s+(a===questions[i].a?1:0),0);
+    document.getElementById('scoreText').textContent = `Você acertou ${score} de ${questions.length} perguntas!`;
+  }
+
+  function restart(){
+    answers = Array(questions.length).fill(null);
+    current = 0;
+    result.classList.add('hidden');
+    quiz.style.display = 'block';
+    loadQuestion();
+  }
+
+  function backToTutorial(){
+    result.classList.add('hidden');
+    tutorial.style.display = 'block';
+  }
+</script>
+</body>
+</html>
