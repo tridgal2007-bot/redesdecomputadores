@@ -33,7 +33,6 @@
       --warp-conic: conic-gradient(from 0deg, transparent, var(--accent-light), transparent);
       --confetti-colors: '#4fc3f7,#b3e5fc,#d1e8e2';
     }
-
     /* Tema Vermelho Suavizado */
     :root.theme-red {
       --bg-900: #1a0d0d;
@@ -54,7 +53,6 @@
       --warp-conic: conic-gradient(from 0deg, transparent, var(--accent-light), transparent);
       --confetti-colors: '#ef9a9a,#ffcdd2,#fff8f8';
     }
-
     /* Tema Verde Suavizado */
     :root.theme-green {
       --bg-900: #0f1a0f;
@@ -75,7 +73,6 @@
       --warp-conic: conic-gradient(from 0deg, transparent, var(--accent-light), transparent);
       --confetti-colors: '#a5d6a7,#e8f5e8,#f1f8e9';
     }
-
     /* Tema Roxo Suavizado */
     :root.theme-purple {
       --bg-900: #1a0f1f;
@@ -96,7 +93,6 @@
       --warp-conic: conic-gradient(from 0deg, transparent, var(--accent-light), transparent);
       --confetti-colors: '#ce93d8,#f3e5f5,#fafafa';
     }
-
     /* Tema Laranja Suavizado */
     :root.theme-orange {
       --bg-900: #2c1608;
@@ -117,7 +113,6 @@
       --warp-conic: conic-gradient(from 0deg, transparent, var(--accent-light), transparent);
       --confetti-colors: '#ffb74d,#fff8e1,#fffde7';
     }
-
     /* Tema Rosa Suavizado */
     :root.theme-pink {
       --bg-900: #1f0a1a;
@@ -138,7 +133,6 @@
       --warp-conic: conic-gradient(from 0deg, transparent, var(--accent-light), transparent);
       --confetti-colors: '#f8bbd9,#fce4ec,#fdf2f8';
     }
-
     /* Tema Ciano Suavizado */
     :root.theme-teal {
       --bg-900: #0a1f1f;
@@ -159,7 +153,6 @@
       --warp-conic: conic-gradient(from 0deg, transparent, var(--accent-light), transparent);
       --confetti-colors: '#80deea,#e0f2f1,#f0f9ff';
     }
-
     /* Tema Preto e Branco (Cinza Escala) Suavizado */
     :root.theme-grayscale {
       --bg-900: #000000;
@@ -180,7 +173,6 @@
       --warp-conic: conic-gradient(from 0deg, transparent, var(--accent-light), transparent);
       --confetti-colors: '#e0e0e0,#f5f5f5,#d3d3d3';
     }
-
     /* Reduced motion preference */
     @media (prefers-reduced-motion: reduce) {
       :root { --transition: none; }
@@ -231,7 +223,7 @@
     .event-year-display { font-weight: 700; color: var(--accent); font-size: 14px; }
     .event-title { color: var(--text-primary); font-size: 18px; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
     .event-description { line-height: 1.7; margin-bottom: 14px; font-size: 14px; color: var(--text-secondary); }
-    /* Animação de viagem no tempo futurista */
+    /* Animação de viagem no tempo futurista aprimorada */
     .time-warp-overlay {
       position: fixed;
       top: 0;
@@ -333,9 +325,9 @@
       transform: translate(-50%, -100%) rotate(var(--rotation));
       transform-origin: bottom center;
     }
-    .clock-mark.major { 
-      height: 25px; 
-      width: 3px; 
+    .clock-mark.major {
+      height: 25px;
+      width: 3px;
     }
     .clock-number {
       position: absolute;
@@ -441,7 +433,7 @@
         transform: scale(1) rotateY(0deg) translateZ(0);
       }
     }
-    /* Partículas futuristas */
+    /* Partículas futuristas aprimoradas */
     .warp-particles {
       position: absolute;
       top: 0;
@@ -472,6 +464,79 @@
         opacity: 0;
         transform: translateY(-20vh) scale(0.5);
       }
+    }
+    /* Novas partículas de "estrelas" para efeito de warp speed */
+    .warp-stars {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      perspective: 800px;
+    }
+    .warp-star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: var(--text-primary);
+      border-radius: 50%;
+      opacity: 0;
+      transform-style: preserve-3d;
+      animation: starWarp 2s ease-in-out forwards;
+    }
+    @keyframes starWarp {
+      0% {
+        opacity: 1;
+        transform: translate3d(0, 0, -800px) scale(0.5);
+      }
+      50% {
+        opacity: 1;
+        transform: translate3d(0, 0, 0) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translate3d(0, 0, 800px) scale(1.5);
+      }
+    }
+    /* Efeito de distorção de tela (como ondulações no tempo) */
+    .time-warp-distortion {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, transparent 40%, rgba(79, 195, 247, 0.15) 60%, transparent 80%);
+      opacity: 0;
+      animation: distortionPulse 1.5s ease-in-out infinite;
+    }
+    @keyframes distortionPulse {
+      0% { opacity: 0; transform: scale(0.5); }
+      50% { opacity: 0.3; transform: scale(1.2); }
+      100% { opacity: 0; transform: scale(1.5); }
+    }
+    /* Túnel de tempo com linhas convergentes */
+    .time-warp-tunnel {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 400px;
+      height: 400px;
+      opacity: 0;
+      perspective: 600px;
+    }
+    .tunnel-line {
+      position: absolute;
+      width: 2px;
+      height: 200px;
+      background: linear-gradient(to bottom, transparent, var(--accent-light), transparent);
+      transform-origin: center bottom;
+      animation: tunnelConverge 1.5s linear infinite;
+    }
+    @keyframes tunnelConverge {
+      0% { transform: rotate(var(--rot)) translateZ(0) scaleY(0.2); opacity: 0.2; }
+      100% { transform: rotate(var(--rot)) translateZ(-600px) scaleY(1.5); opacity: 0; }
     }
     /* Engrenagens girando no efeito de viagem no tempo */
     .time-warp-gears {
@@ -651,6 +716,9 @@
   <div class="time-warp-overlay" id="timeWarpOverlay">
     <div class="time-warp-grid"></div>
     <div class="warp-particles" id="warpParticles"></div>
+    <div class="warp-stars" id="warpStars"></div>
+    <div class="time-warp-distortion"></div>
+    <div class="time-warp-tunnel" id="timeWarpTunnel"></div>
     <div class="time-warp-gears">
       <i class="fas fa-cog gear large left-gear" aria-hidden="true"></i>
       <i class="fas fa-cog gear large right-gear" aria-hidden="true"></i>
@@ -693,6 +761,9 @@
     </div>
   </div>
   <canvas id="confetti" style="position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:1200"></canvas>
+  <audio id="warpSound" preload="auto">
+    <source src="data:audio/mpeg;base64,/+MYxAAAAANIAAAAAExBTUUzLjk4LjIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" type="audio/mpeg">
+  </audio>
   <script>
     // ---------- Detecção e Aplicação de Tema ----------
     function applyTheme(theme) {
@@ -729,16 +800,18 @@
     window.addEventListener('storage', (e) => {
       if (e.key === 'theme') applyTheme(e.newValue);
     });
-
-    // ---------- Animação de viagem no tempo futurista ----------
+    // ---------- Animação de viagem no tempo futurista aprimorada ----------
     const timeWarpOverlay = document.getElementById('timeWarpOverlay');
     const timeWarpClock = document.getElementById('timeWarpClock');
     const timeText = document.getElementById('timeText');
     const warpParticles = document.getElementById('warpParticles');
+    const warpStars = document.getElementById('warpStars');
+    const timeWarpTunnel = document.getElementById('timeWarpTunnel');
+    const warpSound = document.getElementById('warpSound');
     const eventDetails = document.getElementById('event-details');
     function createParticles() {
       warpParticles.innerHTML = '';
-      for (let i = 0; i < 20; i++) {
+      for (let i = 0; i < 50; i++) { // Aumentado para mais partículas
         const particle = document.createElement('div');
         particle.className = 'warp-particle';
         particle.style.left = Math.random() * 100 + '%';
@@ -747,27 +820,73 @@
         warpParticles.appendChild(particle);
       }
     }
+    function createStars() {
+      warpStars.innerHTML = '';
+      for (let i = 0; i < 100; i++) { // Estrelas para warp speed
+        const star = document.createElement('div');
+        star.className = 'warp-star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.animationDelay = Math.random() * 0.5 + 's';
+        warpStars.appendChild(star);
+      }
+    }
+    function createTunnelLines() {
+      timeWarpTunnel.innerHTML = '';
+      for (let i = 0; i < 24; i++) { // Linhas convergentes para túnel
+        const line = document.createElement('div');
+        line.className = 'tunnel-line';
+        line.style.setProperty('--rot', `${i * 15}deg`);
+        line.style.animationDelay = `${i * 0.05}s`;
+        timeWarpTunnel.appendChild(line);
+      }
+      timeWarpTunnel.style.opacity = 1;
+      setTimeout(() => { timeWarpTunnel.style.opacity = 0; }, 1500);
+    }
     function triggerTimeTravel(directionText) {
       createParticles(); // Gerar partículas
+      createStars(); // Gerar estrelas para warp
+      createTunnelLines(); // Gerar túnel
       timeText.textContent = directionText;
-      // Fade out do conteúdo atual
+      // Fade out do conteúdo atual com distorção
       eventDetails.classList.add('time-traveling');
       // Ativar overlay e relógio
       timeWarpOverlay.classList.add('active');
       timeWarpClock.classList.add('active');
+      // Tocar som de warp (gerar som sintético se não houver áudio)
+      if (warpSound) warpSound.play();
+      else playWarpSound();
+      // Vibração haptic se suportado
+      if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
       setTimeout(() => {
         // Desativar overlay
         timeWarpOverlay.classList.remove('active');
         timeWarpClock.classList.remove('active');
         timeText.textContent = '';
         // Atualizar conteúdo (será chamado por selectEvent)
-        // Depois, fade in
+        // Depois, fade in com emergência
         eventDetails.classList.remove('time-traveling');
         eventDetails.classList.add('emerging');
         setTimeout(() => {
           eventDetails.classList.remove('emerging');
         }, 1000);
-      }, 1500);
+      }, 2000); // Aumentado para mais imersão
+    }
+    function playWarpSound() {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      const audioCtx = new AudioCtx();
+      const oscillator = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+      oscillator.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(100, audioCtx.currentTime);
+      oscillator.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 1.5);
+      gainNode.gain.value = 0.2;
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 2);
+      oscillator.start();
+      oscillator.stop(audioCtx.currentTime + 2);
     }
     // --- Dados ---
     const events = {
@@ -1001,11 +1120,11 @@
       const newYear = parseInt(events[el.dataset.id].year);
       const currentYearNum = parseInt(events[currentEvent].year);
       const directionText = newYear < currentYearNum ? 'Voltando no tempo' : 'Avançando no tempo';
-      triggerTimeTravel(directionText); // Inicia animação
+      triggerTimeTravel(directionText); // Inicia animação aprimorada
       setTimeout(() => {
         currentEvent = el.dataset.id;
         updateEventDisplay();
-      }, 750); // Atualiza após parte da animação
+      }, 1000); // Ajustado para sincronizar com a animação
     }
     // Efeitos sonoros (compatibilidade)
     function playSound(type) {
@@ -1052,15 +1171,15 @@
       let colorsStr = getComputedStyle(root).getPropertyValue('--confetti-colors') || '#4fc3f7,#b3e5fc,#d1e8e2';
       const colors = colorsStr.split(',').map(c => c.trim().replace(/['"]/g, ''));
       for (let i = 0; i < 120; i++) {
-        confettiPieces.push({ 
-          x: Math.random() * confettiCanvas.width, 
-          y: -20, 
-          r: 3 + Math.random() * 8, 
-          vx: -3 + Math.random() * 6, 
-          vy: 2 + Math.random() * 6, 
-          rot: Math.random() * 360, 
-          vr: -0.1 + Math.random() * 0.2, 
-          color: colors[i % colors.length] 
+        confettiPieces.push({
+          x: Math.random() * confettiCanvas.width,
+          y: -20,
+          r: 3 + Math.random() * 8,
+          vx: -3 + Math.random() * 6,
+          vy: 2 + Math.random() * 6,
+          rot: Math.random() * 360,
+          vr: -0.1 + Math.random() * 0.2,
+          color: colors[i % colors.length]
         });
       }
       requestAnimationFrame(drawConfetti);
