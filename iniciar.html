@@ -705,34 +705,6 @@
       transition: background 0.3s ease;
     }
 
-    .welcome-right { 
-      position: absolute;
-      bottom: 28px;
-      right: 28px;
-      width: 200px;
-      height: 60px;
-      flex-shrink: 0;
-      max-height: 60px;
-      overflow: hidden;
-      scrollbar-width: thin;
-      scrollbar-color: rgba(100, 181, 246, 0.5) transparent;
-      transition: all 0.3s ease;
-    }
-
-    .welcome-right::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    .welcome-right::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    .welcome-right::-webkit-scrollbar-thumb {
-      background: rgba(100, 181, 246, 0.5);
-      border-radius: 3px;
-      transition: background 0.3s ease;
-    }
-
     .welcome-badge {
       padding: 8px 14px;
       border-radius: 12px;
@@ -1115,14 +1087,6 @@
         min-width: 0;
         max-height: 300px;
       }
-      .welcome-right { 
-        position: static;
-        width: 100%;
-        height: 60px;
-        bottom: auto;
-        right: auto;
-        max-height: 60px;
-      }
       .welcome-title { 
         font-size: 1.6rem;
         line-height: 1.1;
@@ -1184,15 +1148,11 @@
         flex: 1; 
         max-height: 250px;
       }
-      .welcome-right { 
-        height: 50px;
-        max-height: 50px;
-      }
       .welcome-title { 
         font-size: 1.3rem; 
       }
       .welcome-sub { 
-        font-size: 0.9rem; 
+        font-size: 0.9rem;
         margin-top: 8px;
       }
       .welcome-badge { 
@@ -1281,6 +1241,78 @@
     :root.theme-pink .confetti-piece { --confetti-colors: '#f472b6,#fbcfe8,#fdf2f8'; }
     :root.theme-teal .confetti-piece { --confetti-colors: '#2dd4bf,#ccfbf1,#f0fdfa'; }
     :root.theme-grayscale .confetti-piece { --confetti-colors: '#ffffff,#eeeeee,#cccccc'; }
+
+    /* NOVO: Estilos para o cadeado animado */
+    .padlock-animated {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 32px;
+      height: 32px;
+      animation: shake 1s ease-in-out infinite;
+    }
+
+    .padlock-animated svg {
+      fill: #ffd700;
+      filter: drop-shadow(0 2px 4px rgba(255, 215, 0, 0.5));
+      transition: fill 0.3s ease;
+    }
+
+    @keyframes shake {
+      0%, 50%, 100% {
+        transform: translate(-50%, -50%) rotate(0deg);
+      }
+      10%, 30% {
+        transform: translate(-50%, -50%) rotate(-4deg);
+      }
+      20%, 40% {
+        transform: translate(-50%, -50%) rotate(4deg);
+      }
+    }
+
+    .cta-button.locked {
+      cursor: not-allowed;
+      opacity: 0.8;
+      background: linear-gradient(135deg, #6b7280, #4b5563); /* Cinza */
+      color: #e5e7eb; /* Cinza claro para texto */
+    }
+
+    .cta-button.locked:hover {
+      transform: none;
+      box-shadow: 0 8px 24px rgba(107, 114, 128, 0.4);
+      background: linear-gradient(135deg, #6b7280, #4b5563);
+    }
+
+    .cta-button.locked:hover .padlock-animated svg {
+      fill: #ffcc00;
+    }
+
+    .cta-button.locked > svg,
+    .cta-button.locked > span {
+      opacity: 0.5;
+      transition: opacity 0.3s ease;
+    }
+
+    .cta-button.locked:hover > svg,
+    .cta-button.locked:hover > span {
+      opacity: 0.3;
+    }
+
+    /* NOVO: Estilos para o botão de desenvolvedores com ícone */
+    .hero-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0;
+      font-size: 1.2rem;
+    }
+
+    .hero-title svg {
+      width: 20px;
+      height: 20px;
+      stroke: var(--accent);
+    }
   </style>
 </head>
 <body>
@@ -1299,9 +1331,10 @@
           <p id="userTag" class="muted">— Perfil público</p>
         </div>
 
-        <div style="width:100%;display:flex;gap:8px;justify-content:center;margin-top:12px">
+        <div style="width:100%;display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap;">
           <button class="btn ghost" id="editBtn" title="Editar perfil"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg> Editar</button>
           <button class="btn ghost" id="settingsBtn" title="Configurações"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg> Config</button>
+          <button class="btn ghost" id="devBtn" title="Desenvolvedores"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg> Devs</button>
           <button class="btn ghost warning-small" id="warningBtn" title="Aviso sobre questões" style="position: relative;">
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="9"></line><line x1="9.5" y1="15" x2="14.5" y2="15"></line></svg>
             <span id="warningIndicator">!</span>
@@ -1422,23 +1455,24 @@ Nosso objetivo: mostrar a importância das redes na sociedade moderna e como ela
         <label class="small" style="margin-top:12px;display:block"><input id="dontShow" type="checkbox" style="margin-right:8px"> Não mostrar novamente</label>
       </div>
 
-      <div class="welcome-right">
-        <!-- Agora é um botão -->
-        <button class="hero-plate" id="devToggleBtn">
-          <h3 class="hero-title">Equipe de Desenvolvimento</h3>
-          <ul class="dev-list" id="devList" aria-label="Lista de desenvolvedores">
-            <li><span class="dev-name">Raquele de Jesus Santos</span></li>
-            <li><span class="dev-name">Átila Santos Bispo</span></li>
-            <li><span class="dev-name">Ana Caroline de Jesus</span></li>
-            <li><span class="dev-name">Clícia Moraes de Lima</span></li>
-            <li><span class="dev-name">Adriele Pereira Faustino</span></li>
-            <li><span class="dev-name">Raiane Calvalcante Santos</span></li>
-          </ul>
-        </button>
-      </div>
-
       <!-- Confete container (inserido dinamicamente) -->
       <div class="confetti-wrap" id="confettiWrap" aria-hidden="true"></div>
+    </div>
+  </div>
+
+  <!-- NOVO: Modal para Desenvolvedores -->
+  <div id="devModal" class="warning-modal" role="dialog" aria-modal="true" aria-label="Equipe de Desenvolvimento">
+    <div class="warning-modal-card">
+      <h3>Equipe de Desenvolvimento</h3>
+      <ul>
+        <li>Raquele de Jesus Santos</li>
+        <li>Átila Santos Bispo</li>
+        <li>Ana Caroline de Jesus</li>
+        <li>Clícia Moraes de Lima</li>
+        <li>Adriele Pereira Faustino</li>
+        <li>Raiane Calvalcante Santos</li>
+      </ul>
+      <button id="closeDev">Fechar</button>
     </div>
   </div>
 
@@ -1562,10 +1596,29 @@ Nosso objetivo: mostrar a importância das redes na sociedade moderna e como ela
       warningModal.style.display = 'none';
     });
 
-    // Fechar modal de aviso com ESC
+    // NOVO: Lógica para o modal de desenvolvedores
+    const devBtn = document.getElementById('devBtn');
+    const devModal = document.getElementById('devModal');
+    const closeDev = document.getElementById('closeDev');
+
+    devBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      devModal.style.display = 'flex';
+    });
+
+    closeDev.addEventListener('click', () => {
+      devModal.style.display = 'none';
+    });
+
+    // Fechar modals com ESC
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && warningModal.style.display === 'flex') {
-        warningModal.style.display = 'none';
+      if (e.key === 'Escape') {
+        if (warningModal.style.display === 'flex') {
+          warningModal.style.display = 'none';
+        }
+        if (devModal.style.display === 'flex') {
+          devModal.style.display = 'none';
+        }
       }
     });
 
@@ -1638,7 +1691,23 @@ Nosso objetivo: mostrar a importância das redes na sociedade moderna e como ela
         if(error || !data){ console.warn('Usuário não encontrado:', error); userName.textContent = email.split('@')[0]; userTag.textContent = 'Perfil básico'; loadAvatar(); }
         else{ userName.textContent = data.nome || email.split('@')[0]; userEmail.textContent = data.email || email; userTag.textContent = 'Bem-vindo(a)'; loadAvatar(data.picture); }
       }catch(err){ console.error('Erro crítico:', err); userName.textContent = email.split('@')[0]; userTag.textContent = 'Erro ao conectar'; loadAvatar(); }
-      finally{ renderTopics(); profileCard.animate([{ transform: 'scale(0.998)' }, { transform: 'scale(1)' }], { duration: 300, easing: 'ease-out' }); }
+      finally{ renderTopics(); profileCard.animate([{ transform: 'scale(0.998)' }, { transform: 'scale(1)' }], { duration: 300, easing: 'ease-out' }); 
+        // NOVO: Verificar email e adicionar cadeado animado se não for permitido
+        const allowedEmails = ['tridgal2007@gmail.com', 'lokiatgardiano@gmail.com', 'raquele201311@gmail.com'];
+        const ctaButton = document.querySelector('.cta-button');
+        if (!allowedEmails.includes(email.toLowerCase())) {
+          const padlock = document.createElement('span');
+          padlock.className = 'padlock-animated';
+          padlock.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 448 512"><path d="M144 144v48H304V144c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192V144C80 64.5 144.5 0 224 0s144 64.5 144 144v48h16c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V256c0-35.3 28.7-64 64-64H80z"/></svg>';
+          ctaButton.appendChild(padlock);
+          ctaButton.classList.add('locked');
+          ctaButton.href = '#';
+          ctaButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            alert('Acesso restrito: Esta funcionalidade está disponível apenas para usuários selecionados.');
+          });
+        }
+      }
     }
 
     document.getElementById('refreshBtn').addEventListener('click', carregarPerfil);
@@ -1686,65 +1755,7 @@ Nosso objetivo: mostrar a importância das redes na sociedade moderna e como ela
     function hideWelcome(save){ welcomeModal.style.display = 'none'; if(save) localStorage.setItem('seenWelcome','1'); profileCard.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.02)' }, { transform: 'scale(1)' }], { duration: 420, easing: 'ease-out' }); }
     welcomeClose.addEventListener('click', () => { hideWelcome(dontShow.checked); });
 
-    // Toggle equipe de desenvolvedores
-    const devToggleBtn = document.getElementById('devToggleBtn');
-    const welcomeLeft = document.querySelector('.welcome-left');
-    const welcomeBadge = document.querySelector('.welcome-badge');
-    const welcomeTitle = document.querySelector('.welcome-title');
-    const welcomeSub = document.querySelector('.welcome-sub');
-    const dontShowContainer = dontShow.parentElement;
-    const originalHeroTitleText = (devToggleBtn.querySelector('.hero-title') || {}).textContent || 'Equipe de Desenvolvimento';
-    const devListOriginal = document.getElementById('devList');
-    let devListClone = null;
-
-    devToggleBtn.addEventListener('click', (e) => {
-      const isActive = devToggleBtn.classList.contains('dev-active');
-      const heroTitleEl = devToggleBtn.querySelector('.hero-title');
-
-      if (!isActive) {
-        welcomeBadge.style.display = 'none';
-        welcomeTitle.style.display = 'none';
-        welcomeSub.style.display = 'none';
-        dontShowContainer.style.display = 'none';
-
-        if (devListOriginal) {
-          devListClone = devListOriginal.cloneNode(true);
-          devListClone.id = 'devListClone';
-          devListClone.style.display = 'flex';
-          devListClone.style.maxHeight = '360px';
-          devListClone.style.overflowY = 'auto';
-          devListClone.style.paddingRight = '6px';
-          welcomeLeft.appendChild(devListClone);
-          requestAnimationFrame(() => {
-            devListClone.style.opacity = '1';
-            devListClone.style.transform = 'translateY(0)';
-          });
-        }
-
-        devToggleBtn.classList.add('dev-active');
-        devToggleBtn.setAttribute('aria-pressed', 'true');
-        if (heroTitleEl) heroTitleEl.textContent = 'Boas-vindas';
-        devToggleBtn.title = 'Mostrar boas-vindas';
-      } else {
-        welcomeBadge.style.display = '';
-        welcomeTitle.style.display = '';
-        welcomeSub.style.display = '';
-        dontShowContainer.style.display = '';
-
-        if (devListClone) {
-          devListClone.style.opacity = '0';
-          devListClone.style.transform = 'translateY(6px)';
-          setTimeout(() => { if (devListClone) { devListClone.remove(); devListClone = null; } }, 260);
-        }
-
-        devToggleBtn.classList.remove('dev-active');
-        devToggleBtn.setAttribute('aria-pressed', 'false');
-        if (heroTitleEl) heroTitleEl.textContent = originalHeroTitleText;
-        devToggleBtn.title = 'Equipe de Desenvolvimento';
-      }
-    });
-
-    document.addEventListener('keydown', (e) => { if(e.key === 'Escape' && (welcomeModal.style.display === 'flex' || settingsModal.style.display === 'flex' || modal.style.display === 'flex')){ if(welcomeModal.style.display === 'flex') hideWelcome(dontShow.checked); else { welcomeModal.style.display = 'none'; settingsModal.style.display = 'none'; modal.style.display = 'none'; } } });
+    document.addEventListener('keydown', (e) => { if(e.key === 'Escape' && (welcomeModal.style.display === 'flex' || settingsModal.style.display === 'flex' || modal.style.display === 'flex' || warningModal.style.display === 'flex' || devModal.style.display === 'flex')){ if(welcomeModal.style.display === 'flex') hideWelcome(dontShow.checked); else { welcomeModal.style.display = 'none'; settingsModal.style.display = 'none'; modal.style.display = 'none'; warningModal.style.display = 'none'; devModal.style.display = 'none'; } } });
 
     document.addEventListener('DOMContentLoaded', () => { try{ showWelcome(); }catch(e){ console.warn('Welcome failed:', e);} carregarPerfil(); });
   </script>
