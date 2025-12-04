@@ -4,19 +4,16 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Perfil do Usuário — Surreal (Azul)</title>
-
   <!-- Fontes -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-
   <!-- Supabase (CDN) -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   <meta name="color-scheme" content="light dark">
   <style>
     /* ---------- PALETA AZUL PREMIUM (PADRÃO) - CORES MAIS AGRADÁVEIS ---------- */
     :root {
       --bg-1: #0f172a;          /* Slate-900: Mais suave que deep space blue */
-      --bg-2: 1e293b;          /* Slate-800: Navy mais equilibrado */
+      --bg-2: #1e293b;          /* Slate-800: Navy mais equilibrado */
       --card-bg: rgba(15, 23, 42, 0.8);
       --card-border: rgba(59, 130, 246, 0.2); /* Blue-500 suavizado */
       --accent: #60a5fa;        /* Blue-400: Céu azul mais gentil */
@@ -29,7 +26,6 @@
       --focus-ring: 0 0 0 4px rgba(59, 130, 246, 0.3);
       --accent-rgb: 96, 165, 250;
     }
-
     /* Tema Vermelho Completo - Suavizado */
     :root.theme-red {
       --bg-1: #1e1b18;          /* Stone-900 com tom quente */
@@ -45,7 +41,6 @@
       --focus-ring: 0 0 0 4px rgba(239, 68, 68, 0.3);
       --accent-rgb: 248, 113, 113;
     }
-
     /* Tema Verde Completo - Suavizado */
     :root.theme-green {
       --bg-1: #111827;          /* Gray-900 neutro com toque verde */
@@ -61,7 +56,6 @@
       --focus-ring: 0 0 0 4px rgba(34, 197, 94, 0.3);
       --accent-rgb: 74, 222, 128;
     }
-
     /* Tema Roxo Completo - Suavizado */
     :root.theme-purple {
       --bg-1: #1e1a2e;          /* Slate-900 com violeta */
@@ -77,7 +71,6 @@
       --focus-ring: 0 0 0 4px rgba(168, 85, 247, 0.3);
       --accent-rgb: 167, 139, 250;
     }
-
     /* Tema Laranja Completo - Suavizado */
     :root.theme-orange {
       --bg-1: #1f1a14;          /* Amber-900 escuro */
@@ -93,7 +86,6 @@
       --focus-ring: 0 0 0 4px rgba(251, 146, 60, 0.3);
       --accent-rgb: 251, 146, 60;
     }
-
     /* Tema Rosa Completo - Suavizado */
     :root.theme-pink {
       --bg-1: #1e1623;          /* Rose-900 suave */
@@ -109,7 +101,6 @@
       --focus-ring: 0 0 0 4px rgba(244, 114, 182, 0.3);
       --accent-rgb: 244, 114, 182;
     }
-
     /* Tema Ciano Completo - Suavizado */
     :root.theme-teal {
       --bg-1: #0f1f23;          /* Teal-900 */
@@ -125,7 +116,6 @@
       --focus-ring: 0 0 0 4px rgba(45, 212, 191, 0.3);
       --accent-rgb: 45, 212, 191;
     }
-
     /* Tema Preto e Branco (Cinza Escala) Completo - Suavizado */
     :root.theme-grayscale {
       --bg-1: #000000;          /* Mantido */
@@ -141,7 +131,6 @@
       --focus-ring: 0 0 0 4px rgba(255, 255, 255, 0.2);
       --accent-rgb: 255, 255, 255;
     }
-
     /* Light mode (opcional, mas mantido e suavizado) */
     :root.light {
       --bg-1: #f8fafc;          /* Slate-50 */
@@ -151,7 +140,6 @@
       --text: #0f172a;          /* Slate-900 */
       --muted: #64748b;         /* Slate-500 */
     }
-
     * { box-sizing: border-box; }
     html, body {
       height: 100%;
@@ -163,7 +151,6 @@
       -moz-osx-font-smoothing: grayscale;
       transition: background 0.3s ease, color 0.3s ease;
     }
-
     .wrap {
       min-height: 100vh;
       display: flex;
@@ -171,7 +158,6 @@
       justify-content: center;
       padding: 24px;
     }
-
     .profile {
       width: 960px;
       max-width: 96%;
@@ -187,7 +173,6 @@
       position: relative;
       transition: background 0.3s ease, border 0.3s ease, box-shadow 0.3s ease;
     }
-
     /* Left Column */
     .left {
       display: flex;
@@ -195,7 +180,6 @@
       align-items: center;
       gap: 20px;
     }
-
     .avatar-wrap {
       width: 160px;
       height: 160px;
@@ -205,7 +189,6 @@
       box-shadow: var(--shadow);
       transition: background 0.3s ease, box-shadow 0.3s ease;
     }
-
     .avatar {
       width: 100%;
       height: 100%;
@@ -214,27 +197,23 @@
       border: 4px solid var(--bg-1);
       background: var(--bg-2);
     }
-
     .name h1 {
       margin: 0;
       font-size: 1.6rem;
       font-weight: 700;
       letter-spacing: -0.3px;
     }
-
     .name p {
       margin: 6px 0 0;
       color: var(--muted);
       font-size: 0.92rem;
     }
-
     .badges {
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
       justify-content: center;
     }
-
     .badge {
       padding: 6px 14px;
       border-radius: 20px;
@@ -245,21 +224,18 @@
       border: 1px solid rgba(100, 181, 246, 0.2);
       transition: background 0.3s ease, border 0.3s ease;
     }
-
     /* Right Column */
     .right {
       display: flex;
       flex-direction: column;
       gap: 24px;
     }
-
     .topbar {
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 16px;
     }
-
     .email {
       display: flex;
       align-items: center;
@@ -267,12 +243,10 @@
       font-size: 0.95rem;
       color: var(--muted);
     }
-
     .controls {
       display: flex;
       gap: 12px;
     }
-
     .btn {
       display: inline-flex;
       align-items: center;
@@ -288,22 +262,18 @@
       transition: all 0.2s ease;
       min-height: 44px;
     }
-
     .btn.ghost {
       background: transparent;
       border-color: rgba(255, 255, 255, 0.2);
     }
-
     .btn:hover {
       transform: translateY(-2px);
       box-shadow: var(--shadow-hover);
     }
-
     .btn:focus {
       outline: none;
       box-shadow: var(--focus-ring);
     }
-
     .btn.primary {
       background: linear-gradient(135deg, var(--accent), var(--accent-hover));
       color: #0a192f;
@@ -311,11 +281,9 @@
       box-shadow: 0 6px 20px rgba(var(--accent-rgb), 0.3);
       transition: background 0.3s ease;
     }
-
     .btn.primary:hover {
       background: linear-gradient(135deg, var(--accent-hover), var(--accent));
     }
-
     /* NOVO: Botão de aviso pequeno (estilo ghost com cor de aviso) */
     .btn.warning-small {
       background: rgba(245, 158, 11, 0.1);
@@ -326,13 +294,11 @@
       min-height: 40px;
       position: relative;
     }
-
     .btn.warning-small:hover {
       background: rgba(245, 158, 11, 0.2);
       color: #d97706;
       transform: translateY(-1px);
     }
-
     #warningIndicator {
       position: absolute;
       top: -6px;
@@ -351,7 +317,6 @@
       z-index: 10;
       box-shadow: 0 2px 4px rgba(245, 158, 11, 0.3);
     }
-
     @keyframes vibrateZ {
       0%, 100% { 
         transform: translateZ(0) scale(1) rotate(0deg); 
@@ -363,12 +328,10 @@
         transform: translateZ(1px) scale(1.05) rotate(-1deg); 
       }
     }
-
     .stats {
       display: flex;
       gap: 16px;
     }
-
     .stat {
       flex: 1;
       padding: 16px;
@@ -378,25 +341,21 @@
       border: 1px solid rgba(255, 255, 255, 0.05);
       transition: background 0.3s ease, border 0.3s ease;
     }
-
     .stat h3 {
       margin: 0;
       font-size: 1.2rem;
       font-weight: 700;
     }
-
     .stat p {
       margin: 8px 0 0;
       color: var(--muted);
       font-size: 0.85rem;
     }
-
     .topics-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
       gap: 16px;
     }
-
     .topic {
       display: flex;
       align-items: center;
@@ -409,14 +368,12 @@
       text-decoration: none;
       transition: all 0.25s ease;
     }
-
     .topic:hover {
       transform: translateY(-4px);
       background: rgba(100, 181, 246, 0.1);
       border-color: rgba(100, 181, 246, 0.3);
       box-shadow: 0 8px 24px rgba(0, 30, 60, 0.3);
     }
-
     .topic i,
     .topic svg {
       color: var(--accent);
@@ -427,24 +384,20 @@
       justify-content: center;
       transition: color 0.3s ease;
     }
-
     .topic strong {
       display: block;
       font-weight: 600;
       font-size: 0.95rem;
     }
-
     .topic .muted {
       font-size: 0.8rem;
     }
-
     /* NOVO: Container para botões principais lado a lado */
     .main-buttons {
       display: flex;
       gap: 12px;
       margin: 20px 0;
     }
-
     /* ✨ BOTÃO DESTACADO: Montar Minha Rede */
     .cta-button {
       flex: 1;
@@ -465,7 +418,6 @@
       position: relative;
       overflow: hidden;
     }
-
     .cta-button::before {
       content: '';
       position: absolute;
@@ -476,29 +428,24 @@
       background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
       transition: left 0.6s;
     }
-
     .cta-button:hover {
       transform: translateY(-4px) scale(1.02);
       box-shadow: 0 12px 32px rgba(var(--accent-rgb), 0.6);
       background: linear-gradient(135deg, var(--accent), var(--accent-hover));
     }
-
     .cta-button:hover::before {
       left: 100%;
     }
-
     .cta-button svg {
       width: 22px;
       height: 22px;
       animation: pulse 2s infinite;
       transition: stroke 0.3s ease;
     }
-
     @keyframes pulse {
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.1); }
     }
-
     /* BOTÃO ESPECIAL PARA PROVA - DIFERENTE DA MAIORIA */
     .quiz-button {
       flex: 1;
@@ -519,7 +466,6 @@
       position: relative;
       overflow: hidden;
     }
-
     .quiz-button::before {
       content: '';
       position: absolute;
@@ -530,24 +476,20 @@
       background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
       transition: left 0.6s;
     }
-
     .quiz-button:hover {
       transform: translateY(-4px) scale(1.02);
       box-shadow: 0 12px 32px rgba(var(--accent-rgb), 0.6);
       background: linear-gradient(135deg, var(--accent), var(--accent-hover));
     }
-
     .quiz-button:hover::before {
       left: 100%;
     }
-
     .quiz-button svg {
       width: 22px;
       height: 22px;
       animation: pulse 2s infinite;
       transition: stroke 0.3s ease;
     }
-
     /* Modal para o aviso */
     .warning-modal {
       position: fixed;
@@ -561,7 +503,6 @@
       padding: 20px;
       transition: background 0.3s ease;
     }
-
     .warning-modal-card {
       width: 500px;
       max-width: 95%;
@@ -573,20 +514,17 @@
       transition: background 0.3s ease, border 0.3s ease, box-shadow 0.3s ease;
       text-align: center;
     }
-
     .warning-modal-card h3 {
       margin: 0 0 16px;
       font-weight: 700;
       color: #f59e0b; /* Cor de aviso */
     }
-
     .warning-modal-card p {
       margin: 0 0 20px;
       color: var(--text);
       line-height: 1.5;
       font-size: 1rem;
     }
-
     .warning-modal-card button {
       padding: 10px 20px;
       background: linear-gradient(135deg, var(--accent-hover), var(--accent));
@@ -597,12 +535,10 @@
       cursor: pointer;
       transition: all 0.2s ease;
     }
-
     .warning-modal-card button:hover {
       transform: translateY(-2px);
       box-shadow: var(--shadow-hover);
     }
-
     /* Modal de Edição */
     .modal {
       position: fixed;
@@ -616,7 +552,6 @@
       padding: 20px;
       transition: background 0.3s ease;
     }
-
     .modal-card {
       width: 600px;
       max-width: 95%;
@@ -627,12 +562,10 @@
       box-shadow: var(--shadow);
       transition: background 0.3s ease, border 0.3s ease, box-shadow 0.3s ease;
     }
-
     .modal-card h3 {
       margin: 0 0 16px;
       font-weight: 700;
     }
-
     .modal-card input,
     .modal-card select {
       width: 100%;
@@ -645,11 +578,9 @@
       font-family: inherit;
       transition: border 0.3s ease, background 0.3s ease;
     }
-
     .modal-card input::placeholder {
       color: var(--muted);
     }
-
     /* Welcome Modal (melhorada) */
     .welcome-modal {
       position: fixed;
@@ -663,7 +594,6 @@
       padding: 20px;
       transition: background 0.3s ease;
     }
-
     .welcome-card {
       display: flex;
       gap: 24px;
@@ -679,7 +609,6 @@
       overflow: hidden;
       transition: background 0.3s ease, border 0.3s ease;
     }
-
     .welcome-left { 
       flex: 1; 
       scroll-behavior: smooth;
@@ -690,21 +619,17 @@
       scrollbar-width: thin;
       scrollbar-color: rgba(100, 181, 246, 0.5) transparent;
     }
-
     .welcome-left::-webkit-scrollbar {
       width: 6px;
     }
-
     .welcome-left::-webkit-scrollbar-track {
       background: transparent;
     }
-
     .welcome-left::-webkit-scrollbar-thumb {
       background: rgba(100, 181, 246, 0.5);
       border-radius: 3px;
       transition: background 0.3s ease;
     }
-
     .welcome-badge {
       padding: 8px 14px;
       border-radius: 12px;
@@ -715,7 +640,6 @@
       display:inline-block;
       transition: background 0.3s ease;
     }
-
     .welcome-title {
       font-size: 2rem;
       margin: 12px 0 6px;
@@ -723,13 +647,11 @@
       line-height: 1.05;
       color: var(--text);
     }
-
     .welcome-sub {
       color: var(--muted);
       margin-top: 10px;
       line-height: 1.5;
     }
-
     /* --- NOVO: Estilo aprimorado para o painel de desenvolvedores --- */
     .hero-plate {
       width: 100%;
@@ -750,12 +672,10 @@
       cursor: pointer;
       transition: all 0.2s ease, background 0.3s ease, border 0.3s ease;
     }
-
     .hero-plate:hover {
       background: linear-gradient(135deg, rgba(100, 181, 246, 0.15), rgba(66, 165, 245, 0.1));
       border-color: rgba(100, 181, 246, 0.3);
     }
-
     .hero-plate.expanded {
       position: absolute;
       inset: 0;
@@ -771,13 +691,11 @@
       box-shadow: none;
       transition: background 0.3s ease;
     }
-
     .hero-plate.expanded .hero-title {
       margin-bottom: 12px;
       text-align: left;
       font-size: 1.4rem;
     }
-
     .dev-list {
       list-style: none;
       margin: 8px 0 0;
@@ -788,14 +706,12 @@
       gap: 12px;
       max-height: none;
     }
-
     .hero-plate.expanded .dev-list {
       display: flex;
       flex: 1;
       overflow-y: auto;
       margin-top: 20px;
     }
-
     .dev-name {
       display: block;
       font-weight: 600;
@@ -808,112 +724,92 @@
       transition: background 0.2s ease, color 0.3s ease;
       text-align: left;
     }
-
     .dev-name:hover {
       background: rgba(100, 181, 246, 0.15);
       color: var(--accent);
     }
-
     /* Ajustes para temas nos hover de topics e badge - ATUALIZADOS PARA NOVAS CORES */
     :root.theme-red .topic:hover,
     :root.theme-red .badge {
       background: rgba(248, 113, 113, 0.1);
       border-color: rgba(248, 113, 113, 0.3);
     }
-
     :root.theme-red .dev-name:hover {
       background: rgba(248, 113, 113, 0.15);
       color: var(--accent);
     }
-
     :root.theme-green .topic:hover,
     :root.theme-green .badge {
       background: rgba(74, 222, 128, 0.1);
       border-color: rgba(74, 222, 128, 0.3);
     }
-
     :root.theme-green .dev-name:hover {
       background: rgba(74, 222, 128, 0.15);
       color: var(--accent);
     }
-
     :root.theme-purple .topic:hover,
     :root.theme-purple .badge {
       background: rgba(167, 139, 250, 0.1);
       border-color: rgba(167, 139, 250, 0.3);
     }
-
     :root.theme-purple .dev-name:hover {
       background: rgba(167, 139, 250, 0.15);
       color: var(--accent);
     }
-
     :root.theme-orange .topic:hover,
     :root.theme-orange .badge {
       background: rgba(251, 146, 60, 0.1);
       border-color: rgba(251, 146, 60, 0.3);
     }
-
     :root.theme-orange .dev-name:hover {
       background: rgba(251, 146, 60, 0.15);
       color: var(--accent);
     }
-
     :root.theme-pink .topic:hover,
     :root.theme-pink .badge {
       background: rgba(244, 114, 182, 0.1);
       border-color: rgba(244, 114, 182, 0.3);
     }
-
     :root.theme-pink .dev-name:hover {
       background: rgba(244, 114, 182, 0.15);
       color: var(--accent);
     }
-
     :root.theme-teal .topic:hover,
     :root.theme-teal .badge {
       background: rgba(45, 212, 191, 0.1);
       border-color: rgba(45, 212, 191, 0.3);
     }
-
     :root.theme-teal .dev-name:hover {
       background: rgba(45, 212, 191, 0.15);
       color: var(--accent);
     }
-
     :root.theme-grayscale .topic:hover,
     :root.theme-grayscale .badge {
       background: rgba(255, 255, 255, 0.05);
       border-color: rgba(255, 255, 255, 0.1);
     }
-
     :root.theme-grayscale .dev-name:hover {
       background: rgba(255, 255, 255, 0.05);
       color: var(--accent);
     }
-
     /* Light mode adjustments - SUAVIZADO */
     :root.light .hero-plate {
       background: linear-gradient(135deg, rgba(200, 230, 255, 0.3), rgba(220, 240, 255, 0.2));
       border-color: rgba(59, 130, 246, 0.2);
     }
-
     :root.light .hero-plate.expanded {
       background: linear-gradient(135deg, rgba(200, 230, 255, 0.4), rgba(220, 240, 255, 0.3));
       border-color: rgba(59, 130, 246, 0.3);
     }
-
     :root.light .dev-name {
       background: rgba(0, 0, 0, 0.03);
       color: var(--text);
     }
-
     :root.light .dev-name:hover {
       background: rgba(59, 130, 246, 0.2);
       color: #0a2e5c;
     }
     /* --- FIM da melhoria --- */
-
     .welcome-close {
       position: absolute;
       top: 12px;
@@ -930,22 +826,18 @@
       align-items: center;
       justify-content: center;
     }
-
     .welcome-close:hover {
       background: rgba(255, 255, 255, 0.2);
       transform: scale(1.1);
       box-shadow: var(--shadow);
     }
-
     .welcome-close:focus {
       outline: none;
       box-shadow: var(--focus-ring);
     }
-
     .welcome-close i {
       font-size: 1.2rem;
     }
-
     /* Confete */
     .confetti-wrap {
       pointer-events: none;
@@ -954,7 +846,6 @@
       z-index: 400;
       overflow: visible;
     }
-
     .confetti-piece {
       position: absolute;
       top: 0;
@@ -968,12 +859,10 @@
       animation-timing-function: cubic-bezier(.2,.7,.3,1);
       animation-fill-mode: forwards;
     }
-
     @keyframes confetti-fall {
       0% { transform: translate3d(0,-10px,0) rotate(0deg) scale(1); opacity: 1; }
       100% { transform: translate3d(var(--dx, 0px), 260px, 0) rotate(var(--rot, 360deg)) scale(0.95); opacity: 0; }
     }
-
     /* NOVO: Visualização Aprimorada da Paleta de Cores no Modal de Configurações */
     .theme-preview {
       display: grid;
@@ -985,7 +874,6 @@
       border-radius: 12px;
       border: 1px solid rgba(255, 255, 255, 0.05);
     }
-
     .theme-option {
       display: flex;
       flex-direction: column;
@@ -999,14 +887,12 @@
       position: relative;
       overflow: hidden;
     }
-
     .theme-option:hover,
     .theme-option.selected {
       border-color: var(--accent);
       transform: translateY(-2px);
       box-shadow: var(--shadow);
     }
-
     .theme-swatch {
       width: 100%;
       height: 60px;
@@ -1014,7 +900,6 @@
       position: relative;
       overflow: hidden;
     }
-
     .theme-swatch::before {
       content: '';
       position: absolute;
@@ -1022,7 +907,6 @@
       background: linear-gradient(135deg, var(--bg-1), var(--bg-2));
       opacity: 0.8;
     }
-
     .theme-swatch::after {
       content: '';
       position: absolute;
@@ -1034,7 +918,6 @@
       border-radius: 50%;
       border: 2px solid var(--bg-1);
     }
-
     .theme-label {
       font-size: 0.85rem;
       font-weight: 600;
@@ -1042,7 +925,6 @@
       color: var(--text);
       white-space: nowrap;
     }
-
     /* Aplicar preview dinâmico para cada tema - ATUALIZADO */
     .theme-option[data-theme="blue"] .theme-swatch::before { background: linear-gradient(135deg, #0f172a, #1e293b); }
     .theme-option[data-theme="red"] .theme-swatch::before { background: linear-gradient(135deg, #1e1b18, #2d1a18); }
@@ -1052,7 +934,6 @@
     .theme-option[data-theme="pink"] .theme-swatch::before { background: linear-gradient(135deg, #1e1623, #2d1b2a); }
     .theme-option[data-theme="teal"] .theme-swatch::before { background: linear-gradient(135deg, #0f1f23, #0f2a2a); }
     .theme-option[data-theme="grayscale"] .theme-swatch::before { background: linear-gradient(135deg, #000000, #111111); }
-
     .theme-option[data-theme="blue"] .theme-swatch::after { background: #60a5fa; }
     .theme-option[data-theme="red"] .theme-swatch::after { background: #f87171; }
     .theme-option[data-theme="green"] .theme-swatch::after { background: #4ade80; }
@@ -1061,7 +942,6 @@
     .theme-option[data-theme="pink"] .theme-swatch::after { background: #f472b6; }
     .theme-option[data-theme="teal"] .theme-swatch::after { background: #2dd4bf; }
     .theme-option[data-theme="grayscale"] .theme-swatch::after { background: #ffffff; }
-
     /* Responsive */
     @media (max-width: 900px) {
       .profile { 
@@ -1130,7 +1010,6 @@
       .main-buttons { flex-direction: column; gap: 8px; }
       .cta-button, .quiz-button { padding: 14px 20px; font-size: 1rem; }
     }
-
     @media (max-width: 480px) {
       .wrap { padding: 16px; }
       .profile { padding: 16px; gap: 20px; }
@@ -1228,11 +1107,9 @@
         font-size: 9px;
       }
     }
-
     .muted { color: var(--muted); }
     .small { font-size: 0.85rem; }
     .center { display: flex; align-items: center; justify-content: center; }
-
     /* Ajuste para confetti colors por tema - ATUALIZADO */
     :root.theme-red .confetti-piece { --confetti-colors: '#f87171,#fca5a5,#fecaca'; }
     :root.theme-green .confetti-piece { --confetti-colors: '#4ade80,#86efac,#dcfce7'; }
@@ -1241,64 +1118,6 @@
     :root.theme-pink .confetti-piece { --confetti-colors: '#f472b6,#fbcfe8,#fdf2f8'; }
     :root.theme-teal .confetti-piece { --confetti-colors: '#2dd4bf,#ccfbf1,#f0fdfa'; }
     :root.theme-grayscale .confetti-piece { --confetti-colors: '#ffffff,#eeeeee,#cccccc'; }
-
-    /* NOVO: Estilos para o cadeado animado */
-    .padlock-animated {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 32px;
-      height: 32px;
-      animation: shake 1s ease-in-out infinite;
-    }
-
-    .padlock-animated svg {
-      fill: #ffd700;
-      filter: drop-shadow(0 2px 4px rgba(255, 215, 0, 0.5));
-      transition: fill 0.3s ease;
-    }
-
-    @keyframes shake {
-      0%, 50%, 100% {
-        transform: translate(-50%, -50%) rotate(0deg);
-      }
-      10%, 30% {
-        transform: translate(-50%, -50%) rotate(-4deg);
-      }
-      20%, 40% {
-        transform: translate(-50%, -50%) rotate(4deg);
-      }
-    }
-
-    .cta-button.locked {
-      cursor: not-allowed;
-      opacity: 0.8;
-      background: linear-gradient(135deg, #6b7280, #4b5563); /* Cinza */
-      color: #e5e7eb; /* Cinza claro para texto */
-    }
-
-    .cta-button.locked:hover {
-      transform: none;
-      box-shadow: 0 8px 24px rgba(107, 114, 128, 0.4);
-      background: linear-gradient(135deg, #6b7280, #4b5563);
-    }
-
-    .cta-button.locked:hover .padlock-animated svg {
-      fill: #ffcc00;
-    }
-
-    .cta-button.locked > svg,
-    .cta-button.locked > span {
-      opacity: 0.5;
-      transition: opacity 0.3s ease;
-    }
-
-    .cta-button.locked:hover > svg,
-    .cta-button.locked:hover > span {
-      opacity: 0.3;
-    }
-
     /* NOVO: Estilos para o botão de desenvolvedores com ícone */
     .hero-title {
       display: flex;
@@ -1307,7 +1126,6 @@
       margin: 0;
       font-size: 1.2rem;
     }
-
     .hero-title svg {
       width: 20px;
       height: 20px;
@@ -1316,21 +1134,17 @@
   </style>
 </head>
 <body>
-
   <div class="wrap">
     <main class="profile" id="profileCard" role="region" aria-label="Perfil do usuário">
-
       <!-- LEFT -->
       <section class="left" aria-hidden="false">
         <div class="avatar-wrap center" id="avatarWrap">
           <img id="avatar" class="avatar" src="https://via.placeholder.com/160x160/0f172a/60a5fa?text=👤" alt="Foto do usuário" />
         </div>
-
         <div class="name" id="nameBlock">
           <h1 id="userName">Carregando...</h1>
           <p id="userTag" class="muted">— Perfil público</p>
         </div>
-
         <div style="width:100%;display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap;">
           <button class="btn ghost" id="editBtn" title="Editar perfil"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg> Editar</button>
           <button class="btn ghost" id="settingsBtn" title="Configurações"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg> Config</button>
@@ -1342,7 +1156,6 @@
           </button>
         </div>
       </section>
-
       <!-- RIGHT -->
       <section class="right" aria-hidden="false">
         <div class="topbar">
@@ -1351,14 +1164,12 @@
             <span id="userEmail" class="small muted">—@—</span>
           </div>
         </div>
-
         <div>
           <h4 style="margin:10px 0 8px; font-weight:600">Navegue: Estude rápido</h4>
           <div class="topics-grid" id="topicsGrid" aria-label="Tópicos de redes">
             <!-- preenchido por JS -->
           </div>
         </div>
-
         <!-- NOVO: Botões principais lado a lado -->
         <div class="main-buttons">
           <a href="ensino.html" class="cta-button" aria-label="Montar sua própria rede de computadores">
@@ -1370,7 +1181,6 @@
             </svg>
             <span>Montar Minha Rede (V-ALPHA)</span>
           </a>
-
           <a href="prova.html" class="quiz-button" aria-label="Fazer prova com 30 questões">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M22 11.08V11a10 10 0 1 1-5.93-9.14"></path>
@@ -1379,14 +1189,12 @@
             <span>Prova (FINAL)</span>
           </a>
         </div>
-
         <div style="margin-top:8px;display:flex;justify-content:flex-end">
           <button class="btn ghost" id="refreshBtn"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg> Recarregar</button>
         </div>
       </section>
     </main>
   </div>
-
   <!-- NOVO: Modal para o Aviso -->
   <div id="warningModal" class="warning-modal" role="dialog" aria-modal="true" aria-label="Aviso sobre questões">
     <div class="warning-modal-card">
@@ -1395,7 +1203,6 @@
       <button id="closeWarning">Entendi</button>
     </div>
   </div>
-
   <!-- Modal de edição -->
   <div id="modal" class="modal" style="display:none" role="dialog" aria-modal="true" aria-label="Editar perfil">
     <div class="modal-card">
@@ -1417,7 +1224,6 @@
       </div>
     </div>
   </div>
-
   <!-- Modal de Configurações (AGORA COM VISUALIZAÇÃO APRIMORADA DA PALETA) -->
   <div id="settingsModal" class="modal" style="display:none" role="dialog" aria-modal="true" aria-label="Configurações">
     <div class="modal-card">
@@ -1439,27 +1245,22 @@
       </div>
     </div>
   </div>
-
   <!-- WELCOME MODAL (ATUALIZADO COM NOVA LISTA DE DESENVOLVEDORES) -->
   <div id="welcomeModal" class="welcome-modal" style="display:none" role="dialog" aria-modal="true" aria-label="Bem-vindo ao Perfil">
     <div class="welcome-card" role="document">
       <button class="btn welcome-close" id="welcomeClose" title="Fechar"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
-
       <div class="welcome-left">
         <div class="welcome-badge">Seja bem-vindo(a)</div>
         <h2 class="welcome-title">Olá! É ótimo ter você por aqui.</h2>
         <p class="welcome-sub">Bem-vindo ao Mundo das Redes de Computadores!<br><br>
 Descubra de forma simples e prática como os computadores se conectam, trocam dados e formam a rede que impulsiona nossa comunicação digital diária.<br><br>
 Nosso objetivo: mostrar a importância das redes na sociedade moderna e como elas viabilizam o mundo conectado que conhecemos.</p>
-
         <label class="small" style="margin-top:12px;display:block"><input id="dontShow" type="checkbox" style="margin-right:8px"> Não mostrar novamente</label>
       </div>
-
       <!-- Confete container (inserido dinamicamente) -->
       <div class="confetti-wrap" id="confettiWrap" aria-hidden="true"></div>
     </div>
   </div>
-
   <!-- NOVO: Modal para Desenvolvedores -->
   <div id="devModal" class="warning-modal" role="dialog" aria-modal="true" aria-label="Equipe de Desenvolvimento">
     <div class="warning-modal-card">
@@ -1475,23 +1276,19 @@ Nosso objetivo: mostrar a importância das redes na sociedade moderna e como ela
       <button id="closeDev">Fechar</button>
     </div>
   </div>
-
   <!-- Scripts -->
   <script>
     const SUPABASE_URL = 'https://zszcwubydhgoyhxbxfro.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpzemN3dWJ5ZGhnb3loeGJ4ZnJvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4MDk5MDMsImV4cCI6MjA3NTM4NTkwM30.ryioOoPAZnZzGdcTxIjfUcSlYUUqa7arA4qlUukyV7M';
     const { createClient } = window.supabase;
     const supabase = createClient(SUPABASE_URL.trim(), SUPABASE_ANON_KEY.trim());
-
     function parseJwt(token){ try{ const base64 = token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'); return JSON.parse(atob(base64)); }catch(e){return null} }
-
     const avatar = document.getElementById('avatar');
     const userName = document.getElementById('userName');
     const userEmail = document.getElementById('userEmail');
     const userTag = document.getElementById('userTag');
     const topicsGrid = document.getElementById('topicsGrid');
     const profileCard = document.getElementById('profileCard');
-
     // ✅ TÓPICOS COM SVGs REAIS (SEM DEPENDÊNCIA EXTERNA)
     const topicos = [
       {
@@ -1540,7 +1337,6 @@ Nosso objetivo: mostrar a importância das redes na sociedade moderna e como ela
         title: 'Segurança'
       }
     ];
-
     // ✅ RENDERIZA OS TÓPICOS COM ÍCONES REAIS
     function renderTopics(){
       topicsGrid.innerHTML = '';
@@ -1558,7 +1354,6 @@ Nosso objetivo: mostrar a importância das redes na sociedade moderna e como ela
         topicsGrid.appendChild(el);
       }
     }
-
     const modal = document.getElementById('modal');
     const editBtn = document.getElementById('editBtn');
     const closeModal = document.getElementById('closeModal');
@@ -1567,49 +1362,39 @@ Nosso objetivo: mostrar a importância das redes na sociedade moderna e como ela
     const editName = document.getElementById('editName');
     const editEmail = document.getElementById('editEmail');
     const editPic = document.getElementById('editPic');
-
     editBtn.addEventListener('click', () => { modal.style.display = 'flex'; editName.value = userName.textContent === 'Carregando...' ? '' : userName.textContent; editEmail.value = userEmail.textContent.includes('@') ? userEmail.textContent : ''; editPic.value = avatar.src || ''; });
     [closeModal, cancelEdit].forEach(btn => { btn.addEventListener('click', () => modal.style.display = 'none'); });
-
     saveProfile.addEventListener('click', async () => {
       const nome = editName.value.trim(); const email = editEmail.value.trim(); const pic = editPic.value.trim();
       if(nome) userName.textContent = nome; if(email) userEmail.textContent = email; if(pic) loadAvatar(pic);
       modal.style.display = 'none';
       if(email){ try{ const { error } = await supabase.from('dadoscetep').update({ nome, picture: pic }).eq('email', email); if(error) console.warn('Erro ao salvar:', error); }catch(err){console.warn('Erro ao salvar no Supabase:', err);} }
     });
-
     function loadAvatar(url){ avatar.src = url || 'https://via.placeholder.com/160x160/0f172a/60a5fa?text=👤'; }
-
     // NOVO: Lógica para o botão de aviso
     const warningBtn = document.getElementById('warningBtn');
     const warningModal = document.getElementById('warningModal');
     const closeWarning = document.getElementById('closeWarning');
     const warningIndicator = document.getElementById('warningIndicator');
-
     warningBtn.addEventListener('click', (e) => {
       e.preventDefault();
       warningModal.style.display = 'flex';
       warningIndicator.style.display = 'none';
     });
-
     closeWarning.addEventListener('click', () => {
       warningModal.style.display = 'none';
     });
-
     // NOVO: Lógica para o modal de desenvolvedores
     const devBtn = document.getElementById('devBtn');
     const devModal = document.getElementById('devModal');
     const closeDev = document.getElementById('closeDev');
-
     devBtn.addEventListener('click', (e) => {
       e.preventDefault();
       devModal.style.display = 'flex';
     });
-
     closeDev.addEventListener('click', () => {
       devModal.style.display = 'none';
     });
-
     // Fechar modals com ESC
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
@@ -1621,7 +1406,6 @@ Nosso objetivo: mostrar a importância das redes na sociedade moderna e como ela
         }
       }
     });
-
     // Configurações de Tema (AGORA COM PREVIEW CLICÁVEL)
     function applyTheme(theme) {
       const root = document.documentElement;
@@ -1633,7 +1417,6 @@ Nosso objetivo: mostrar a importância das redes na sociedade moderna e como ela
       document.querySelectorAll('.theme-option').forEach(opt => opt.classList.remove('selected'));
       document.querySelector(`.theme-option[data-theme="${theme}"]`)?.classList.add('selected');
     }
-
     // NOVO: Renderizar preview de temas no modal
     const themeOptions = [
       { value: 'blue', label: 'Azul (Padrão)' },
@@ -1645,7 +1428,6 @@ Nosso objetivo: mostrar a importância das redes na sociedade moderna e como ela
       { value: 'teal', label: 'Ciano' },
       { value: 'grayscale', label: 'Preto e Branco' }
     ];
-
     function renderThemePreview() {
       const preview = document.getElementById('themePreview');
       preview.innerHTML = '';
@@ -1664,54 +1446,32 @@ Nosso objetivo: mostrar a importância das redes na sociedade moderna e como ela
       const currentTheme = localStorage.getItem('theme') || 'blue';
       document.querySelector(`.theme-option[data-theme="${currentTheme}"]`)?.classList.add('selected');
     }
-
     // Carregar tema salvo
     const savedTheme = localStorage.getItem('theme') || 'blue';
     applyTheme(savedTheme);
-
     // Renderizar preview ao abrir o modal de configurações
     const settingsModal = document.getElementById('settingsModal');
     const settingsBtn = document.getElementById('settingsBtn');
     const closeSettings = document.getElementById('closeSettings');
     const closeSettingsBtn = document.getElementById('closeSettingsBtn');
-
     settingsBtn.addEventListener('click', () => { 
       settingsModal.style.display = 'flex'; 
       renderThemePreview();  // Renderizar preview ao abrir
     });
     [closeSettings, closeSettingsBtn].forEach(btn => { btn.addEventListener('click', () => settingsModal.style.display = 'none'); });
-
     async function carregarPerfil(){ let email = localStorage.getItem('userEmail'); if(!email){ const token = localStorage.getItem('googleToken'); const payload = parseJwt(token); email = payload?.email; }
       if(!email){ userName.textContent = 'Convidado'; userTag.textContent = 'Faça login para ver seu perfil'; userEmail.textContent = '—'; loadAvatar(); renderTopics(); return; }
-
       userEmail.textContent = email; userName.textContent = 'Carregando...';
-
       try{
         const { data, error } = await supabase.from('dadoscetep').select('nome, email, picture, created_at').eq('email', email).single();
         if(error || !data){ console.warn('Usuário não encontrado:', error); userName.textContent = email.split('@')[0]; userTag.textContent = 'Perfil básico'; loadAvatar(); }
         else{ userName.textContent = data.nome || email.split('@')[0]; userEmail.textContent = data.email || email; userTag.textContent = 'Bem-vindo(a)'; loadAvatar(data.picture); }
       }catch(err){ console.error('Erro crítico:', err); userName.textContent = email.split('@')[0]; userTag.textContent = 'Erro ao conectar'; loadAvatar(); }
       finally{ renderTopics(); profileCard.animate([{ transform: 'scale(0.998)' }, { transform: 'scale(1)' }], { duration: 300, easing: 'ease-out' }); 
-        // NOVO: Verificar email e adicionar cadeado animado se não for permitido
-        const allowedEmails = ['tridgall2007@gmail.com', 'lokiatgardiano@gmail.com', 'raquele201311@gmail.com'];
-        const ctaButton = document.querySelector('.cta-button');
-        if (!allowedEmails.includes(email.toLowerCase())) {
-          const padlock = document.createElement('span');
-          padlock.className = 'padlock-animated';
-          padlock.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 448 512"><path d="M144 144v48H304V144c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192V144C80 64.5 144.5 0 224 0s144 64.5 144 144v48h16c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V256c0-35.3 28.7-64 64-64H80z"/></svg>';
-          ctaButton.appendChild(padlock);
-          ctaButton.classList.add('locked');
-          ctaButton.href = '#';
-          ctaButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            alert('Acesso restrito: Esta funcionalidade está disponível apenas para usuários selecionados.');
-          });
-        }
+        // ✅ Sistema de cadeado removido! O botão sempre funciona.
       }
     }
-
     document.getElementById('refreshBtn').addEventListener('click', carregarPerfil);
-
     // Logout (agora no modal de configurações)
     function handleLogout() {
       localStorage.removeItem('userEmail');
@@ -1719,14 +1479,11 @@ Nosso objetivo: mostrar a importância das redes na sociedade moderna e como ela
       location.href = 'index.html';
     }
     document.getElementById('logoutFromSettings').addEventListener('click', handleLogout);
-
     const welcomeModal = document.getElementById('welcomeModal');
     const welcomeClose = document.getElementById('welcomeClose');
     const dontShow = document.getElementById('dontShow');
     const confettiWrap = document.getElementById('confettiWrap');
-
     function random(min, max){ return Math.random() * (max - min) + min; }
-
     function launchConfetti(){
       confettiWrap.innerHTML = '';
       const colors = ['#ff3b3b','#ffd23f','#64b5f6','#7cf59b','#d69df7','#ff8fa3'];
@@ -1750,13 +1507,10 @@ Nosso objetivo: mostrar a importância das redes na sociedade moderna e como ela
       }
       setTimeout(()=>{ if(confettiWrap) confettiWrap.innerHTML = ''; }, 3000);
     }
-
     function showWelcome(){ const seen = localStorage.getItem('seenWelcome'); if(seen) return; welcomeModal.style.display = 'flex'; setTimeout(() => { welcomeClose.focus(); launchConfetti(); }, 180); }
     function hideWelcome(save){ welcomeModal.style.display = 'none'; if(save) localStorage.setItem('seenWelcome','1'); profileCard.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.02)' }, { transform: 'scale(1)' }], { duration: 420, easing: 'ease-out' }); }
     welcomeClose.addEventListener('click', () => { hideWelcome(dontShow.checked); });
-
     document.addEventListener('keydown', (e) => { if(e.key === 'Escape' && (welcomeModal.style.display === 'flex' || settingsModal.style.display === 'flex' || modal.style.display === 'flex' || warningModal.style.display === 'flex' || devModal.style.display === 'flex')){ if(welcomeModal.style.display === 'flex') hideWelcome(dontShow.checked); else { welcomeModal.style.display = 'none'; settingsModal.style.display = 'none'; modal.style.display = 'none'; warningModal.style.display = 'none'; devModal.style.display = 'none'; } } });
-
     document.addEventListener('DOMContentLoaded', () => { try{ showWelcome(); }catch(e){ console.warn('Welcome failed:', e);} carregarPerfil(); });
   </script>
 </body>
