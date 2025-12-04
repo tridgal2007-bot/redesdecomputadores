@@ -2,9 +2,9 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <meta name="theme-color" content="#0d1525" />
-  <title>Simulador de Rede Educacional — Construção Guiada (Baseado em Topologia Realista)</title>
+  <title>Simulador de Rede Educacional</title>
   <!-- Fontes premium -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -32,15 +32,15 @@
     *{box-sizing:border-box}
     html,body{height:100%;margin:0;background:var(--bg-gradient);font-family:'Space Grotesk','Montserrat',system-ui,-apple-system,'Segoe UI',Roboto,Arial;color:var(--muted);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
     .container{max-width:1400px;margin:0 auto;padding:18px;min-height:100vh;display:flex;flex-direction:column;gap:12px}
-    header{display:flex;align-items:center;gap:16px;padding:8px 0}
+    header{display:flex;align-items:center;gap:16px;padding:8px 0;flex-wrap:wrap}
     .logo{width:72px;height:72px;border-radius:14px;background:linear-gradient(135deg,var(--text),var(--accent));display:grid;place-items:center;color:#041127;font-weight:900;font-size:20px;box-shadow:var(--glow)}
     h1{margin:0;color:var(--text);font-size:22px;font-weight:800;letter-spacing:-0.4px;background:linear-gradient(to right,var(--text),var(--accent-light));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
     .subtitle{font-size:13px;color:var(--muted);margin-top:6px}
-    .controls{margin-left:auto;display:flex;gap:8px;align-items:center}
+    .controls{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
     .main{display:flex;gap:18px;flex:1}
     .panel{background:var(--panel);border:1px solid var(--card-border);border-radius:14px;padding:18px;box-shadow:0 6px 24px rgba(0,0,0,0.45);backdrop-filter:blur(6px);overflow:hidden}
     .left{flex:0 0 320px}
-    .center{flex:1;min-height:560px;position:relative;display:flex;flex-direction:column}
+    .center{flex:1;position:relative;display:flex;flex-direction:column}
     .right{flex:0 0 360px;min-width:280px}
     /* device palette */
     .device-btn{display:flex;gap:10px;align-items:center;padding:10px;border-radius:10px;background:var(--glass);border:1px solid rgba(255,255,255,0.02);cursor:pointer;transition:var(--transition);user-select:none;width:100%}
@@ -59,7 +59,9 @@
     /* canvas */
     #topo{flex:1;border-radius:12px;overflow:hidden;position:relative;background:
       radial-gradient(circle at 10% 20%, rgba(8,168,255,0.03) 0%, transparent 20%),
-      linear-gradient(180deg, rgba(255,255,255,0.01), transparent 20%);
+      linear-gradient(180deg, rgba(255,255,255,0.01), transparent 20%),
+      repeating-linear-gradient(0deg, transparent, transparent 19px, rgba(255,255,255,0.05) 20px),
+      repeating-linear-gradient(90deg, transparent, transparent 19px, rgba(255,255,255,0.05) 20px);
       cursor: grab;
       transition: cursor 0.2s;
       transform-origin: center center;
@@ -100,87 +102,11 @@
     /* link label near curve */
     .link-label{font-family:'Space Grotesk';font-size:11px;fill:#cfefff;pointer-events:none}
     footer{font-size:12px;color:var(--muted);text-align:center;margin-top:12px}
-    /* === Build Steps (adaptado para topologia linear) === */
-    .build-steps { margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
-    .step {
-      padding: 12px; border-radius: 8px; background: rgba(255,255,255,0.02);
-      transition: var(--transition); cursor: pointer; position: relative; overflow: hidden;
-    }
-    .step:hover { background: rgba(0,168,255,0.05); }
-    .step.completed {
-      background: rgba(139,92,246,0.12); border-left: 3px solid var(--step-complete);
-    }
-    .step.active {
-      background: rgba(0,168,255,0.08); border-left: 3px solid var(--accent);
-      box-shadow: 0 4px 12px rgba(0,168,255,0.15);
-    }
-    .step.collapsed .step-description { max-height: 0; opacity: 0; overflow: hidden; transition: max-height 0.3s ease, opacity 0.3s ease; }
-    .step:not(.collapsed) .step-description { max-height: 120px; opacity: 1; }
-    .step-title {
-      font-weight: 600; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; color: var(--text);
-    }
-    .step-icon {
-      width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center;
-      background: rgba(255,255,255,0.04); color: var(--accent); font-weight: 700;
-    }
-    .step-description {
-      font-size: 13px; color: var(--muted); margin-bottom: 8px;
-      transition: max-height 0.3s ease, opacity 0.3s ease;
-    }
-    .step-progress { height: 4px; background: rgba(255,255,255,0.08); border-radius: 2px; overflow: hidden; }
-    .step-progress-fill {
-      height: 100%; background: var(--accent); width: 0%; transition: width 0.5s ease;
-    }
-    .step.completed .step-progress-fill { background: var(--step-complete); width: 100%; }
-    /* Build progress container */
-    .build-progress-container {
-      margin-bottom: 16px;
-    }
-    .build-progress-title {
-      display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px; color: var(--muted);
-    }
-    .build-progress-bar {
-      height: 8px; background: rgba(255,255,255,0.04); border-radius: 4px; overflow: hidden;
-    }
-    .build-progress-fill {
-      height: 100%; background: linear-gradient(90deg,var(--accent-light),var(--accent));
-      width: 0%; transition: width 0.5s ease;
-    }
     /* Error message */
     .error-message {
       margin-top: 12px; padding: 8px; background: rgba(248,113,113,0.08);
       border-left: 3px solid var(--error); border-radius: 6px; color: var(--muted); display: none;
     }
-    /* Tutorial overlay */
-    .tutorial-overlay {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.7); display: flex; justify-content: center;
-      align-items: center; z-index: 2000; opacity: 0; pointer-events: none;
-      transition: opacity 0.3s ease;
-    }
-    .tutorial-overlay.active {
-      opacity: 1; pointer-events: auto;
-    }
-    .tutorial-content {
-      background: var(--panel); padding: 24px; border-radius: 16px;
-      border: 1px solid var(--card-border); max-width: 600px; width: 90%;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative;
-    }
-    .tutorial-title {
-      font-size: 22px; font-weight: 700; margin-bottom: 16px; color: var(--accent);
-    }
-    .tutorial-text {
-      line-height: 1.6; margin-bottom: 20px; color: var(--muted);
-    }
-    .tutorial-actions {
-      display: flex; gap: 12px; justify-content: flex-end;
-    }
-    .close-tutorial {
-      position: absolute; top: 16px; right: 16px; background: rgba(255,255,255,0.06);
-      border: none; width: 30px; height: 30px; border-radius: 50%; color: var(--muted);
-      cursor: pointer; transition: var(--transition);
-    }
-    .close-tutorial:hover { background: rgba(143,233,255,0.1); }
     /* Rotação do ícone de celular em dispositivos móveis */
     @media (max-width: 768px) {
       .device-icon i.fas.fa-mobile-alt {
@@ -194,6 +120,57 @@
     .checklist-checkbox { width: 16px; height: 16px; border: 1px solid var(--muted); border-radius: 3px; cursor: pointer; }
     .checklist-checkbox.checked { background: var(--success); border-color: var(--success); }
     .checklist-checkbox.checked::after { content: '✓'; color: white; font-size: 12px; display: grid; place-items: center; }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+      .container { padding: 10px; }
+      .main { flex-direction: column; gap: 10px; }
+      .left, .right { flex: none; width: 100%; max-height: 200px; overflow-y: auto; }
+      .center { order: -1; min-height: 400px; }
+      header { flex-direction: column; align-items: flex-start; }
+      .controls { margin-left: 0; justify-content: flex-start; }
+      .panel { padding: 12px; }
+      .device { width: 140px; }
+      .dev-name { font-size: 12px; }
+      .dev-type { font-size: 10px; }
+      .port { width: 18px; height: 18px; }
+      footer { font-size: 11px; }
+    }
+
+    @media (max-width: 768px) {
+      .left { display: none; } /* Hide left panel on small screens */
+      .right { display: none; } /* Hide right panel on small screens */
+      .center { min-height: calc(100vh - 150px); } /* Full height canvas */
+      #topo { border-radius: 8px; }
+      .subtitle { font-size: 12px; }
+      .controls button { padding: 4px 8px; font-size: 12px; }
+    }
+
+    /* Toggle for side panels on mobile */
+    .toggle-sidebar {
+      display: none;
+      position: fixed;
+      bottom: 20px;
+      z-index: 1000;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      font-size: 24px;
+      cursor: pointer;
+    }
+    .toggle-left { left: 20px; }
+    .toggle-right { right: 20px; }
+    @media (max-width: 768px) {
+      .toggle-sidebar { display: grid; place-items: center; }
+      .left.active, .right.active { display: block; position: fixed; top: 0; width: 80%; height: 100%; z-index: 999; overflow-y: auto; }
+      .left.active { left: 0; }
+      .right.active { right: 0; left: auto; }
+      .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 998; }
+      .overlay.active { display: block; }
+    }
   </style>
 </head>
 <body>
@@ -201,35 +178,22 @@
     <header role="banner">
       <div class="logo" aria-hidden="true">RedeSim</div>
       <div style="min-width:0">
-        <h1>Simulador de Rede Educacional — Construção Guiada (Topologia Linear)</h1>
-        <div class="subtitle">Siga a ordem física típica: ONT → Router → Firewall → Switches → APs → Servidores → Endpoints. Inclui configs reais (SSID, VLAN, DHCP, segurança).</div>
+        <h1>Simulador de Rede Educacional</h1>
+        <div class="subtitle">Construa e configure uma rede em um canvas infinito com panning e zoom. Inclui configs reais (SSID, VLAN, DHCP, segurança).</div>
       </div>
       <div class="controls" aria-hidden="false">
         <button id="exportSVG" class="ghost">Export SVG</button>
         <button id="zoomIn" class="ghost" title="Zoom In">+</button>
         <button id="zoomOut" class="ghost" title="Zoom Out">-</button>
         <button id="resetView" class="ghost" title="Reset View">Reset</button>
+        <button id="fullScreen" class="ghost" title="Full Screen"><i class="fas fa-expand"></i></button>
       </div>
     </header>
     <main class="main">
       <section class="panel left" aria-labelledby="build-title">
-        <h2 id="build-title" style="color:var(--text);margin:0 0 10px 0">Construção da Rede (Ordem Física)</h2>
-        <!-- Build Progress -->
-        <div class="build-progress-container">
-          <div class="build-progress-title">
-            <span>Progresso da Construção</span>
-            <span id="progress-percent">0%</span>
-          </div>
-          <div class="build-progress-bar">
-            <div class="build-progress-fill" id="build-progress-fill"></div>
-          </div>
-        </div>
-        <!-- Build Steps (adaptados para topologia) -->
-        <div class="build-steps" id="buildSteps">
-          <!-- Steps populated by JS -->
-        </div>
+        <h2 id="build-title" style="color:var(--text);margin:0 0 10px 0">Dispositivos</h2>
         <hr style="border:0;border-top:1px solid var(--card-border);margin:12px 0" />
-        <div style="margin-bottom:8px"><strong style="color:var(--text)">Dispositivos (por Ordem)</strong></div>
+        <div style="margin-bottom:8px"><strong style="color:var(--text)">Dispositivos</strong></div>
         <div id="devicePalette" style="display:flex;flex-direction:column;gap:8px;max-height:300px;overflow-y:auto"></div>
         <hr style="border:0;border-top:1px solid var(--card-border);margin:12px 0" />
         <div style="margin-bottom:8px"><strong style="color:var(--text)">Ações</strong></div>
@@ -248,14 +212,14 @@
           </div>
         </div>
         <div style="color:var(--muted);font-size:13px;margin-top:12px">
-          <strong>Navegação:</strong> Arraste o canvas para mover. Clique em portas para conectar (escolha cabo). Shift+Clique para ping. Inspetor para configs (SSID, VLAN, DHCP).
+          <strong>Navegação:</strong> Arraste o canvas para mover (panning). Use zoom (+/-). Clique em portas para conectar (escolha cabo). Shift+Clique para ping. Inspetor para configs (SSID, VLAN, DHCP).
         </div>
         <div id="errorMessage" class="error-message"></div>
       </section>
       <section class="panel center">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
           <div class="badge" style="padding:6px 10px;background:rgba(255,255,255,0.02);border-radius:8px;color:var(--muted)">Simulador Educacional</div>
-          <div style="color:var(--muted);font-size:13px">Canvas — Topologia Linear Lógica. Adicione na ordem: WAN → LAN → Wireless → Endpoints.</div>
+          <div style="color:var(--muted);font-size:13px">Canvas infinito com panning e zoom. Adicione e configure dispositivos.</div>
           <div style="flex:1"></div>
           <div id="status" style="color:var(--muted);font-size:13px">Pronto</div>
         </div>
@@ -389,17 +353,6 @@
     </main>
     <footer>Baseado em topologia linear: 1. ONT/Modem → 2. Router → 3. Firewall → 4. Switch Core → 5. Patch Panel → 6. APs → 7. Switches Acesso → 8. Servidores → 9. Load Balancers → 10. Storage → 11. Endpoints → 12. UPS. Use WPA3, VLANs, DHCP 10.0.x.0/24. Evite erros: senhas padrão, WEP.</footer>
   </div>
-  <!-- Tutorial Overlay -->
-  <div class="tutorial-overlay" id="tutorialOverlay">
-    <div class="tutorial-content">
-      <button class="close-tutorial" id="closeTutorial">✕</button>
-      <h2 class="tutorial-title" id="tutorialTitle">Bem-vindo ao Simulador</h2>
-      <p class="tutorial-text" id="tutorialText">Construa uma rede seguindo a ordem física típica, com configs reais de cabos, Wi-Fi (WPA3, SSID), VLANs, DHCP (10.0.10.0/24) e segurança (firewall, RADIUS).</p>
-      <div class="tutorial-actions">
-        <button class="small" id="startTutorial">Iniciar Passo 1: WAN</button>
-      </div>
-    </div>
-  </div>
   <!-- Cable Modal -->
   <div class="modal-back" id="cableModal">
     <div class="modal">
@@ -429,29 +382,17 @@
       <div style="margin-top:12px;text-align:right"><button id="closeChecklist" class="ghost">Fechar</button></div>
     </div>
   </div>
+  <!-- Mobile Sidebar Toggle -->
+  <button class="toggle-sidebar toggle-left" id="toggleLeft"><i class="fas fa-tools"></i></button>
+  <button class="toggle-sidebar toggle-right" id="toggleRight"><i class="fas fa-search"></i></button>
+  <div class="overlay" id="overlay"></div>
   <script>
-    /***********************************************
-     * Simulador de Rede Educacional — Adaptado para Informações Específicas
-     * Integração: Topologia linear (12 passos), devices da info (ONT, Router, etc.),
-     * Configs: SSID/WPA3 em APs, VLAN/QoS em Switches, DHCP scopes (10.0.x.0/24),
-     * Cabos: UTP/Fibra/Coax/Wi-Fi com limites reais (Cat6 10Gbps/55m),
-     * Wi-Fi: Bandas 2.4/5/6GHz, segurança WPA2/3/Enterprise,
-     * IP: Privados 10.0.0.0/8, exemplos práticos,
-     * Segurança: RADIUS, ACLs, VPN (simulado em inspetor),
-     * Comandos: Exemplos VLAN/DHCP/SSID no modal,
-     * Checklist: 10 itens interativos,
-     * Erros: Validações (ex.: Wi-Fi só para APs/Endpoints),
-     * Escala: Build steps por tamanho (casa/empresa).
-     * Boas práticas: SSID neutro, senhas fortes, segmentação VLAN.
-     ***********************************************/
     class NetworkSimulator {
       constructor() {
         // DOM refs (guarded)
         this.topo = document.getElementById('topo') || null;
         this.svg = document.getElementById('links') || null;
         this.devicePalette = document.getElementById('devicePalette') || null;
-        this.buildProgressFill = document.getElementById('build-progress-fill') || null;
-        this.progressPercent = document.getElementById('progress-percent') || null;
         this.errorMessageEl = document.getElementById('errorMessage') || null;
         this.statusEl = document.getElementById('status') || null;
         this.inspector = document.getElementById('inspector') || null;
@@ -475,10 +416,6 @@
         this.cableModal = document.getElementById('cableModal') || null;
         this.commandsModal = document.getElementById('commandsModal') || null;
         this.checklistModal = document.getElementById('checklistModal') || null;
-        this.tutorialOverlay = document.getElementById('tutorialOverlay') || null;
-        this.tutorialTitle = document.getElementById('tutorialTitle') || null;
-        this.tutorialText = document.getElementById('tutorialText') || null;
-        this.buildStepsContainer = document.getElementById('buildSteps') || null;
         this.deleteDeviceBtn = document.getElementById('deleteDevice') || null;
         this.wifiConfig = document.getElementById('wifiConfig') || null;
         this.dhcpConfig = document.getElementById('dhcpConfig') || null;
@@ -494,10 +431,7 @@
         this.dhcpScopes = { admin: { range: '10.0.10.100-200', gateway: '10.0.10.1' }, guest: { range: '10.0.20.100-200', gateway: '10.0.20.1' } }; // Exemplos IP
         this.drawScheduled = false;
         this.networkStatusInterval = null;
-        this.currentStep = 0;
-        this.buildSteps = [];
-        this.tutorialCompleted = localStorage.getItem('redeSimTutorialDone') === 'true';
-        this.firstTimeUser = localStorage.getItem('redeSimFirstTime') !== 'false';
+        this.arpCache = new Map();
         // View state
         this.panX = 0;
         this.panY = 0;
@@ -506,7 +440,6 @@
         this.panStartX = 0;
         this.panStartY = 0;
         this.currentDrag = null;
-        this.arpCache = new Map();
         // Device defs (adaptados para info: funções, cabos, velocidades reais)
         this.deviceDefs = {
           ont: {label:'ONT/Modem',ports:1,icon:'fas fa-plug',role:'wan', maxSpeed: 1000, desc: 'Converte sinal provedor (fibra/coax) em Ethernet. Modo bridge/NAT.'},
@@ -522,28 +455,12 @@
           ups: {label:'UPS/Monitoramento',ports:1,icon:'fas fa-battery-full',role:'infra', maxSpeed: 0, desc: 'Disponibilidade elétrica, SNMP.'}
         };
         this.deviceGroups = {
-          '1. WAN (Entrada)': ['ont'],
-          '2-3. Roteamento/Segurança': ['router', 'firewall'],
-          '4-7. Switches e Wireless': ['switchcore', 'switchaccess', 'ap'],
-          '8-10. Infra/Servidores': ['server', 'loadbalancer', 'storage'],
-          '11-12. Finais/Suporte': ['endpoint', 'ups']
+          'WAN (Entrada)': ['ont'],
+          'Roteamento/Segurança': ['router', 'firewall'],
+          'Switches e Wireless': ['switchcore', 'switchaccess', 'ap'],
+          'Infra/Servidores': ['server', 'loadbalancer', 'storage'],
+          'Finais/Suporte': ['endpoint', 'ups']
         };
-        // Build steps (adaptados para 12 itens da topologia + extras)
-        this.buildProcess = [
-          {title: "1. Ponto de Entrada (ONT/Modem)", description: "Adicione ONT/Modem para WAN (fibra/coax → Ethernet, IP público).", devices: ['ont'], required: 1, connections: 0, completed: false},
-          {title: "2. Router/Gateway", description: "Adicione Router para NAT/DHCP (faixa 10.0.10.0/24), SSID se Wi-Fi.", devices: ['router'], required: 1, connections: 1, completed: false},
-          {title: "3. Firewall Dedicado (Opcional)", description: "Adicione Firewall para regras/VPN/IDS (empresas).", devices: ['firewall'], required: 1, connections: 1, completed: false},
-          {title: "4. Switch Core/Distribuição", description: "Adicione Switch Core gerenciável (VLANs, QoS, PoE, Cat6).", devices: ['switchcore'], required: 1, connections: 2, completed: false},
-          {title: "5. Patch Panel/Racks", description: "Adicione Patch Panel para cabeamento estruturado (Cat5e/6, T568A/B).", devices: [], required: 0, connections: 1, completed: false, note: 'Físico, sem device interativo'},
-          {title: "6. Access Points (APs)", description: "Adicione APs para Wi-Fi (SSID neutro, WPA3, bandas 5GHz).", devices: ['ap'], required: 2, connections: 2, completed: false},
-          {title: "7. Switches de Acesso (PoE)", description: "Adicione Switches PoE para alimentar APs/telefones.", devices: ['switchaccess'], required: 1, connections: 3, completed: false},
-          {title: "8. Servidores de Infra", description: "Adicione Servidores (DNS interno, DHCP, RADIUS/AD).", devices: ['server'], required: 2, connections: 2, completed: false},
-          {title: "9. Load Balancers/Proxy/WAF", description: "Adicione para balanceamento e proteção apps (opcional).", devices: ['loadbalancer'], required: 1, connections: 1, completed: false},
-          {title: "10. Storage/NAS/Backup", description: "Adicione NAS para arquivos/backups (SMB/NFS).", devices: ['storage'], required: 1, connections: 1, completed: false},
-          {title: "11. Dispositivos Finais", description: "Adicione PCs/IoT/impressoras (IPs reservas DHCP).", devices: ['endpoint'], required: 4, connections: 4, completed: false},
-          {title: "12. UPS/PDU/Monitoramento", description: "Adicione UPS para disponibilidade (SNMP).", devices: ['ups'], required: 1, connections: 0, completed: false},
-          {title: "Verificação Final", description: "Conecte tudo, teste ping, verifique VLANs/SSID/WPA3. Aplique boas práticas: senhas fortes, segmentação.", devices: [], required: 0, connections: 15, completed: false}
-        ];
         // Regras (adaptadas: Wi-Fi só APs/endpoints, fibra para WAN/core)
         this.networkRules = {
           connectionRules: {
@@ -604,144 +521,6 @@
         let ip = s.gateway.replace(/\.\d+$/, `.${Math.floor(Math.random() * (parseInt(s.range.split('-')[1]) - parseInt(s.range.split('-')[0])) + parseInt(s.range.split('-')[0]))}`);
         while (Object.values(this.nodes).some(n => n.ip === ip)) ip = this.allocateIp(scope);
         return ip;
-      }
-      // Build Steps (com conexões e notas topologia)
-      initBuildSteps() {
-        if (!this.buildStepsContainer) return;
-        this.buildStepsContainer.innerHTML = '';
-        this.buildSteps = [];
-        this.buildProcess.forEach((step, index) => {
-          const stepEl = document.createElement('div');
-          stepEl.className = 'step collapsed';
-          stepEl.dataset.step = index;
-          stepEl.innerHTML = `
-            <div class="step-title">
-              <div class="step-icon">${index + 1}</div>
-              <span>${step.title}</span>
-            </div>
-            <div class="step-description">${step.description}${step.note ? '<br><em>' + step.note + '</em>' : ''}</div>
-            <div class="step-progress">
-              <div class="step-progress-fill"></div>
-            </div>
-          `;
-          this.buildSteps.push(stepEl);
-          this.buildStepsContainer.appendChild(stepEl);
-          stepEl.addEventListener('click', () => { if (index <= this.currentStep) this.toggleStepCollapse(index); });
-          stepEl.setAttribute('role', 'button');
-          stepEl.setAttribute('tabindex', index <= this.currentStep ? '0' : '-1');
-          stepEl.setAttribute('aria-expanded', 'false');
-        });
-        this.activateStep(0);
-      }
-      toggleStepCollapse(stepIndex) {
-        const step = this.buildSteps[stepIndex];
-        if (!step) return;
-        const isCollapsed = step.classList.contains('collapsed');
-        step.classList.toggle('collapsed');
-        step.setAttribute('aria-expanded', isCollapsed ? 'true' : 'false');
-      }
-      activateStep(stepIndex) {
-        this.currentStep = stepIndex;
-        this.buildSteps?.forEach((stepEl, i) => {
-          stepEl.classList.remove('active');
-          stepEl.classList.remove('collapsed');
-          stepEl.setAttribute('tabindex', i <= stepIndex ? '0' : '-1');
-          if (i < stepIndex && this.buildProcess[i].completed) {
-            stepEl.classList.add('collapsed', 'completed');
-            stepEl.setAttribute('aria-expanded', 'false');
-          } else if (i === stepIndex) {
-            stepEl.classList.add('active');
-            stepEl.setAttribute('aria-expanded', 'true');
-          } else {
-            stepEl.classList.add('collapsed');
-            stepEl.setAttribute('aria-expanded', 'false');
-          }
-        });
-        this.updateBuildProgress();
-        if (this.firstTimeUser && !this.tutorialCompleted) this.showTutorial(stepIndex);
-      }
-      updateBuildProgress() {
-        let completedSteps = 0;
-        const totalSteps = this.buildProcess.length;
-        for (let i = 0; i < this.buildProcess.length; i++) {
-          if (this.buildProcess[i].completed) {
-            completedSteps++;
-            if (this.buildSteps[i]) this.buildSteps[i].classList.add('completed');
-          } else {
-            if (this.buildSteps[i]) this.buildSteps[i].classList.remove('completed');
-          }
-        }
-        const progress = Math.round((completedSteps / totalSteps) * 100);
-        if (this.buildProgressFill) this.buildProgressFill.style.width = `${progress}%`;
-        if (this.progressPercent) this.progressPercent.textContent = `${progress}%`;
-        this.checkStepCompletion(this.currentStep);
-      }
-      checkStepCompletion(stepIndex) {
-        const step = this.buildProcess[stepIndex];
-        if (step.completed) return;
-        let deviceCount = 0;
-        step.devices.forEach(type => { deviceCount += this.deviceCounts[type] || 0; });
-        let connectionCount = this.links.length;
-        if (stepIndex < this.buildProcess.length - 1) {
-          connectionCount = this.links.filter(l => step.devices.some(d => d === this.nodes[l.aNode]?.type || d === this.nodes[l.bNode]?.type)).length;
-        }
-        const deviceReqMet = step.required === 0 || deviceCount >= step.required;
-        const connReqMet = step.connections === 0 || connectionCount >= step.connections;
-        if (deviceReqMet && connReqMet) {
-          step.completed = true;
-          this.log(`Passo "${step.title}" concluído!`);
-          if (stepIndex < this.buildProcess.length - 1) {
-            setTimeout(() => {
-              this.activateStep(stepIndex + 1);
-              this.log(`Avançando: ${this.buildProcess[stepIndex + 1].title}`);
-            }, 1500);
-          } else {
-            this.log('Rede completa! Verifique segurança: WPA3, VLANs isoladas, backups.');
-            this.tutorialCompleted = true;
-            localStorage.setItem('redeSimTutorialDone', 'true');
-          }
-          this.updateBuildProgress();
-        } else {
-          const deviceProgress = step.required > 0 ? Math.min(100, Math.round((deviceCount / step.required) * 100)) : 0;
-          const connProgress = step.connections > 0 ? Math.min(100, Math.round((connectionCount / step.connections) * 100)) : 0;
-          const overall = Math.round((deviceProgress + connProgress) / 2);
-          if (this.buildSteps[stepIndex]) {
-            this.buildSteps[stepIndex].querySelector('.step-progress-fill').style.width = `${overall}%`;
-          }
-        }
-      }
-      // Tutorial (com instruções topologia)
-      showTutorial(stepIndex) {
-        if (!this.tutorialOverlay || this.tutorialCompleted) return;
-        const step = this.buildProcess[stepIndex];
-        if (this.tutorialTitle) this.tutorialTitle.textContent = step.title;
-        if (this.tutorialText) {
-          this.tutorialText.innerHTML = `
-            <strong>${step.title}</strong><br><br>
-            ${step.description}<br><br>
-            <strong>Instruções:</strong><br>
-            ${this.getStepInstructions(stepIndex)}
-          `;
-        }
-        this.tutorialOverlay.classList.add('active');
-      }
-      getStepInstructions(stepIndex) {
-        const instructions = {
-          0: "1. Clique 'ONT/Modem'<br>2. Posicione no início (WAN)<br>3. Conecte a Router com Fibra/Coax",
-          1: "1. Adicione Router<br>2. Configure DHCP 10.0.10.100-200 no inspetor<br>3. Conecte a ONT (Ethernet RJ45)",
-          2: "1. Adicione Firewall (opcional empresas)<br>2. Configure regras ACL/VPN<br>3. Conecte entre Router e Switch Core",
-          3: "1. Adicione Switch Core<br>2. Configure VLAN 10 (Admin) no inspetor<br>3. Conecte a Firewall (Cat6)",
-          4: "1. Adicione cabeamento horizontal (simulado)<br>2. Use T568B padrão<br>3. Conecte a Patch Panel virtual",
-          5: "1. Adicione 2 APs<br>2. Configure SSID 'MinhaRede-5G', WPA3 no inspetor<br>3. Conecte a Switch Acesso (PoE)",
-          6: "1. Adicione Switch Acesso PoE<br>2. Configure QoS para VoIP<br>3. Conecte APs e Servidores",
-          7: "1. Adicione 2 Servidores<br>2. Configure DNS/RADIUS (10.0.5.10)<br>3. Conecte a Switch Core (VLAN)",
-          8: "1. Adicione Load Balancer<br>2. Configure WAF/IPS<br>3. Conecte a Servidores",
-          9: "1. Adicione Storage/NAS<br>2. Configure SMB quotas<br>3. Conecte a Switch",
-          10: "1. Adicione 4 Endpoints (PCs/IoT)<br>2. Atribua IPs reservas DHCP<br>3. Conecte via Ethernet/Wi-Fi (VLAN 20 Guest)",
-          11: "1. Adicione UPS<br>2. Configure SNMP monitoramento<br>3. 'Conecte' energia (simulado)",
-          12: "1. Selecione 2 devices (Shift+Clique)<br>2. Simule Ping<br>3. Verifique erros: sem WEP, VLANs isoladas"
-        };
-        return instructions[stepIndex] || "Siga a topologia linear.";
       }
       // Device Palette (grupos por ordem topologia)
       initDevicePalette() {
@@ -823,7 +602,6 @@
         this.log(`Adicionado: ${node.name} (${def.desc})`);
         this.scheduleDrawLinks();
         this.saveStateToLocalStorage();
-        this.checkStepCompletion(this.currentStep);
       }
       // Draw Node (com VLAN/IP no label)
       drawNode(node) {
@@ -891,7 +669,6 @@
       // Event Listeners (com guards, + checklist/commands)
       bindEvents() {
         if (!this.topo) return;
-        // ... (mesmo código de eventos do exemplo anterior, adaptado para novos fields)
         this.topo.addEventListener('click', (e) => {
           const portEl = e.target.closest('.port');
           if (portEl) {
@@ -1016,18 +793,6 @@
         if (showChecklistBtn) showChecklistBtn.addEventListener('click', () => this.showChecklistModal());
         const closeChecklistBtn = document.getElementById('closeChecklist');
         if (closeChecklistBtn) closeChecklistBtn.addEventListener('click', () => this.checklistModal.classList.remove('active'));
-        // Tutorial events
-        const startTutorialBtn = document.getElementById('startTutorial');
-        if (startTutorialBtn) startTutorialBtn.addEventListener('click', () => {
-          if (this.tutorialOverlay) this.tutorialOverlay.classList.remove('active');
-          this.log(`Iniciando: ${this.buildProcess[this.currentStep]?.title}`);
-        });
-        const closeTutorialBtn = document.getElementById('closeTutorial');
-        if (closeTutorialBtn) closeTutorialBtn.addEventListener('click', () => {
-          if (this.tutorialOverlay) this.tutorialOverlay.classList.remove('active');
-          this.firstTimeUser = false;
-          localStorage.setItem('redeSimFirstTime', 'false');
-        });
         // Controls
         const clearBtn = document.getElementById('clear');
         if (clearBtn) clearBtn.addEventListener('click', () => {
@@ -1053,6 +818,10 @@
           this.panX = 0; this.panY = 0; this.scale = 1;
           this.updateViewTransform();
         });
+        const fullScreenBtn = document.getElementById('fullScreen');
+        if (fullScreenBtn) fullScreenBtn.addEventListener('click', () => {
+          if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
+        });
         // Inspector events
         const applyConfigBtn = document.getElementById('applyConfig');
         if (applyConfigBtn) applyConfigBtn.addEventListener('click', () => this.applyConfig());
@@ -1061,6 +830,48 @@
         const inspectPingBtn = document.getElementById('inspectPing');
         if (inspectPingBtn) inspectPingBtn.addEventListener('click', () => this.inspectPing());
         if (this.deleteDeviceBtn) this.deleteDeviceBtn.addEventListener('click', () => this.deleteDevice());
+        // Mobile toggles
+        const toggleLeft = document.getElementById('toggleLeft');
+        const leftPanel = document.querySelector('.left');
+        const toggleRight = document.getElementById('toggleRight');
+        const rightPanel = document.querySelector('.right');
+        const overlay = document.getElementById('overlay');
+        if (toggleLeft && leftPanel && overlay) {
+          toggleLeft.addEventListener('click', () => {
+            leftPanel.classList.toggle('active');
+            overlay.classList.toggle('active');
+            rightPanel.classList.remove('active');
+          });
+        }
+        if (toggleRight && rightPanel && overlay) {
+          toggleRight.addEventListener('click', () => {
+            rightPanel.classList.toggle('active');
+            overlay.classList.toggle('active');
+            leftPanel.classList.remove('active');
+          });
+        }
+        if (overlay) {
+          overlay.addEventListener('click', () => {
+            leftPanel.classList.remove('active');
+            rightPanel.classList.remove('active');
+            overlay.classList.remove('active');
+          });
+        }
+        // Force landscape on mobile
+        if (window.innerWidth < 768) {
+          if (screen.orientation && screen.orientation.lock) {
+            screen.orientation.lock('landscape').catch(() => {
+              alert('Por favor, rotacione o dispositivo para modo paisagem para melhor experiência.');
+            });
+          } else {
+            alert('Por favor, rotacione o dispositivo para modo paisagem para melhor experiência.');
+          }
+          window.addEventListener('orientationchange', () => {
+            if (window.orientation === 0) {
+              alert('Por favor, rotacione para modo paisagem.');
+            }
+          });
+        }
       }
       updateViewTransform() {
         if (!this.topo) return;
@@ -1138,7 +949,6 @@
         this.clearConnStart();
         this.log(`Conexão: ${label} (${speed} Mbps)`);
         this.saveStateToLocalStorage();
-        this.checkStepCompletion(this.currentStep);
       }
       getLinkSpeed(cableType, aType, bType) {
         const baseSpeeds = { copper: 1000, fiber: 10000, wifi: 433, coax: 100 }; // Reais: Cat6 10G/55m, Wi-Fi 433Mbps
@@ -1315,7 +1125,6 @@
         this.updateNetworkStatus();
         this.saveStateToLocalStorage();
         this.log('Conexão removida');
-        this.checkStepCompletion(this.currentStep);
       }
       removeNode(id) {
         const node = this.nodes[id];
@@ -1338,7 +1147,6 @@
         this.updateDeviceCounts();
         this.updateNetworkStatus();
         this.saveStateToLocalStorage();
-        this.checkStepCompletion(this.currentStep);
         this.log(`Removido: ${node.name}`);
         this.clearInspector();
       }
@@ -1408,7 +1216,6 @@
         this.updateNetworkStatus();
       }
       animatePacketAlongPath(path) {
-        // Código idêntico ao exemplo para animação
         if (!this.svg) return;
         this.scheduleDrawLinks();
         const topoRect = this.topo.getBoundingClientRect();
@@ -1693,19 +1500,6 @@
         });
         controls.appendChild(pingBtn);
       }
-      highlightPath(path) {
-        this.scheduleDrawLinks();
-        for (let i = 0; i < path.length - 1; i++) {
-          const a = path[i], b = path[i + 1];
-          const l = this.links.find(L => (L.aNode === a && L.bNode === b) || (L.aNode === b && L.bNode === a));
-          if (!l) continue;
-          const g = this.svg.querySelector(`g.link[data-link-id="${l.id}"]`);
-          if (!g) continue;
-          const paths = g.querySelectorAll('path');
-          paths.forEach(p => p.setAttribute('stroke', '#7fffd4'));
-        }
-        setTimeout(() => this.scheduleDrawLinks(), 2000);
-      }
       exportSVG() {
         if (!this.svg) return;
         const oldPanX = this.panX, oldPanY = this.panY, oldScale = this.scale;
@@ -1760,8 +1554,6 @@
         this.selectedForSim = [];
         this.arpCache.clear();
         this.dhcpScopes.admin.next = 100; // Reset
-        this.buildProcess.forEach(step => { step.completed = false; });
-        this.currentStep = 0;
         this.panX = 0;
         this.panY = 0;
         this.scale = 1;
@@ -1769,8 +1561,6 @@
         if (this.networkStatusInterval) { clearInterval(this.networkStatusInterval); this.networkStatusInterval = null; }
         if (this.trafficAnimId) { cancelAnimationFrame(this.trafficAnimId); this.trafficAnimId = null; }
         this.updateViewTransform();
-        this.initBuildSteps();
-        this.updateBuildProgress();
         this.log('Reiniciado (topologia limpa).');
         localStorage.removeItem('redeSimState');
       }
@@ -1791,8 +1581,6 @@
           const state = {
             nodes: nodesForSave,
             links: this.links.map(l => ({ ...l })),
-            currentStep: this.currentStep,
-            buildProcess: this.buildProcess.map(s => ({ ...s, completed: s.completed })),
             dhcpScopes: this.dhcpScopes,
             timestamp: Date.now()
           };
@@ -1819,18 +1607,11 @@
             this.nodes[id] = { ...n, el: null, ports: n.ports || Array.from({ length: this.deviceDefs[n.type].ports || 1 }, (_, i) => ({ index: i, connected: false })) };
           }
           this.links = (state.links || []).filter(l => this.nodes[l.aNode] && this.nodes[l.bNode]);
-          if (state.buildProcess) {
-            for (let i = 0; i < Math.min(state.buildProcess.length, this.buildProcess.length); i++) {
-              this.buildProcess[i].completed = state.buildProcess[i].completed;
-            }
-            this.currentStep = state.currentStep || 0;
-          }
           const nodeMaxId = Object.keys(this.nodes).length ? Math.max(...Object.keys(this.nodes).map(k => parseInt(k.slice(1) || 0))) : 0;
           this.nextId = Math.max(this.nextId, nodeMaxId + 1);
           Object.values(this.nodes).forEach(node => this.drawNode(node));
           this.scheduleDrawLinks();
           this.updateDeviceCounts();
-          this.initBuildSteps();
           this.updateNetworkStatus();
           this.log(`Carregado: ${Object.keys(this.nodes).length} devices.`);
           return true;
@@ -1840,15 +1621,10 @@
           return false;
         }
       }
-      checkFirstTimeUser() {
-        return localStorage.getItem('redeSimFirstTime') !== 'false';
-      }
       init() {
-        this.firstTimeUser = this.checkFirstTimeUser();
         this.initDevicePalette();
-        this.initBuildSteps();
         const loaded = this.loadStateFromLocalStorage();
-        if (!loaded) this.log('Bem-vindo! Construa WAN → LAN (topologia linear, boas práticas).');
+        if (!loaded) this.log('Bem-vindo! Construa e configure sua rede em um canvas infinito.');
         this.addSimButtons();
         this.bindEvents();
         requestAnimationFrame(() => this.scheduleDrawLinks());
